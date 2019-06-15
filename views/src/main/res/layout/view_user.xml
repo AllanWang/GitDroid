@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingStart="@dimen/kau_activity_horizontal_margin"
         android:paddingTop="@dimen/kau_activity_vertical_margin"
         android:paddingEnd="@dimen/kau_activity_horizontal_margin"
@@ -100,6 +100,17 @@
             app:layout_constraintTop_toBottomOf="@id/user_desc"
             app:layout_constraintWidth_percent="0.5"
             tools:text="Followers" />
+
+        <TextView
+            tools:drawableStart="@android:drawable/ic_menu_today"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{user.location}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_following"
+            tools:text="@tools:sample/cities"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -32,24 +32,31 @@ query getProfile($login: String!) {
     following(last: 0) {
       totalCount
     }
-    pinnedRepositories(first: 6) {
+    pinnedItems(first: 6) {
       totalCount
-      nodes {
-        name
-        nameWithOwner
-        primaryLanguage {
-          name
-          color
+      pinnedItems: nodes {
+        ... on Repository {
+            name
+            nameWithOwner
+            primaryLanguage {
+              name
+              color
+            }
+            stargazers(first: 0) {
+              totalCount
+            }
+            forkCount
+            issues(first: 0, states: OPEN) {
+              totalCount
+            }
+            pullRequests(first: 0, states: OPEN) {
+              totalCount
+            }
         }
-        stargazers(first: 0) {
-          totalCount
-        }
-        forkCount
-        issues(first: 0, states: OPEN) {
-          totalCount
-        }
-        pullRequests(first: 0, states: OPEN) {
-          totalCount
+        ... on Gist {
+            isPublic
+            isFork
+            name
         }
       }
     }

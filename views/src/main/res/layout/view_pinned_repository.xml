@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="repo"
+            type="github.GetProfileQuery.AsRepository" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/kau_activity_horizontal_margin"
+        android:paddingTop="@dimen/kau_activity_vertical_margin"
+        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+        android:paddingBottom="@dimen/kau_activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/pinned_repo_name"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{repo.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/pinned_repo_stars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:text="@{repo.stargazers.totalCount}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pinned_repo_name"
+            app:layout_constraintWidth_percent="0.15"
+            tools:text="123" />
+
+        <TextView
+            android:id="@+id/pinned_repo_forks"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:text="@{repo.forkCount}"
+            app:layout_constraintStart_toEndOf="@id/pinned_repo_stars"
+            app:layout_constraintTop_toTopOf="@id/pinned_repo_stars"
+            app:layout_constraintWidth_percent="0.15"
+            tools:text="123" />
+
+        <TextView
+            android:id="@+id/pinned_repo_issues"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:text="@{repo.issues.totalCount}"
+            app:layout_constraintStart_toEndOf="@id/pinned_repo_forks"
+            app:layout_constraintTop_toTopOf="@id/pinned_repo_stars"
+            app:layout_constraintWidth_percent="0.15"
+            tools:text="123" />
+
+        <TextView
+            android:id="@+id/pinned_repo_prs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:text="@{repo.pullRequests.totalCount}"
+            app:layout_constraintStart_toEndOf="@id/pinned_repo_issues"
+            app:layout_constraintTop_toTopOf="@id/pinned_repo_stars"
+            app:layout_constraintWidth_percent="0.15"
+            tools:text="123" />
+
+        <TextView
+            android:id="@+id/pinned_repo_language"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
+            android:text="@{repo.primaryLanguage.name}"
+            app:languageColor="@{repo.primaryLanguage.color}"
+            app:layout_constraintStart_toEndOf="@id/pinned_repo_prs"
+            app:layout_constraintTop_toTopOf="@id/pinned_repo_stars"
+            app:layout_constraintWidth_percent="0.4"
+            tools:text="123" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
