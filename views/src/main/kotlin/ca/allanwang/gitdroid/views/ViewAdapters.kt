@@ -4,30 +4,44 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.bumptech.glide.Glide
+import github.GetProfileQuery
 
 @BindingAdapter("languageColor")
-fun languageColor(view: TextView, color: String) {
-//    color ?: return
-//    val c = Color.parseColor(color)
-//    t.compoundDrawableTintList = ColorStateList.valueOf(c)
-//    t.setTextColor(c)
+fun TextView.languageColor(color: String) {
+    val c = Color.parseColor(color)
+    compoundDrawableTintList = ColorStateList.valueOf(c)
+    setTextColor(c)
 }
 
-@BindingAdapter("entries", "layout")
-fun <T> ViewGroup.setEntries(
-    entries: List<T>?, layoutId: Int
+@BindingAdapter("glide")
+fun ImageView.glide(url: Any?) {
+    if (url == null) {
+        Glide.with(this).clear(this)
+    } else {
+        Glide.with(this).load(url).into(this)
+    }
+}
+
+@BindingAdapter("pinnedItems")
+fun ViewGroup.pinnedItems(
+    items: GetProfileQuery.PinnedItems
 ) {
     removeAllViews()
-    entries ?: return
     val inflater = context.getSystemService<LayoutInflater>() ?: return
-    entries.map {
+    items.pinnedItems?.map {
+        val (layoutId, varId) = when (it) {
+            is GetProfileQuery.AsRepository -> R.layout.view_pinned_repository to BR.repo
+            else -> throw RuntimeException("Invalid pinned item type ${it.__typename}")
+        }
         val binding = DataBindingUtil
             .inflate<ViewDataBinding>(inflater, layoutId, this, true)
-//        binding.setVariable(BR.repo, it)
+        binding.setVariable(varId, it)
     }
 }

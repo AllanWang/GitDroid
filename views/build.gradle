@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.gladed.androidgitversion'
 
 android {
@@ -42,6 +43,7 @@ dependencies {
     api project(":data")
     api "ca.allanwang.kau:core:${KAU}"
     api "androidx.core:core-ktx:${Versions.ktx}"
+    api kau.Dependencies.glide
 
     testImplementation "org.koin:koin-test:${Versions.koin}"
     testImplementation kau.Dependencies.kotlinTest

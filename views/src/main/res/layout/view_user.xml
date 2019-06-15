@@ -22,6 +22,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
+            app:glide="@{user.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
@@ -102,15 +103,25 @@
             tools:text="Followers" />
 
         <TextView
-            tools:drawableStart="@android:drawable/ic_menu_today"
-            android:drawablePadding="@dimen/kau_padding_small"
+            android:id="@+id/user_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/kau_padding_small"
             android:text="@{user.location}"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_following"
-            tools:text="@tools:sample/cities"/>
+            tools:drawableStart="@android:drawable/ic_menu_today"
+            tools:text="@tools:sample/cities" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_location"
+            app:pinnedItems="@{user.pinnedItems}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

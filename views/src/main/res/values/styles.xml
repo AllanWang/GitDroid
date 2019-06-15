@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.GitDroid.Light" parent="Theme.MaterialComponents.Light">
+
+    </style>
+
+    <style name="Theme.GitDroid" parent="Theme.MaterialComponents">
+
+    </style>
+
+    <style name="PinnedRepoChips">
+        <item name="android:clickable">false</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStartPadding">0dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="chipIconSize">16dp</item>
+        <item name="chipIconTint">?android:textColorSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+    </style>
+</resources>
