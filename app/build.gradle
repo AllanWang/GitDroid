@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'com.gladed.androidgitversion'
-apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion kau.Versions.targetSdk
@@ -18,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId "${project.APP_GROUP}.${project.APP_ID.toLowerCase(Locale.CANADA)}"
-        minSdkVersion 23
+        minSdkVersion Versions.minSdk
         targetSdkVersion kau.Versions.targetSdk
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
@@ -52,46 +51,17 @@ android {
         }
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
-    }
-
-    packagingOptions {
-        pickFirst 'META-INF/core_release.kotlin_module'
-        pickFirst 'META-INF/library_release.kotlin_module'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    testOptions.unitTests {
-        includeAndroidResources = true
-        // Don't throw runtime exceptions for android calls that are not mocked
-        returnDefaultValues = true
-
-        // Always show the result of every unit test, even if it passes.
-        all {
-            testLogging {
-                events 'passed', 'skipped', 'failed', 'standardError'
-            }
-        }
-    }
-
     androidExtensions {
         experimental = true
     }
 }
 
+apply from: '../android.gradle'
+
 dependencies {
     implementation kau.Dependencies.kotlin
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
-
-    implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 
     testImplementation kau.Dependencies.junit
 

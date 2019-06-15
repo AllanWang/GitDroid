@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion Versions.minSdk
         targetSdkVersion kau.Versions.targetSdk
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
@@ -32,9 +32,16 @@ android {
 
 }
 
+apply from: '../android.gradle'
+
+apollo {
+    useJavaBeansSemanticNaming = true
+}
+
 dependencies {
     implementation kau.Dependencies.kotlin
 
+    implementation "org.koin:koin-android:${Versions.koin}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 
     testImplementation kau.Dependencies.junit
