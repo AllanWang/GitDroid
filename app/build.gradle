@@ -1,37 +1,125 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.gladed.androidgitversion'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    compileSdkVersion kau.Versions.targetSdk
+    buildToolsVersion kau.Versions.buildTools
+
+    androidGitVersion {
+        codeFormat = 'MMNNPPXX'
+        format = '%tag%%-count%%-commit%'
+        prefix 'v'
+    }
+
     defaultConfig {
-        applicationId "ca.allanwang.gitdroid"
+        applicationId "${project.APP_GROUP}.${project.APP_ID.toLowerCase(Locale.CANADA)}"
         minSdkVersion 23
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion kau.Versions.targetSdk
+        versionCode androidGitVersion.code()
+        versionName androidGitVersion.name()
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${project.APP_ID}-${variant.buildType.name}.apk"
+        }
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        disable 'TrustAllX509TrustManager',
+                'UnusedResources',
+                'ContentDescription',
+                'RtlSymmetry',
+                'MissingTranslation'
+
+        xmlReport false
+        textReport true
+        textOutput 'stdout'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/core_release.kotlin_module'
+        pickFirst 'META-INF/library_release.kotlin_module'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions.unitTests {
+        includeAndroidResources = true
+        // Don't throw runtime exceptions for android calls that are not mocked
+        returnDefaultValues = true
+
+        // Always show the result of every unit test, even if it passes.
+        all {
+            testLogging {
+                events 'passed', 'skipped', 'failed', 'standardError'
+            }
+        }
+    }
+
+    androidExtensions {
+        experimental = true
+    }
 }
+
+repositories {
+    google()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation kau.Dependencies.kotlin
+    implementation "ca.allanwang.kau:core:${KAU}"
     implementation 'androidx.core:core-ktx:1.0.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    testImplementation kau.Dependencies.junit
+
+    androidTestImplementation kau.Dependencies.kotlinTest
+    androidTestImplementation kau.Dependencies.espresso
+    androidTestImplementation kau.Dependencies.testRules
+    androidTestImplementation kau.Dependencies.testRunner
+    androidTestImplementation kau.Dependencies.kotlinReflect
+}
+
+def kotlinResolutions = ['kotlin-reflect',
+                         'kotlin-stdlib',
+                         'kotlin-stdlib-jdk7',
+                         'kotlin-stdlib-jdk8',
+                         'kotlin-test',
+                         'kotlin-test-junit4',
+                         'kotlin-test-junit5']
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'org.jetbrains.kotlin' && requested.name in kotlinResolutions) {
+            details.useVersion kau.Versions.kotlin
+        }
+    }
 }
