@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'com.gladed.androidgitversion'
+apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion kau.Versions.targetSdk
@@ -85,18 +86,12 @@ android {
     }
 }
 
-repositories {
-    google()
-    jcenter()
-    maven { url "https://jitpack.io" }
-}
-
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation kau.Dependencies.kotlin
     implementation "ca.allanwang.kau:core:${KAU}"
-    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation "androidx.core:core-ktx:${Versions.ktx}"
+
+    implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 
     testImplementation kau.Dependencies.junit
 

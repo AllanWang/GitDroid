@@ -1,3 +1,3 @@
-include(":app", ":gradle-plugin")
+include(":app", ":data", ":gradle-plugin")
 
 project(":gradle-plugin").projectDir = file("buildSrc")
