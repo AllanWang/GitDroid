@@ -1,0 +1,3 @@
+# GitDroid
+
+Git meets Android
