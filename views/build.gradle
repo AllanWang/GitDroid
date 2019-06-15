@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.gladed.androidgitversion'
-apply plugin: 'com.apollographql.android'
 
 android {
     compileSdkVersion kau.Versions.targetSdk
@@ -30,30 +30,18 @@ android {
         }
     }
 
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 apply from: '../android.gradle'
 
-apollo {
-    customTypeMapping = [
-            "URI" : "java.net.URI",
-            "DateTime": "java.util.Date",
-            "Object": "java.lang.String"
-    ]
-    useJavaBeansSemanticNaming = true
-}
-
-repositories {
-    maven { url "https://dl.bintray.com/apollographql/android" }
-}
-
 dependencies {
-    api kau.Dependencies.kotlin
-
-    api "org.koin:koin-android:${Versions.koin}"
-    api "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
-    api "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
-    api kau.Dependencies.coroutines
+    api project(":data")
+    api "ca.allanwang.kau:core:${KAU}"
+    api "androidx.core:core-ktx:${Versions.ktx}"
 
     testImplementation "org.koin:koin-test:${Versions.koin}"
     testImplementation kau.Dependencies.kotlinTest

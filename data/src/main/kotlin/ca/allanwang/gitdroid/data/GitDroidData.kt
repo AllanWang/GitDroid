@@ -1,11 +1,15 @@
 package ca.allanwang.gitdroid.data
 
+import ca.allanwang.gitdroid.data.helpers.AuthInterceptor
+import ca.allanwang.gitdroid.data.helpers.DateApolloAdapter
+import ca.allanwang.gitdroid.data.helpers.ObjectApolloAdapter
+import ca.allanwang.gitdroid.data.helpers.UriApolloAdapter
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.toDeferred
-import github.SearchIssuesQuery
+import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -34,6 +38,9 @@ object GitDroidData : KoinComponent {
         ApolloClient.builder()
             .serverUrl(GRAPHQL_URL)
             .okHttpClient(okHttpClient)
+            .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
+            .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
+            .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
             .build()
     }
 

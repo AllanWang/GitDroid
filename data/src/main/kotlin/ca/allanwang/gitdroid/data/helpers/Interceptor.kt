@@ -1,5 +1,6 @@
-package ca.allanwang.gitdroid.data
+package ca.allanwang.gitdroid.data.helpers
 
+import ca.allanwang.gitdroid.data.TokenSupplier
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="user"
+            type="github.GetProfileQuery.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/kau_activity_horizontal_margin"
+        android:paddingTop="@dimen/kau_activity_vertical_margin"
+        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+        android:paddingBottom="@dimen/kau_activity_vertical_margin">
+
+        <ImageView
+            android:id="@+id/user_avatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/user_login"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:text="@{user.login}"
+            android:textColor="?android:textColorSecondary"
+            app:layout_constraintBottom_toTopOf="@id/user_name"
+            app:layout_constraintStart_toEndOf="@id/user_avatar"
+            app:layout_constraintTop_toTopOf="@id/user_avatar"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="GithubLogin" />
+
+        <TextView
+            android:id="@+id/user_name"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:text="@{user.name}"
+            app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+            app:layout_constraintStart_toEndOf="@id/user_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_login"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/user_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:maxLines="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_avatar"
+            tools:text="@tools:sample/lorem/random" />
+
+        <ImageButton
+            android:id="@+id/user_follow_toggle"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/user_avatar"
+            app:layout_constraintVertical_bias="0.5"
+            tools:src="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/user_following"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:text="@{@string/following_n(user.following.totalCount)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_desc"
+            app:layout_constraintWidth_percent="0.5"
+            tools:text="Following" />
+
+        <Button
+            android:id="@+id/user_followers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginTop="@dimen/kau_padding_normal"
+            android:text="@{@string/following_n(user.followers.totalCount)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/user_following"
+            app:layout_constraintTop_toBottomOf="@id/user_desc"
+            app:layout_constraintWidth_percent="0.5"
+            tools:text="Followers" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

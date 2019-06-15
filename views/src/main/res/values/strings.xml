@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="following_n">Following (%d)</string>
+    <string name="followers_n">Followers (%d)</string>
+</resources>

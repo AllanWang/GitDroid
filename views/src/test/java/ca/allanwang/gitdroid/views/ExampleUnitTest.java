@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.data;
+package ca.allanwang.gitdroid.views;
 
 import org.junit.Test;
 
