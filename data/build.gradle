@@ -38,11 +38,17 @@ apollo {
     useJavaBeansSemanticNaming = true
 }
 
+repositories {
+    maven { url "https://dl.bintray.com/apollographql/android" }
+}
+
 dependencies {
     implementation kau.Dependencies.kotlin
 
     implementation "org.koin:koin-android:${Versions.koin}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
+    implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
+    implementation kau.Dependencies.coroutines
 
     testImplementation kau.Dependencies.junit
 
