@@ -11,7 +11,6 @@ import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
 import androidx.transition.TransitionSet.ORDERING_TOGETHER
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.ktx.transition.ColorTransition
-import ca.allanwang.gitdroid.ktx.transition.ProgressTransition
 import ca.allanwang.gitdroid.ktx.transition.add
 import ca.allanwang.gitdroid.ktx.transition.transitionSet
 import ca.allanwang.gitdroid.views.databinding.ViewLoginBinding
@@ -23,6 +22,7 @@ import com.google.android.material.button.MaterialButton
 
 class LoginActivity : KauBaseActivity() {
 
+    private var loginPasswordPage = false
     lateinit var sceneRoot: ViewLoginContainerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +44,11 @@ class LoginActivity : KauBaseActivity() {
         )
     }
 
-    private fun showSelectorScene(animate: Boolean) {
+    private fun showSelectorScene(animate: Boolean = true) {
+        loginPasswordPage = false
         val view: ViewLoginSelectionBinding = inflateSubBinding(R.layout.view_login_selection)
         view.loginSelectPassword.setOnClickListener {
-            showPasswordScene(true)
+            showPasswordScene()
         }
         val oldView: ViewLoginBinding? = currentSubBinding()
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
@@ -111,10 +112,11 @@ class LoginActivity : KauBaseActivity() {
             ordering = ORDERING_TOGETHER
         }
 
-    private fun showPasswordScene(animate: Boolean) {
+    private fun showPasswordScene(animate: Boolean = true) {
+        loginPasswordPage = true
         val view: ViewLoginBinding = inflateSubBinding(R.layout.view_login)
         view.loginSend.setOnClickListener {
-            showSelectorScene(true)
+            showSelectorScene()
         }
         val oldView: ViewLoginSelectionBinding? = currentSubBinding()
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
@@ -155,7 +157,10 @@ class LoginActivity : KauBaseActivity() {
         }
 
     override fun onBackPressed() {
-//        super.onBackPressed()
-        showSelectorScene(false)
+        if (loginPasswordPage) {
+            showSelectorScene()
+        } else {
+            super.onBackPressed()
+        }
     }
 }
