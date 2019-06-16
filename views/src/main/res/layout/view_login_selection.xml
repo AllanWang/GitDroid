@@ -13,18 +13,19 @@
         android:paddingBottom="@dimen/kau_activity_vertical_margin">
 
         <androidx.constraintlayout.widget.Guideline
-            android:layout_width="wrap_content"
-            app:layout_constraintGuide_percent="0.5"
-            android:orientation="horizontal"
             android:id="@+id/login_select_horizontal_half"
-            android:layout_height="wrap_content" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_select_password"
+            style="@style/LoginSelectButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:transitionName="@string/transition_login_password"
             android:text="@string/login_select_password"
+            android:transitionName="@string/transition_login_password"
             app:layout_constraintBottom_toTopOf="@id/login_select_oauth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +34,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/login_select_oauth"
+            style="@style/LoginSelectButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/login_select_oauth"

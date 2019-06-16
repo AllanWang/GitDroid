@@ -2,8 +2,7 @@
 <resources>
     <dimen name="avatar_size">72dp</dimen>
     <dimen name="icon_size">24dp</dimen>
-    <dimen name="login_card_offset">64dp</dimen>
+    <dimen name="login_corner_radius">8dp</dimen>
     <dimen name="login_main_icon_size">128dp</dimen>
-    <dimen name="login_card_margin_bottom">128dp</dimen>
     <dimen name="login_card_margin_horizontal">64dp</dimen>
 </resources>

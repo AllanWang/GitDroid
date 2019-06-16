@@ -1,5 +1,6 @@
 object Versions {
     const val minSdk = 23
+    const val targetSdk = 28
 
     // https://github.com/InsertKoinIO/koin/blob/master/CHANGELOG.md
     const val koin = "2.0.1"

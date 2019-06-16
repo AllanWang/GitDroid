@@ -13,6 +13,10 @@
 
     </style>
 
+    <style name="LoginSelectButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/login_corner_radius</item>
+    </style>
+
     <style name="PinnedRepoChips">
         <item name="android:clickable">false</item>
         <item name="chipBackgroundColor">@android:color/transparent</item>

@@ -8,36 +8,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/login_horizontal_half"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
-
-        <Space
-            android:id="@+id/login_card_top_guide"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/login_card_offset"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@id/login_horizontal_half"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <com.google.android.material.circularreveal.cardview.CircularRevealCardView
             android:id="@+id/login_card"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/login_card_margin_horizontal"
             android:layout_marginEnd="@dimen/login_card_margin_horizontal"
-            android:layout_marginBottom="@dimen/login_card_margin_bottom"
             android:transitionName="@string/transition_login_password"
             app:cardBackgroundColor="?colorBackgroundFloating"
-            app:cardCornerRadius="@dimen/kau_padding_small"
+            app:cardCornerRadius="@dimen/login_corner_radius"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_min="240dp"
+            app:layout_constraintHeight_percent="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/login_card_top_guide"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.9"
             app:layout_constraintWidth_max="wrap"
             app:layout_constraintWidth_percent="0.8">
 
@@ -61,7 +47,11 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
+                        android:imeOptions="actionNext"
+                        android:inputType="text|textNoSuggestions|textFilter"
+                        android:lines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,7 +67,10 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:lines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

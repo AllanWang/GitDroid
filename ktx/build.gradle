@@ -5,7 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.gladed.androidgitversion'
 
 android {
-    compileSdkVersion kau.Versions.targetSdk
+    compileSdkVersion Versions.targetSdk
     buildToolsVersion kau.Versions.buildTools
 
     androidGitVersion {
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         minSdkVersion Versions.minSdk
-        targetSdkVersion kau.Versions.targetSdk
+        targetSdkVersion Versions.targetSdk
         versionCode androidGitVersion.code()
         versionName androidGitVersion.name()
 
