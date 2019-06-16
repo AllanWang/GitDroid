@@ -48,12 +48,12 @@ repositories {
 }
 
 dependencies {
-    api kau.Dependencies.kotlin
+    implementation kau.Dependencies.kotlin
 
-    api "org.koin:koin-android:${Versions.koin}"
-    api "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
-    api "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
-    api kau.Dependencies.coroutines
+    implementation "org.koin:koin-android:${Versions.koin}"
+    implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
+    implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
+    implementation kau.Dependencies.coroutines
 
     testImplementation "org.koin:koin-test:${Versions.koin}"
     testImplementation kau.Dependencies.kotlinTest

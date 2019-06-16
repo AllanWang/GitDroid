@@ -9,6 +9,10 @@
 
     </style>
 
+    <style name="Theme.GitDroid.Light.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+    </style>
+
     <style name="PinnedRepoChips">
         <item name="android:clickable">false</item>
         <item name="chipBackgroundColor">@android:color/transparent</item>

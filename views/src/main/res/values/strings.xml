@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="login_select_oauth">Login with OAuth</string>
+    <string name="login_select_password">Login with username and password</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
     <string name="following_n">Following (%d)</string>
     <string name="followers_n">Followers (%d)</string>
 </resources>

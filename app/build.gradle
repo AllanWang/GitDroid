@@ -59,7 +59,13 @@ android {
 apply from: '../android.gradle'
 
 dependencies {
+    implementation project(':data')
+    implementation project(':ktx')
     implementation project(':views')
+
+    implementation "ca.allanwang.kau:core:${KAU}"
+    implementation "androidx.core:core-ktx:${Versions.ktx}"
+    implementation kau.Dependencies.glide
 
     testImplementation kau.Dependencies.junit
 
