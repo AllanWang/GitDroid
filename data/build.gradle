@@ -13,6 +13,15 @@ android {
         prefix 'v'
     }
 
+    def privPropFile = file('../priv.properties')
+    def privProps = new Properties()
+
+    if (privPropFile.exists()) {
+        privPropFile.withInputStream { privProps.load(it) }
+    } else {
+        println("WARNING: Private properties not found")
+    }
+
     defaultConfig {
         minSdkVersion Versions.minSdk
         targetSdkVersion Versions.targetSdk
@@ -21,6 +30,9 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField "String", "GITHUB_CLIENT_ID", "\"${privProps.getProperty('GITHUB_CLIENT_ID', 'NA')}\""
+        buildConfigField "String", "GITHUB_CLIENT_SECRET", "\"${privProps.getProperty('GITHUB_CLIENT_SECRET', 'NA')}\""
+        buildConfigField "String", "GITHUB_CLIENT_REDIRECT", "\"${privProps.getProperty('GITHUB_CLIENT_REDIRECT', 'NA')}\""
     }
 
     buildTypes {

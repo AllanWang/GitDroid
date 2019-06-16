@@ -47,4 +47,10 @@ class GitDroidDataTest : KoinTest {
         }
         println("HI")
     }
+
+    @Test
+    fun oauthGen() {
+        val oauth = GitDroidData.oauthUrl()
+        assertNotNull(oauth)
+    }
 }
