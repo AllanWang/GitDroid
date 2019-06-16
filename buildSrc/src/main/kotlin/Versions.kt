@@ -12,9 +12,15 @@ object Versions {
     // https://github.com/apollographql/apollo-android/releases
     const val apollo = "1.0.1-SNAPSHOT"
     // https://github.com/square/okhttp/releases
-    const val okhttp = "3.14.1"
+    const val okhttp = "3.14.2"
     // https://developer.android.com/jetpack/androidx/releases/room
     const val room = "2.1.0"
     // http://robolectric.org/getting-started/
     const val roboelectric = "4.2"
+    // https://mvnrepository.com/artifact/androidx.browser/browser?repo=google
+    const val browser = "1.0.0"
+    // https://github.com/square/retrofit/releases
+    const val retrofit = "2.6.0"
+    // https://github.com/square/moshi/releases
+    const val moshi = "1.8.0"
 }

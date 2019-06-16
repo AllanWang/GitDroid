@@ -65,6 +65,10 @@ dependencies {
     implementation "org.koin:koin-android:${Versions.koin}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
+    implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
+    implementation "com.squareup.moshi:moshi-kotlin:${Versions.moshi}"
     implementation kau.Dependencies.coroutines
 
     testImplementation "org.koin:koin-test:${Versions.koin}"

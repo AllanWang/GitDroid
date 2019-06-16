@@ -65,6 +65,9 @@ dependencies {
 
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
+    implementation "androidx.browser:browser:${Versions.browser}"
+    implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
+    implementation "org.koin:koin-android:${Versions.koin}"
     implementation kau.Dependencies.glide
 
     testImplementation kau.Dependencies.junit

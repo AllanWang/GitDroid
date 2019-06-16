@@ -29,3 +29,9 @@ class AuthInterceptor(private val tag: String, private val tokenSupplier: TokenS
             request.addHeader("Authorization", "$tag $token")
     }
 }
+
+class JsonInterceptor : BaseInterceptor() {
+    override fun apply(request: Request.Builder, originalChain: Interceptor.Chain) {
+        request.addHeader("Accept", "application/json")
+    }
+}

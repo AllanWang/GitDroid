@@ -23,6 +23,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.GitDroid.Light.Splash"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -34,10 +39,6 @@
                     android:scheme="gitdroid" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.LoginActivity"
-            android:theme="@style/Theme.GitDroid.Light.Splash"
-            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.MainActivity" />
     </application>
 
