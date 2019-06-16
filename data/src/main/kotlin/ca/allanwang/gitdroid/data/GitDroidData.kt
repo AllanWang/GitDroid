@@ -46,7 +46,7 @@ object GitDroidData : KoinComponent {
         val state = BigInteger(130, SecureRandom()).toString(32)
         val url = HttpUrl.parse(OAUTH_URL)!!.newBuilder()
             .addQueryParameter("client_id", BuildConfig.GITHUB_CLIENT_ID)
-            .addQueryParameter("redirect_uri", BuildConfig.GITHUB_CLIENT_REDIRECT)
+            .addQueryParameter("redirect_uri", "gitdroid://login")
             .addQueryParameter("state", state)
             .addQueryParameter("scope", "user,repo,gist,notifications,read:org")
         return OAuthRequest(url.build().toString(), state)

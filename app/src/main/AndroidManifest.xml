@@ -23,10 +23,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="login"
+                    android:scheme="gitdroid" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:theme="@style/Theme.GitDroid.Light.Splash" android:windowSoftInputMode="adjustResize" />
+            android:theme="@style/Theme.GitDroid.Light.Splash"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.MainActivity" />
     </application>
 

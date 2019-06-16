@@ -4,6 +4,8 @@ import ca.allanwang.gitdroid.data.internal.PrivProps
 import com.apollographql.apollo.api.Response
 import github.GetProfileQuery
 import kotlinx.coroutines.runBlocking
+import org.junit.Assume
+import org.junit.BeforeClass
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -11,6 +13,13 @@ import org.koin.test.KoinTest
 import kotlin.test.*
 
 class GitDroidDataTest : KoinTest {
+
+    companion object {
+        @BeforeClass
+        fun beforeAll() {
+            Assume.assumeTrue(BuildConfig.GITHUB_CLIENT_ID.length > 10)
+        }
+    }
 
     @BeforeTest
     fun before() {
