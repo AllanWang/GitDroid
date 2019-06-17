@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_size">72dp</dimen>
+    <dimen name="list_avatar_size">72dp</dimen>
     <dimen name="icon_size">24dp</dimen>
     <dimen name="login_corner_radius">8dp</dimen>
     <dimen name="login_main_icon_size">128dp</dimen>
     <dimen name="login_card_margin_horizontal">64dp</dimen>
+    <dimen name="small_edge_end">48dp</dimen>
 </resources>

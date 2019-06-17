@@ -27,6 +27,9 @@ fragment ShortIssueRowItem on Issue {
     id
     databaseId
     number
+    author {
+        ...ShortActor
+    }
     title
     repository {
         nameWithOwner

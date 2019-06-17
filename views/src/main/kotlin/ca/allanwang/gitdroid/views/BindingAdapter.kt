@@ -11,6 +11,7 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import github.GetProfileQuery
 
 @BindingAdapter("languageColor")
@@ -20,12 +21,18 @@ fun TextView.languageColor(color: String) {
     setTextColor(c)
 }
 
-@BindingAdapter("glide")
-fun ImageView.glide(url: Any?) {
+@BindingAdapter(value = arrayOf("glide", "glideRound"), requireAll = false)
+fun ImageView.glide(url: Any?, round: Boolean?) {
     if (url == null) {
         Glide.with(this).clear(this)
     } else {
-        Glide.with(this).load(url).into(this)
+        Glide.with(this).load(url).run {
+            if (round == true) {
+                apply(RequestOptions.circleCropTransform())
+            } else {
+                this
+            }
+        }.into(this)
     }
 }
 

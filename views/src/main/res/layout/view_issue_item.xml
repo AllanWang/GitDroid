@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="issue"
+            type="github.fragment.ShortIssueRowItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/issue_avatar"
+            android:layout_width="@dimen/list_avatar_size"
+            android:layout_height="@dimen/list_avatar_size"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
+            android:layout_marginTop="@dimen/kau_activity_vertical_margin"
+            app:glide="@{issue.author.fragments.shortActor.avatarUrl}"
+            app:glideRound="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/issue_v_edge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_end="@dimen/small_edge_end" />
+
+        <TextView
+            android:id="@+id/issue_login"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{issue.author.fragments.shortActor.login}"
+            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/issue_avatar"
+            app:layout_constraintTop_toTopOf="@id/issue_avatar"
+            app:layout_constraintWidth_percent="0.3"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/issue_date"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{issue.author.fragments.shortActor.login}"
+            app:layout_constraintBottom_toBottomOf="@id/issue_login"
+            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/issue_login"
+            app:layout_constraintWidth_percent="0.3"
+            tools:text="@tools:sample/date/ddmmyy" />
+
+        <TextView
+            android:id="@+id/issue_title"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{issue.author.fragments.shortActor.login}"
+            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/issue_avatar"
+            app:layout_constraintTop_toBottomOf="@id/issue_login"
+            tools:text="@tools:sample/lorem/random" />
+
+        <TextView
+            android:id="@+id/issue_details"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="2"
+            android:text="@{issue.repository.nameWithOwner + '#' + issue.number}"
+            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/issue_avatar"
+            app:layout_constraintTop_toBottomOf="@id/issue_title"
+            tools:text="org/repo#123" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/issue_comments"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+            android:text="@{issue.comments.totalCount}"
+            app:chipIcon="@drawable/ic_chat_bubble"
+            app:chipIconSize="12dp"
+            app:chipIconTint="?android:textColorTertiary"
+            app:layout_constraintBottom_toBottomOf="@id/issue_details"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/issue_v_edge"
+            tools:text="5" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
