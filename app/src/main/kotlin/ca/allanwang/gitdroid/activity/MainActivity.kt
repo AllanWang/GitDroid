@@ -4,52 +4,37 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.kau.utils.snackbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    lateinit var bindings: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setSupportActionBar(bindings.toolbar)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
+            this, bindings.drawerLayout, bindings.toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-        drawerLayout.addDrawerListener(toggle)
+        bindings.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-//        val contentContainer: ViewGroup = findViewById(R.id.content_container)
-//        val s: ViewUserBinding = DataBindingUtil.inflate(layoutInflater, R.layout.view_user, contentContainer, true)
-//        launch {
-//            GitDroidData.query()
-//        }
-
-        navView.setNavigationItemSelectedListener(this)
+        bindings.navView.setNavigationItemSelectedListener(this)
     }
 
     override fun onBackPressed() {
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
+        if (bindings.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            bindings.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -79,8 +64,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             else -> snackbar("Coming soon!")
         }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawerLayout.closeDrawer(GravityCompat.START)
+        bindings.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }

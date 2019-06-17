@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home">Home</string>
+    <string name="feed">Feed</string>
+    <string name="repos">Repositories</string>
+    <string name="prs">Pull Requests</string>
+    <string name="issues">Issues</string>
+    <string name="trending">Trending</string>
+    <string name="bug_report">Bug Report</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+
+</resources>
