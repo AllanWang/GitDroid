@@ -1,0 +1,8 @@
+include ":app",
+        ":data",
+        ":views",
+        ":ktx",
+        ":sql",
+        ":gradle-plugin"
+
+project(":gradle-plugin").projectDir = file("buildSrc")

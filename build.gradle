@@ -16,6 +16,7 @@ buildscript {
         classpath kau.Plugins.dexCount
         classpath kau.Plugins.gitVersion
         classpath "com.apollographql.apollo:apollo-gradle-plugin:${Versions.apollo}"
+        classpath "com.squareup.sqldelight:gradle-plugin:${Versions.sqlDelight}"
     }
 
     wrapper.setDistributionType(Wrapper.DistributionType.ALL)

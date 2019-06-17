@@ -23,4 +23,6 @@ object Versions {
     const val retrofit = "2.6.0"
     // https://github.com/square/moshi/releases
     const val moshi = "1.8.0"
+    // https://github.com/square/sqldelight/releases
+    const val sqlDelight = "1.1.3"
 }
