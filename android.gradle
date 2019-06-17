@@ -28,3 +28,21 @@ android {
         }
     }
 }
+
+
+def kotlinResolutions = ['kotlin-reflect',
+                         'kotlin-stdlib',
+                         'kotlin-stdlib-jdk7',
+                         'kotlin-stdlib-jdk8',
+                         'kotlin-test',
+                         'kotlin-test-junit4',
+                         'kotlin-test-junit5']
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'org.jetbrains.kotlin' && requested.name in kotlinResolutions) {
+            details.useVersion kau.Versions.kotlin
+        }
+    }
+}

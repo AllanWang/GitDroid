@@ -8,11 +8,11 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.coroutines.toDeferred
-import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import github.type.CustomType
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.math.BigInteger
@@ -87,8 +87,11 @@ object GitDroidData : KoinComponent {
             .build()
     }
 
-    suspend fun <D : Operation.Data, T, V : Operation.Variables> query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
+    suspend fun <D : Operation.Data, T, V : Operation.Variables>
+            query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
         withContext(Dispatchers.IO) {
             apollo.query(query).toDeferred().await()
         }
+
+//    suspend fun me() = query(github.MeQuery())
 }

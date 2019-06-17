@@ -28,6 +28,7 @@ import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
+import github.MeQuery
 
 class LoginActivity : KauBaseActivity() {
 
@@ -39,6 +40,15 @@ class LoginActivity : KauBaseActivity() {
         gitState = null
         sceneRoot = DataBindingUtil.setContentView(this, R.layout.view_login_container)
         showSelectorScene(false)
+    }
+
+    companion object {
+        suspend fun login(token: String) {
+            L.d { "Received new login" }
+            Prefs.token = token
+            val result = GitDroidData.query(MeQuery())!!.data()!!
+            result.
+        }
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -57,8 +67,7 @@ class LoginActivity : KauBaseActivity() {
         }
         launch {
             val accessToken = gitAuthRest.accessToken(code, state)
-            L.d { "Saved token" }
-            Prefs.token = accessToken.token
+            login(accessToken.token)
             gitState = null
         }
     }

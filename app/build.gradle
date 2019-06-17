@@ -69,6 +69,7 @@ dependencies {
     implementation "androidx.browser:browser:${Versions.browser}"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     implementation "org.koin:koin-android:${Versions.koin}"
+    implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     implementation kau.Dependencies.glide
 
     testImplementation kau.Dependencies.junit
@@ -78,21 +79,4 @@ dependencies {
     androidTestImplementation kau.Dependencies.testRules
     androidTestImplementation kau.Dependencies.testRunner
     androidTestImplementation kau.Dependencies.kotlinReflect
-}
-
-def kotlinResolutions = ['kotlin-reflect',
-                         'kotlin-stdlib',
-                         'kotlin-stdlib-jdk7',
-                         'kotlin-stdlib-jdk8',
-                         'kotlin-test',
-                         'kotlin-test-junit4',
-                         'kotlin-test-junit5']
-
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'org.jetbrains.kotlin' && requested.name in kotlinResolutions) {
-            details.useVersion kau.Versions.kotlin
-        }
-    }
 }
