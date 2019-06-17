@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
@@ -26,6 +27,7 @@ import ca.allanwang.gitdroid.views.databinding.ViewLoginContainerBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginSelectionBinding
 import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
+import ca.allanwang.kau.utils.startActivity
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
@@ -61,6 +63,14 @@ class LoginActivity : BaseActivity() {
                     token = token
                 )
             }
+        }
+
+        fun logout(context: Context) {
+            val prefs: Prefs = get()
+            val db: Database = get()
+            db.userQueries.delete(prefs.token)
+            prefs.token = ""
+            context.startActivity<LoginActivity>()
         }
     }
 

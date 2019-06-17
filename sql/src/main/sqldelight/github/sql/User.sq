@@ -15,6 +15,9 @@ CREATE TABLE GitUser (
 insert:
 INSERT OR REPLACE INTO GitUser (id, name, login, email, avatarUrl, token) VALUES (?, ?, ?, ?, ?, ?);
 
+delete:
+DELETE FROM GitUser WHERE token == ?;
+
 select:
 SELECT *
 FROM GitUser WHERE token == ?;
