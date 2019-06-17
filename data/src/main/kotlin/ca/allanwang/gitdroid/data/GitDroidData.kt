@@ -13,6 +13,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import github.type.CustomType
+import ca.allanwang.gitdroid.data.BuildConfig
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.math.BigInteger
@@ -93,5 +94,4 @@ object GitDroidData : KoinComponent {
             apollo.query(query).toDeferred().await()
         }
 
-//    suspend fun me() = query(github.MeQuery())
 }
