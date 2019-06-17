@@ -6,9 +6,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
+import ca.allanwang.gitdroid.views.bindMainView
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
 
@@ -19,17 +19,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(bindings.toolbar)
+        bindings.bind()
+        bindMainView(bindings.contentContainer)
+    }
 
+    private fun ActivityMainBinding.bind() {
+        setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
-            this, bindings.drawerLayout, bindings.toolbar,
+            this@MainActivity, drawerLayout, toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
-        bindings.drawerLayout.addDrawerListener(toggle)
+        drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        bindings.navView.setNavigationItemSelectedListener(this)
+        navView.setNavigationItemSelectedListener(this@MainActivity)
     }
 
     override fun onBackPressed() {

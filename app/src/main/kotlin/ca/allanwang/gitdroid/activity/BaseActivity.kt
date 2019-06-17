@@ -1,5 +1,8 @@
 package ca.allanwang.gitdroid.activity
 
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
@@ -20,6 +23,17 @@ abstract class BaseActivity : KauBaseActivity() {
             LoginActivity.logout(this)
         }
         return me
+    }
+
+    fun <T : ViewDataBinding> bindView(
+        parent: ViewGroup,
+        layoutRes: Int,
+        attachToParent: Boolean = true,
+        action: T.() -> Unit = {}
+    ): T {
+        val binding: T = DataBindingUtil.inflate(layoutInflater, layoutRes, parent, attachToParent)
+        binding.action()
+        return binding
     }
 
 }
