@@ -70,7 +70,7 @@ class LoginActivity : BaseActivity() {
             val db: Database = get()
             db.userQueries.delete(prefs.token)
             prefs.token = ""
-            context.startActivity<LoginActivity>()
+            context.startActivity<LoginActivity>(clearStack = true)
         }
     }
 
