@@ -19,22 +19,19 @@ import ca.allanwang.gitdroid.ktx.transition.ColorTransition
 import ca.allanwang.gitdroid.ktx.transition.add
 import ca.allanwang.gitdroid.ktx.transition.transitionSet
 import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.views.databinding.ViewLoginBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginContainerBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginSelectionBinding
-import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.core.KoinComponent
 import org.koin.core.get
 
-class LoginActivity : KauBaseActivity() {
-
-    val gdd: GitDroidData by inject()
+class LoginActivity : BaseActivity() {
 
     private var gitState: String? = null
     private var loginPasswordPage = false
@@ -48,11 +45,22 @@ class LoginActivity : KauBaseActivity() {
 
     companion object : KoinComponent {
         suspend fun login(token: String) {
+            val prefs: Prefs = get()
             L.d { "Received new login" }
-            Prefs.token = token
+            prefs.token = token
             val gdd: GitDroidData = get()
             val result = gdd.me().data() ?: return
-
+            val db: Database = get()
+            with(result.viewer) {
+                db.userQueries.insert(
+                    id = id,
+                    login = login,
+                    email = email,
+                    avatarUrl = avatarUrl.toString(),
+                    name = name,
+                    token = token
+                )
+            }
         }
     }
 

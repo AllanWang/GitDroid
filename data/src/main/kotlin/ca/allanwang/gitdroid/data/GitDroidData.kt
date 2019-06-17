@@ -11,6 +11,7 @@ import com.apollographql.apollo.coroutines.toDeferred
 import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
@@ -97,6 +98,8 @@ class GitDroidData : KoinComponent, GitGraphQl {
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
         withContext(Dispatchers.IO) {
-            apollo.query(query).toDeferred().await()
+            withTimeout(15000) {
+                apollo.query(query).toDeferred().await()
+            }
         }
 }
