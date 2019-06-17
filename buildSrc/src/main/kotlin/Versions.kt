@@ -10,7 +10,7 @@ object Versions {
     const val ktx = "1.0.2"
 
     // https://github.com/apollographql/apollo-android/releases
-    const val apollo = "1.0.1-SNAPSHOT"
+    const val apollo = "1.0.0"
     // https://github.com/square/okhttp/releases
     const val okhttp = "3.14.2"
     // https://developer.android.com/jetpack/androidx/releases/room
