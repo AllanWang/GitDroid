@@ -27,7 +27,7 @@ data class OAuthRequest(val url: String, val state: String) {
     override fun toString(): String = "OAuthRequest"
 }
 
-class GitDroidData : KoinComponent {
+class GitDroidData : KoinComponent, GitGraphQl {
 
     private val tokenSupplier: TokenSupplier by inject()
 
@@ -94,7 +94,7 @@ class GitDroidData : KoinComponent {
             .build()
     }
 
-    suspend fun <D : Operation.Data, T, V : Operation.Variables>
+    override suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
         withContext(Dispatchers.IO) {
             apollo.query(query).toDeferred().await()

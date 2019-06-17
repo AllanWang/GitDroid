@@ -1,45 +1,7 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.gladed.androidgitversion'
 apply plugin: 'com.squareup.sqldelight'
-
-android {
-    compileSdkVersion Versions.targetSdk
-    buildToolsVersion kau.Versions.buildTools
-
-    androidGitVersion {
-        codeFormat = 'MMNNPPXX'
-        format = '%tag%%-count%%-commit%'
-        prefix 'v'
-    }
-
-    defaultConfig {
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode androidGitVersion.code()
-        versionName androidGitVersion.name()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-}
-
-apply from: '../android.gradle'
 
 dependencies {
     implementation "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
-    implementation kau.Dependencies.coroutines
 
     testImplementation "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelight}"
-    testImplementation kau.Dependencies.kotlinTest
-
 }

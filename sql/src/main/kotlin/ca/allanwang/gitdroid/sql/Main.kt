@@ -1,39 +1,22 @@
 package ca.allanwang.gitdroid.sql
 
-import android.content.Context
-import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
+import org.koin.dsl.module
 
 /**
  * Based on https://github.com/square/sqldelight/blob/master/sample/common/src/jvmMain/kotlin/com/example/sqldelight/hockey/data/Db.kt
  */
-inline val gitDb: Database
-    get() = Db.instance
+class GitDb(private val driver: SqlDriver) {
 
-object Db {
-    private var driverRef: SqlDriver? = null
-    private var dbRef: Database? = null
+    val db = Database(driver)
 
-    internal fun dbSetup(driver: SqlDriver) {
-        val db = createQueryWrapper(driver)
-        driverRef = driver
-        dbRef = db
+    internal fun clear() {
+        driver.close()
     }
 
-    private fun createQueryWrapper(driver: SqlDriver): Database {
-        return Database(driver)
+    companion object {
+        fun module(driver: SqlDriver) = module {
+            single { GitDb(driver).db }
+        }
     }
-
-    internal fun dbClear() {
-        driverRef!!.close()
-        dbRef = null
-        driverRef = null
-    }
-
-    fun initialize(context: Context, name: String? = null) {
-        dbSetup(AndroidSqliteDriver(Database.Schema, context, name))
-    }
-
-    val instance: Database
-        get() = dbRef!!
 }

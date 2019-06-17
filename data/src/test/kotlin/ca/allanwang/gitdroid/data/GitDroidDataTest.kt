@@ -2,7 +2,6 @@ package ca.allanwang.gitdroid.data
 
 import ca.allanwang.gitdroid.data.internal.PrivProps
 import com.apollographql.apollo.api.Response
-import github.GetProfileQuery
 import kotlinx.coroutines.runBlocking
 import org.junit.Assume
 import org.junit.BeforeClass
@@ -54,11 +53,10 @@ class GitDroidDataTest : KoinTest {
     @Test
     fun me() {
         runBlocking {
-            val r = gdd.query(GetProfileQuery("allanwang")).validate()
+            val r = gdd.getProfile("allanwang").validate()
             assertEquals("AllanWang", r.user?.login)
             println(r)
         }
-        println("HI")
     }
 
     @Test

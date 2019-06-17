@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class UserTest : DbBaseTest() {
 
     private val query: UserQueries
-        get() = gitDb.userQueries
+        get() = db.userQueries
 
     private fun insert(i: Int, name: String = "name$i") {
         query.insert("id$i", name, "login$i", "email$i", "avatar$i", "token$i")

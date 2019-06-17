@@ -29,6 +29,8 @@ import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.core.KoinComponent
+import org.koin.core.get
 
 class LoginActivity : KauBaseActivity() {
 
@@ -44,11 +46,13 @@ class LoginActivity : KauBaseActivity() {
         showSelectorScene(false)
     }
 
-    companion object {
+    companion object : KoinComponent {
         suspend fun login(token: String) {
             L.d { "Received new login" }
             Prefs.token = token
-//            val result = gdd.query(MeQuery())!!.data()!!
+            val gdd: GitDroidData = get()
+            val result = gdd.me().data() ?: return
+
         }
     }
 
