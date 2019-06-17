@@ -1,28 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.getkeepsafe.dexcount'
-apply plugin: 'com.gladed.androidgitversion'
-
 android {
-    compileSdkVersion Versions.targetSdk
-    buildToolsVersion kau.Versions.buildTools
-
-    androidGitVersion {
-        codeFormat = 'MMNNPPXX'
-        format = '%tag%%-count%%-commit%'
-        prefix 'v'
-    }
 
     defaultConfig {
         applicationId "${project.APP_GROUP}.${project.APP_ID.toLowerCase(Locale.CANADA)}"
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode androidGitVersion.code()
-        versionName androidGitVersion.name()
         multiDexEnabled true
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     applicationVariants.all { variant ->
@@ -31,67 +11,22 @@ android {
         }
     }
 
-    lintOptions {
-        warningsAsErrors true
-        disable 'TrustAllX509TrustManager',
-                'UnusedResources',
-                'ContentDescription',
-                'RtlSymmetry',
-                'MissingTranslation'
-
-        xmlReport false
-        textReport true
-        textOutput 'stdout'
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
     dataBinding {
         enabled = true
     }
 }
 
-apply from: '../android.gradle'
-
 dependencies {
     implementation project(':data')
     implementation project(':ktx')
     implementation project(':views')
+    implementation project(':sql')
 
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation "androidx.browser:browser:${Versions.browser}"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-    implementation "org.koin:koin-android:${Versions.koin}"
+    implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
+    implementation "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
     implementation kau.Dependencies.glide
-
-    testImplementation kau.Dependencies.junit
-
-    androidTestImplementation kau.Dependencies.kotlinTest
-    androidTestImplementation kau.Dependencies.espresso
-    androidTestImplementation kau.Dependencies.testRules
-    androidTestImplementation kau.Dependencies.testRunner
-    androidTestImplementation kau.Dependencies.kotlinReflect
-}
-
-def kotlinResolutions = ['kotlin-reflect',
-                         'kotlin-stdlib',
-                         'kotlin-stdlib-jdk7',
-                         'kotlin-stdlib-jdk8',
-                         'kotlin-test',
-                         'kotlin-test-junit4',
-                         'kotlin-test-junit5']
-
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'org.jetbrains.kotlin' && requested.name in kotlinResolutions) {
-            details.useVersion kau.Versions.kotlin
-        }
-    }
 }

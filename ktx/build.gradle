@@ -1,52 +1,6 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.gladed.androidgitversion'
-
-android {
-    compileSdkVersion Versions.targetSdk
-    buildToolsVersion kau.Versions.buildTools
-
-    androidGitVersion {
-        codeFormat = 'MMNNPPXX'
-        format = '%tag%%-count%%-commit%'
-        prefix 'v'
-    }
-
-    defaultConfig {
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode androidGitVersion.code()
-        versionName androidGitVersion.name()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-}
-
-apply from: '../android.gradle'
-
 dependencies {
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation kau.Dependencies.glide
     implementation "androidx.browser:browser:${Versions.browser}"
-
-    testImplementation "org.koin:koin-test:${Versions.koin}"
-    testImplementation kau.Dependencies.kotlinTest
-
-    androidTestImplementation kau.Dependencies.kotlinTest
-    androidTestImplementation kau.Dependencies.espresso
-    androidTestImplementation kau.Dependencies.testRules
-    androidTestImplementation kau.Dependencies.testRunner
-    androidTestImplementation kau.Dependencies.kotlinReflect
 }

@@ -1,17 +1,6 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.gladed.androidgitversion'
 apply plugin: 'com.apollographql.android'
 
 android {
-    compileSdkVersion Versions.targetSdk
-    buildToolsVersion kau.Versions.buildTools
-
-    androidGitVersion {
-        codeFormat = 'MMNNPPXX'
-        format = '%tag%%-count%%-commit%'
-        prefix 'v'
-    }
 
     def privPropFile = file('../priv.properties')
     def privProps = new Properties()
@@ -23,28 +12,11 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion Versions.minSdk
-        targetSdkVersion Versions.targetSdk
-        versionCode androidGitVersion.code()
-        versionName androidGitVersion.name()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         buildConfigField "String", "GITHUB_CLIENT_ID", "\"${privProps.getProperty('GITHUB_CLIENT_ID', 'NA')}\""
         buildConfigField "String", "GITHUB_CLIENT_SECRET", "\"${privProps.getProperty('GITHUB_CLIENT_SECRET', 'NA')}\""
         buildConfigField "String", "GITHUB_CLIENT_REDIRECT", "\"${privProps.getProperty('GITHUB_CLIENT_REDIRECT', 'NA')}\""
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
 }
-
-apply from: '../android.gradle'
 
 apollo {
     customTypeMapping = [
@@ -60,23 +32,11 @@ repositories {
 }
 
 dependencies {
-    implementation kau.Dependencies.kotlin
-
-    implementation "org.koin:koin-android:${Versions.koin}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
-    implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
+    // TODO sync versions once 1.0.1 comes out
+    implementation "com.apollographql.apollo:apollo-coroutines-support:1.0.1-SNAPSHOT"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
     implementation "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
     implementation "com.squareup.moshi:moshi-kotlin:${Versions.moshi}"
-    implementation kau.Dependencies.coroutines
-
-    testImplementation "org.koin:koin-test:${Versions.koin}"
-    testImplementation kau.Dependencies.kotlinTest
-
-    androidTestImplementation kau.Dependencies.kotlinTest
-    androidTestImplementation kau.Dependencies.espresso
-    androidTestImplementation kau.Dependencies.testRules
-    androidTestImplementation kau.Dependencies.testRunner
-    androidTestImplementation kau.Dependencies.kotlinReflect
 }

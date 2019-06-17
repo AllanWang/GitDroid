@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
@@ -19,17 +20,20 @@ import ca.allanwang.gitdroid.ktx.transition.ColorTransition
 import ca.allanwang.gitdroid.ktx.transition.add
 import ca.allanwang.gitdroid.ktx.transition.transitionSet
 import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.views.databinding.ViewLoginBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginContainerBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginSelectionBinding
-import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
+import ca.allanwang.kau.utils.startActivity
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
+import org.koin.core.KoinComponent
+import org.koin.core.get
 
-class LoginActivity : KauBaseActivity() {
+class LoginActivity : BaseActivity() {
 
     private var gitState: String? = null
     private var loginPasswordPage = false
@@ -39,6 +43,35 @@ class LoginActivity : KauBaseActivity() {
         gitState = null
         sceneRoot = DataBindingUtil.setContentView(this, R.layout.view_login_container)
         showSelectorScene(false)
+    }
+
+    companion object : KoinComponent {
+        suspend fun login(token: String) {
+            val prefs: Prefs = get()
+            L.d { "Received new login" }
+            prefs.token = token
+            val gdd: GitDroidData = get()
+            val result = gdd.me().data() ?: return
+            val db: Database = get()
+            with(result.viewer) {
+                db.userQueries.insert(
+                    id = id,
+                    login = login,
+                    email = email,
+                    avatarUrl = avatarUrl.toString(),
+                    name = name,
+                    token = token
+                )
+            }
+        }
+
+        fun logout(context: Context) {
+            val prefs: Prefs = get()
+            val db: Database = get()
+            db.userQueries.delete(prefs.token)
+            prefs.token = ""
+            context.startActivity<LoginActivity>(clearStack = true)
+        }
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -57,8 +90,7 @@ class LoginActivity : KauBaseActivity() {
         }
         launch {
             val accessToken = gitAuthRest.accessToken(code, state)
-            L.d { "Saved token" }
-            Prefs.token = accessToken.token
+            login(accessToken.token)
             gitState = null
         }
     }
@@ -100,7 +132,7 @@ class LoginActivity : KauBaseActivity() {
             showPasswordScene()
         }
         view.loginSelectOauth.setOnClickListener {
-            val request = GitDroidData.oauthUrl()
+            val request = gdd.oauthUrl()
             gitState = request.state
             launchUrl(Uri.parse(request.url))
         }

@@ -1,0 +1,43 @@
+language: android
+jdk:
+- oraclejdk8
+env:
+  global:
+  - ANDROID_API=28
+  - EMULATOR_API=19
+  - ANDROID_BUILD_TOOLS=29.0.0
+git:
+  depth: 500
+android:
+  components:
+  - tools
+  - platform-tools
+  - tools
+  - build-tools-$ANDROID_BUILD_TOOLS
+  - android-$ANDROID_API
+  - extra-android-m2repository
+  - extra-google-m2repository
+  licenses:
+  - ".+"
+script:
+- "./gradlew --quiet androidGitVersion"
+- "./gradlew lintRelease test"
+branches:
+  except:
+  - gh-pages
+  - l10n_dev
+notifications:
+  email: false
+  slack:
+    rooms:
+      secure: TFVsud4DDF79ehbH06QBRLRulFAE92cY8CKO7ylCmJEt7IiFrC8ZvF4QaJwRN2ze2H5uQum4bEaGOLmHCgqzaPSnAg2QMcj4IjQYirvQXrM31dA0cSi8jXVB2H6n0DTrl6PVkOxYOxyy5/6BoVsMeR5qDfeGPmXh3LDOt2B4v1+2z7AyQuM1DCjoATLlpCSRAG6LwpkFjgNBjkMdNStmUzlhtAtzckb6JuVTzeromJ5fO7362hiWLpw5rWuYkE+6Z7eFFjlmUzrPW66eyLokdBMyqrXYHK7jQtibYl3qb/prrTj36e6XnHuse+mtf0mFbNaNGuNinBFMzZ3QJRlMVHYDisvtlEd0/YuMF73H1HZg1xmdh4BNBHudtFKgf3WrA53ngPX8aoPwTYbeqEbS6NAW2liqBcmdXnhqMXGlvnaAjC/88PBzbH9Ho0Yh05+LVrtUx2dRSZVmYgvlUbuK3ysZ/qIbCZFVBaVgYizlwxj7lZUQiW38mQ6WUS++7KUKITRtJDqVAQqyfQORvuYMeavl35Ejl5DllBlzIJDHCBFcK73JqAsXBhv+y02zb6mobjbfLEmAKKVS98DHRH4SHXsTH/msUxoZD81JVDNPUvyCvTJC+JhfPJ0LMMKTOdWjttXErX7z5l9Tipfw7DaH6WGQjuLyw5VAVTO8165CIeA=
+    on_success: always
+    on_failure: always
+cache:
+  directories:
+  - "$HOME/.m2"
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+before_install:
+- yes | sdkmanager "platforms;android-$ANDROID_API"

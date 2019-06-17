@@ -1,3 +1,13 @@
+query me {
+  viewer {
+    login
+    avatarUrl
+    email
+    id
+    name
+  }
+}
+
 query searchRepos($query: String!, $cursor: String) {
   search(query: $query, type: REPOSITORY, first: 30, after: $cursor) {
     pageInfo {

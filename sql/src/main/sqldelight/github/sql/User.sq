@@ -1,0 +1,27 @@
+-- See https://developer.github.com/v4/object/user/#fields
+-- While it may be weird to have tokens as the primary key
+-- It is the only field we keep as reference in our preferences
+-- And we expect a one to one relation between available tokens
+-- and available users
+CREATE TABLE GitUser (
+  token TEXT NOT NULL PRIMARY KEY,
+  id TEXT NOT NULL UNIQUE,
+  name TEXT,
+  login TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL,
+  avatarUrl TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO GitUser (id, name, login, email, avatarUrl, token) VALUES (?, ?, ?, ?, ?, ?);
+
+delete:
+DELETE FROM GitUser WHERE token == ?;
+
+select:
+SELECT *
+FROM GitUser WHERE token == ?;
+
+selectAll:
+SELECT *
+FROM GitUser;

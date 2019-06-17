@@ -11,10 +11,12 @@ import com.apollographql.apollo.coroutines.toDeferred
 import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.dsl.module
 import java.math.BigInteger
 import java.security.SecureRandom
 
@@ -26,23 +28,29 @@ data class OAuthRequest(val url: String, val state: String) {
     override fun toString(): String = "OAuthRequest"
 }
 
-object GitDroidData : KoinComponent {
+class GitDroidData : KoinComponent, GitGraphQl {
 
     private val tokenSupplier: TokenSupplier by inject()
 
-    internal const val API_BASE_URL = "https://api.github.com"
+    companion object {
+        internal const val API_BASE_URL = "https://api.github.com"
 
-    internal const val BASE_URL = "https://github.com"
+        internal const val BASE_URL = "https://github.com"
 
-    /**
-     * General references
-     * https://developer.github.com/v4/
-     */
-    private const val GRAPHQL_URL = "$API_BASE_URL/graphql"
+        /**
+         * General references
+         * https://developer.github.com/v4/
+         */
+        private const val GRAPHQL_URL = "$API_BASE_URL/graphql"
 
-    private const val OAUTH_URL = "$BASE_URL/login/oauth/authorize"
+        private const val OAUTH_URL = "$BASE_URL/login/oauth/authorize"
 
-    const val REDIRECT_URL = "gitdroid://login"
+        const val REDIRECT_URL = "gitdroid://login"
+
+        fun module() = module {
+            single { GitDroidData() }
+        }
+    }
 
     /**
      * See https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/
@@ -87,8 +95,11 @@ object GitDroidData : KoinComponent {
             .build()
     }
 
-    suspend fun <D : Operation.Data, T, V : Operation.Variables> query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
+    override suspend fun <D : Operation.Data, T, V : Operation.Variables>
+            query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
         withContext(Dispatchers.IO) {
-            apollo.query(query).toDeferred().await()
+            withTimeout(15000) {
+                apollo.query(query).toDeferred().await()
+            }
         }
 }
