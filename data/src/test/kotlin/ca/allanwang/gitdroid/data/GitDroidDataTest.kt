@@ -10,9 +10,12 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
+import org.koin.test.inject
 import kotlin.test.*
 
 class GitDroidDataTest : KoinTest {
+
+    val gdd: GitDroidData by inject()
 
     companion object {
         @BeforeClass
@@ -24,7 +27,7 @@ class GitDroidDataTest : KoinTest {
     @BeforeTest
     fun before() {
         startKoin {
-            // printLogger(Level.DEBUG)
+            printLogger()
             modules(
                 module {
                     single<TokenSupplier> {
@@ -32,6 +35,7 @@ class GitDroidDataTest : KoinTest {
                             override fun getToken(): String? = PrivProps.token
                         }
                     }
+                    single { GitDroidData() }
                 }
             )
         }
@@ -42,7 +46,7 @@ class GitDroidDataTest : KoinTest {
         stopKoin()
     }
 
-    fun <T: Any> Response<T>.validate(): T {
+    fun <T : Any> Response<T>.validate(): T {
         assertTrue(errors().isEmpty(), "Found errors: ${errors()}")
         return assertNotNull(data(), "Result is empty")
     }
@@ -50,7 +54,7 @@ class GitDroidDataTest : KoinTest {
     @Test
     fun me() {
         runBlocking {
-            val r = GitDroidData.query(GetProfileQuery("allanwang")).validate()
+            val r = gdd.query(GetProfileQuery("allanwang")).validate()
             assertEquals("AllanWang", r.user?.login)
             println(r)
         }
@@ -59,7 +63,7 @@ class GitDroidDataTest : KoinTest {
 
     @Test
     fun oauthGen() {
-        val oauth = GitDroidData.oauthUrl()
+        val oauth = gdd.oauthUrl()
         assertNotNull(oauth)
     }
 }

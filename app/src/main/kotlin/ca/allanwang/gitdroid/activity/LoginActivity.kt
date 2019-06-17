@@ -28,9 +28,11 @@ import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
-import github.MeQuery
+import org.koin.android.ext.android.inject
 
 class LoginActivity : KauBaseActivity() {
+
+    val gdd: GitDroidData by inject()
 
     private var gitState: String? = null
     private var loginPasswordPage = false
@@ -46,8 +48,7 @@ class LoginActivity : KauBaseActivity() {
         suspend fun login(token: String) {
             L.d { "Received new login" }
             Prefs.token = token
-            val result = GitDroidData.query(MeQuery())!!.data()!!
-            result.
+//            val result = gdd.query(MeQuery())!!.data()!!
         }
     }
 
@@ -109,7 +110,7 @@ class LoginActivity : KauBaseActivity() {
             showPasswordScene()
         }
         view.loginSelectOauth.setOnClickListener {
-            val request = GitDroidData.oauthUrl()
+            val request = gdd.oauthUrl()
             gitState = request.state
             launchUrl(Uri.parse(request.url))
         }

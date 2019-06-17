@@ -20,7 +20,6 @@ android:
   licenses:
   - ".+"
 script:
-- chmod +x gradlew
 - "./gradlew --quiet androidGitVersion"
 - "./gradlew lintRelease test"
 branches:
