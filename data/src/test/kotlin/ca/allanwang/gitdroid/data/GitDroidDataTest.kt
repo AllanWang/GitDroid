@@ -18,6 +18,7 @@ class GitDroidDataTest : KoinTest {
 
     companion object {
         @BeforeClass
+        @JvmStatic
         fun beforeAll() {
             Assume.assumeTrue(BuildConfig.GITHUB_CLIENT_ID.length > 10)
         }
