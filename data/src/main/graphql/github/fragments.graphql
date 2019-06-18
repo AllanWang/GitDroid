@@ -32,6 +32,22 @@ fragment ShortRepoRowItem on Repository {
     updatedAt
 }
 
+fragment ShortContributions on ContributionsCollection {
+    startedAt
+    endedAt
+    contributionCalendar {
+        weeks {
+            contributionDays {
+                color
+            }
+        }
+        months {
+            name
+            firstDay
+        }
+    }
+}
+
 fragment ShortIssueRowItem on Issue {
     id
     databaseId

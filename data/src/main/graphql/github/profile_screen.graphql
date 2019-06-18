@@ -26,6 +26,9 @@ query getProfile($login: String!) {
       }
       totalCount
     }
+    contributionsCollection {
+      ... ShortContributions
+    }
     followers(last: 0) {
       totalCount
     }
