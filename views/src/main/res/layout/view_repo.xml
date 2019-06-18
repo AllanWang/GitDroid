@@ -16,9 +16,9 @@
         android:background="?android:windowBackground"
         android:foreground="?selectableItemBackground"
         android:paddingStart="@dimen/kau_activity_horizontal_margin"
-        android:paddingTop="@dimen/kau_activity_vertical_margin"
+        android:paddingTop="@dimen/kau_padding_small"
         android:paddingEnd="@dimen/kau_activity_horizontal_margin"
-        android:paddingBottom="@dimen/kau_activity_vertical_margin"
+        android:paddingBottom="@dimen/kau_padding_small"
         tools:style="@style/Theme.GitDroid">
 
         <TextView

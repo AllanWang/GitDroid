@@ -13,15 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/kau_activity_horizontal_margin"
         android:paddingTop="@dimen/kau_activity_vertical_margin"
-        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
         android:paddingBottom="@dimen/kau_activity_vertical_margin">
 
         <ImageView
             android:id="@+id/user_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
             app:glide="@{user.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +57,9 @@
             android:id="@+id/user_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
             android:layout_marginTop="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
             android:ellipsize="end"
             android:maxLines="5"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,25 +82,26 @@
             android:id="@+id/user_following"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
             android:layout_marginTop="@dimen/kau_padding_normal"
-            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_small"
             android:text="@{@string/following_n(user.following.totalCount)}"
+            app:layout_constraintEnd_toStartOf="@id/user_followers"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_desc"
-            app:layout_constraintWidth_percent="0.5"
             tools:text="Following" />
 
         <Button
             android:id="@+id/user_followers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginStart="@dimen/kau_padding_small"
             android:layout_marginTop="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
             android:text="@{@string/following_n(user.followers.totalCount)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/user_following"
             app:layout_constraintTop_toBottomOf="@id/user_desc"
-            app:layout_constraintWidth_percent="0.5"
             tools:text="Followers" />
 
         <TextView
@@ -114,14 +116,17 @@
             tools:drawableStart="@android:drawable/ic_menu_today"
             tools:text="@tools:sample/cities" />
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_pinned"
+            android:layout_width="match_parent"
+            android:nestedScrollingEnabled="false"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_location"
-            app:pinnedItems="@{user.pinnedItems}" />
+            tools:itemCount="3"
+            tools:listitem="@layout/view_repo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
