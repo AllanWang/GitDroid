@@ -1,4 +1,5 @@
 dependencies {
+    //noinspection GradleDependency
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation kau.Dependencies.glide

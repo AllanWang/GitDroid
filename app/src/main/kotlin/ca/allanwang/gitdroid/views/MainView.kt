@@ -122,8 +122,8 @@ private class IssueLoader : MainPanelLoader {
     override suspend fun BaseActivity.loadData(): List<VHBindingType> {
         val me = me() ?: return emptyList()
         val issues: List<ShortIssueRowItem> =
-            gdd.getIssues(me.login).await() ?: return emptyList()
+            gdd.getIssues(me.login, count = 5).await() ?: return emptyList()
         L._d { issues }
-        return generateSequence { issues.map { IssueVhBinding(it) } }.take(20).flatten().toList()
+        return issues.map { IssueVhBinding(it)
     }
 }

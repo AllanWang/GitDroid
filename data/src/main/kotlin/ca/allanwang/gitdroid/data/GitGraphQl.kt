@@ -10,8 +10,7 @@ import github.fragment.ShortIssueRowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// TODO replace with 30
-private const val GET_COUNT = 5
+private const val GET_COUNT = 30
 
 interface GitGraphQl {
     suspend fun <D : Operation.Data, T, V : Operation.Variables>
