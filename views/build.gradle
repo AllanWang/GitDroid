@@ -6,9 +6,11 @@ android {
 
 dependencies {
     implementation project(":data")
+    implementation project(":ktx")
     implementation "ca.allanwang.kau:core:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation kau.Dependencies.glide
+    kapt kau.Dependencies.glideKapt
 
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 }

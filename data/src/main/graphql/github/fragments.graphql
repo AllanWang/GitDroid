@@ -27,6 +27,7 @@ fragment ShortIssueRowItem on Issue {
     id
     databaseId
     number
+    createdAt
     author {
         ...ShortActor
     }

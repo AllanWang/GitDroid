@@ -15,11 +15,25 @@
 
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="LoginSelectButton" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">@dimen/login_corner_radius</item>
+    </style>
+
+    <style name="SmallChipBadge">
+        <item name="android:clickable">false</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStartPadding">0dp</item>
+        <item name="chipEndPadding">0dp</item>
+        <item name="chipIconSize">12dp</item>
+        <item name="chipMinHeight">0dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="chipIconTint">?android:textColorTertiary</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
     <style name="PinnedRepoChips">

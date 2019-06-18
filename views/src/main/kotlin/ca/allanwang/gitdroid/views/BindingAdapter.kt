@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.views
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,9 +11,12 @@ import androidx.core.content.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import ca.allanwang.gitdroid.ktx.utils.L
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import github.GetProfileQuery
+import java.net.URI
+import java.util.*
 
 @BindingAdapter("languageColor")
 fun TextView.languageColor(color: String) {
@@ -21,12 +25,28 @@ fun TextView.languageColor(color: String) {
     setTextColor(c)
 }
 
+private fun glideModel(model: Any?): Any? = when {
+    model is URI -> model.toString()
+    else -> model
+}
+
+@BindingAdapter("relativeDateText")
+fun TextView.relativeDateText(date: Date) {
+    text = DateUtils.getRelativeTimeSpanString(
+        date.time,
+        System.currentTimeMillis(),
+        DateUtils.SECOND_IN_MILLIS
+    )
+}
+
 @BindingAdapter("glide")
-fun ImageView.glide(url: Any?) {
-    if (url == null) {
+fun ImageView.glide(model: Any?) {
+    if (model == null) {
         Glide.with(this).clear(this)
     } else {
-        Glide.with(this).load(url).into(this)
+        Glide.with(this)
+            .load(glideModel(model))
+            .into(this)
     }
 }
 
@@ -36,11 +56,14 @@ fun ImageView.glide(url: Any?) {
  * Currently, multi param binding adapters don't seem to work; this is the workaround
  */
 @BindingAdapter("glideRound")
-fun ImageView.glideRound(url: Any?) {
-    if (url == null) {
+fun ImageView.glideRound(model: Any?) {
+    if (model == null) {
         Glide.with(this).clear(this)
     } else {
-        Glide.with(this).load(url).apply(RequestOptions.circleCropTransform()).into(this)
+        Glide.with(this)
+            .load(glideModel(model))
+            .apply(RequestOptions.circleCropTransform())
+            .into(this)
     }
 }
 
