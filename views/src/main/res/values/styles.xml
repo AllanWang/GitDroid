@@ -31,18 +31,16 @@
         <item name="chipIconSize">@dimen/small_icon_size</item>
         <item name="chipMinHeight">0dp</item>
         <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
         <item name="chipIconTint">?android:textColorTertiary</item>
         <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
-    <style name="PinnedRepoChips">
-        <item name="android:clickable">false</item>
-        <item name="chipBackgroundColor">@android:color/transparent</item>
-        <item name="chipStartPadding">0dp</item>
-        <item name="chipEndPadding">4dp</item>
-        <item name="chipIconSize">16dp</item>
+    <style name="RepoChips" parent="SmallChipBadge">
+        <item name="android:layout_marginTop">@dimen/kau_padding_small</item>
+        <item name="layout_constraintHorizontal_bias">0</item>
         <item name="chipIconTint">?android:textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 </resources>

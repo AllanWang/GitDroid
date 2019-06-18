@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="repo"
+            type="github.fragment.ShortRepoRowItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:windowBackground"
+        android:foreground="?selectableItemBackground"
+        android:paddingStart="@dimen/kau_activity_horizontal_margin"
+        android:paddingTop="@dimen/kau_activity_vertical_margin"
+        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+        android:paddingBottom="@dimen/kau_activity_vertical_margin"
+        tools:style="@style/Theme.GitDroid">
+
+        <TextView
+            android:id="@+id/repo_name"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{repo.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/repo_desc"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{repo.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/repo_name"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_stars"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:chipIcon="@drawable/ic_star_border"
+            app:compactNumberText="@{repo.stargazers.totalCount}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:layout_constraintWidth_percent="0.12"
+            tools:text="123" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_forks"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:chipIcon="@drawable/ic_fork"
+            app:compactNumberText="@{repo.forkCount}"
+            app:layout_constraintStart_toEndOf="@id/repo_stars"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:layout_constraintWidth_percent="0.12"
+            tools:text="123" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_issues"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:chipIcon="@drawable/ic_issues"
+            app:compactNumberText="@{repo.issues.totalCount}"
+            app:layout_constraintStart_toEndOf="@id/repo_forks"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:layout_constraintWidth_percent="0.12"
+            tools:text="1.5k" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_prs"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:chipIcon="@drawable/ic_pull_requests"
+            app:compactNumberText="@{repo.pullRequests.totalCount}"
+            app:layout_constraintStart_toEndOf="@id/repo_issues"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:layout_constraintWidth_percent="0.12"
+            tools:text="123" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_language"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{repo.primaryLanguage.name}"
+            app:chipIcon="@drawable/ic_language"
+            app:languageColor="@{repo.primaryLanguage.color}"
+            app:layout_constraintEnd_toStartOf="@id/repo_date"
+            app:layout_constraintStart_toEndOf="@id/repo_prs"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:layout_constraintWidth_percent="0.25"
+            tools:text="JavaScript" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/repo_date"
+            style="@style/RepoChips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:textStartPadding="4dp"
+            app:chipIcon="@drawable/ic_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/repo_language"
+            app:layout_constraintTop_toBottomOf="@id/repo_desc"
+            app:relativeDateText="@{repo.updatedAt}"
+            tools:text="@tools:sample/date/mmddyy" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

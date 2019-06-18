@@ -35,24 +35,7 @@ query getProfile($login: String!) {
     pinnedItems(first: 6) {
       totalCount
       pinnedItems: nodes {
-        ... on Repository {
-            name
-            nameWithOwner
-            primaryLanguage {
-              name
-              color
-            }
-            stargazers(first: 0) {
-              totalCount
-            }
-            forkCount
-            issues(first: 0, states: OPEN) {
-              totalCount
-            }
-            pullRequests(first: 0, states: OPEN) {
-              totalCount
-            }
-        }
+        ... ShortRepoRowItem
         ... on Gist {
             isPublic
             isFork

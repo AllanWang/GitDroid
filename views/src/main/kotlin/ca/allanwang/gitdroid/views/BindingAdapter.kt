@@ -11,18 +11,21 @@ import androidx.core.content.getSystemService
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.kau.utils.round
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.button.MaterialButton
 import github.GetProfileQuery
+import github.fragment.ShortRepoRowItem
 import java.net.URI
 import java.util.*
 
 @BindingAdapter("languageColor")
 fun TextView.languageColor(color: String) {
-    val c = Color.parseColor(color)
-    compoundDrawableTintList = ColorStateList.valueOf(c)
+    val c = ColorStateList.valueOf(Color.parseColor(color))
+    compoundDrawableTintList = c
     setTextColor(c)
+    (this as? MaterialButton)?.iconTint = c
 }
 
 private fun glideModel(model: Any?): Any? = when {
@@ -75,11 +78,28 @@ fun ViewGroup.pinnedItems(
     val inflater = context.getSystemService<LayoutInflater>() ?: return
     items.pinnedItems?.map {
         val (layoutId, varId) = when (it) {
-            is GetProfileQuery.AsRepository -> R.layout.view_pinned_repository to BR.repo
+            is ShortRepoRowItem -> R.layout.view_repo to BR.repo
             else -> throw RuntimeException("Invalid pinned item type ${it.__typename}")
         }
         val binding = DataBindingUtil
             .inflate<ViewDataBinding>(inflater, layoutId, this, true)
         binding.setVariable(varId, it)
     }
+}
+
+@BindingAdapter("compactNumberText")
+fun TextView.compactNumberText(count: Int) {
+    fun compact(divisor: Float, suffix: Char): String {
+        return "${(count / divisor).round(1)}$suffix"
+    }
+
+    val compactText = when {
+        count < 1100 -> count.toString()
+        count < 1e6 -> compact(1e3f, 'k')
+        count < 1e9 -> compact(1e6f, 'M')
+        count < 1e12 -> compact(1e9f, 'B')
+        else -> count.toString()
+    }
+
+    text = compactText
 }

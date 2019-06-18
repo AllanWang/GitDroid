@@ -4,7 +4,14 @@ fragment ShortRepoRowItem on Repository {
     name
     nameWithOwner
     isFork
+    isArchived
+    isPrivate
+    isMirror
     forkCount
+    primaryLanguage {
+        color
+        name
+    }
     issues(first: 0, states: OPEN) {
         totalCount
     }
@@ -21,7 +28,8 @@ fragment ShortRepoRowItem on Repository {
     watchers(first: 1) {
         totalCount
     }
-    isLocked
+    createdAt
+    updatedAt
 }
 
 fragment ShortIssueRowItem on Issue {
