@@ -8,8 +8,8 @@ query me {
   }
 }
 
-query searchRepos($query: String!, $cursor: String) {
-  search(query: $query, type: REPOSITORY, first: 30, after: $cursor) {
+query searchRepos($query: String!, $count: Int, $cursor: String) {
+  search(query: $query, type: REPOSITORY, first: $count, after: $cursor) {
     pageInfo {
       startCursor
       endCursor
@@ -22,9 +22,8 @@ query searchRepos($query: String!, $cursor: String) {
   }
 }
 
-# TODO Update count
-query searchIssues($query: String!, $cursor: String) {
-  search(query: $query, type: ISSUE, first: 5, after: $cursor) {
+query searchIssues($query: String!, $count: Int, $cursor: String) {
+  search(query: $query, type: ISSUE, first: $count, after: $cursor) {
     pageInfo {
       startCursor
       endCursor
@@ -37,8 +36,8 @@ query searchIssues($query: String!, $cursor: String) {
   }
 }
 
-query searchPullRequests($query: String!, $cursor: String) {
-  search(query: $query, type: ISSUE, first: 30, after: $cursor) {
+query searchPullRequests($query: String!, $count: Int, $cursor: String) {
+  search(query: $query, type: ISSUE, first: $count, after: $cursor) {
     pageInfo {
       startCursor
       endCursor
@@ -51,8 +50,8 @@ query searchPullRequests($query: String!, $cursor: String) {
   }
 }
 
-query searchUser($query: String!, $cursor: String) {
-  search(query: $query, type: USER, first: 30, after: $cursor) {
+query searchUser($query: String!, $count: Int, $cursor: String) {
+  search(query: $query, type: USER, first: $count, after: $cursor) {
     pageInfo {
       startCursor
       endCursor

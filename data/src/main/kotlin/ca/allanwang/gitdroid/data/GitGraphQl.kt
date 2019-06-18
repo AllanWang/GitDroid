@@ -10,6 +10,9 @@ import github.fragment.ShortIssueRowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+// TODO replace with 30
+private const val GET_COUNT = 5
+
 interface GitGraphQl {
     suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T>
@@ -26,8 +29,12 @@ interface GitGraphQl {
 
     suspend fun getProfile(login: String): Response<GetProfileQuery.Data> = query(GetProfileQuery(login))
 
-    suspend fun getIssues(login: String, cursor: String? = null): Response<List<ShortIssueRowItem>> =
-        query(SearchIssuesQuery(login, Input.optional(cursor))) {
+    suspend fun getIssues(
+        login: String,
+        count: Int = GET_COUNT,
+        cursor: String? = null
+    ): Response<List<ShortIssueRowItem>> =
+        query(SearchIssuesQuery(login, Input.optional(count), Input.optional(cursor))) {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem } ?: emptyList()
         }
 }
