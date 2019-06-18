@@ -37,6 +37,10 @@ subprojects {
             apply plugin: 'com.android.library'
     }
 
+    if (it.name == 'data') {
+        apply plugin: 'com.apollographql.android'
+    }
+
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
     apply plugin: 'kotlin-kapt'
