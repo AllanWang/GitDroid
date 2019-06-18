@@ -8,8 +8,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="issue"
-            type="github.fragment.ShortIssueRowItem" />
+            name="model"
+            type="ca.allanwang.gitdroid.data.GitIssueOrPr" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,18 +20,18 @@
 
 
         <ImageView
-            android:id="@+id/issue_avatar"
+            android:id="@+id/ipr_avatar"
             android:layout_width="@dimen/list_avatar_size"
             android:layout_height="@dimen/list_avatar_size"
             android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
             android:layout_marginTop="@dimen/kau_activity_vertical_margin"
-            app:glideRound="@{issue.author.fragments.shortActor.avatarUrl}"
+            app:glideRound="@{model.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/issue_v_edge"
+            android:id="@+id/ipr_v_edge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -39,87 +39,102 @@
             app:layout_constraintGuide_end="@dimen/small_edge_end" />
 
         <TextView
-            android:id="@+id/issue_login"
+            android:id="@+id/ipr_login"
             style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/kau_padding_normal"
             android:ellipsize="end"
+            android:textColor="?android:textColorPrimary"
             android:lines="1"
-            android:text="@{issue.author.fragments.shortActor.login}"
-            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/issue_avatar"
-            app:layout_constraintTop_toTopOf="@id/issue_avatar"
-            app:layout_constraintWidth_percent="0.3"
+            android:text="@{model.login}"
+            app:layout_constraintStart_toEndOf="@id/ipr_avatar"
+            app:layout_constraintTop_toTopOf="@id/ipr_avatar"
             tools:text="@tools:sample/full_names" />
 
         <TextView
-            android:id="@+id/issue_date"
+            android:id="@+id/ipr_date"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorTertiary"
             android:layout_marginStart="@dimen/kau_padding_normal"
             android:layout_marginEnd="@dimen/kau_padding_normal"
             android:ellipsize="end"
             android:lines="1"
-            app:layout_constraintBottom_toBottomOf="@id/issue_login"
-            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintBottom_toBottomOf="@id/ipr_login"
+            app:layout_constraintEnd_toStartOf="@id/ipr_v_edge"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/issue_login"
-            app:layout_constraintTop_toTopOf="@id/issue_login"
+            app:layout_constraintStart_toEndOf="@id/ipr_login"
+            app:layout_constraintTop_toTopOf="@id/ipr_login"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintWidth_percent="0.3"
-            app:relativeDateText="@{issue.createdAt}"
+            app:relativeDateText="@{model.createdAt}"
             tools:text="@tools:sample/date/ddmmyy" />
 
         <TextView
-            android:id="@+id/issue_title"
+            android:id="@+id/ipr_title"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/kau_padding_normal"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{issue.title}"
+            android:text="@{model.title}"
             android:textColor="?android:textColorPrimary"
-            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            app:layout_constraintEnd_toStartOf="@id/ipr_v_edge"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/issue_avatar"
-            app:layout_constraintTop_toBottomOf="@id/issue_login"
+            app:layout_constraintStart_toEndOf="@id/ipr_avatar"
+            app:layout_constraintTop_toBottomOf="@id/ipr_login"
             tools:text="@tools:sample/lorem/random" />
 
         <TextView
-            android:id="@+id/issue_details"
+            android:id="@+id/ipr_details"
             style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/kau_padding_normal"
             android:ellipsize="end"
             android:lines="1"
+            android:textColor="?android:textColorSecondary"
             android:maxLines="2"
-            android:text="@{issue.repository.nameWithOwner + '#' + issue.number}"
-            app:layout_constraintEnd_toStartOf="@id/issue_v_edge"
+            android:text="@{model.nameWithOwner + '#' + model.number}"
+            app:layout_constraintEnd_toStartOf="@id/ipr_v_edge"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/issue_avatar"
-            app:layout_constraintTop_toBottomOf="@id/issue_title"
+            app:layout_constraintStart_toEndOf="@id/ipr_avatar"
+            app:layout_constraintTop_toBottomOf="@id/ipr_title"
             tools:text="org/repo#123" />
 
+        <ImageView
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
+            android:layout_marginStart="@dimen/small_edge_margin"
+            android:layout_marginEnd="@dimen/small_edge_margin"
+            android:src="@drawable/ic_lock"
+            android:tint="?android:textColorTertiary"
+            android:visibility="@{model.locked ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/ipr_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="@id/ipr_v_edge"
+            app:layout_constraintTop_toTopOf="@id/ipr_login"
+            app:layout_constraintVertical_bias="0.5" />
+
         <com.google.android.material.chip.Chip
-            android:id="@+id/issue_comments"
+            android:id="@+id/ipr_comments"
             style="@style/SmallChipBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:text="@{Integer.toString(issue.comments.totalCount)}"
-            android:visibility="@{issue.comments.totalCount == 0 ? View.GONE : View.VISIBLE}"
+            android:layout_marginStart="@dimen/small_edge_margin"
+            android:layout_marginEnd="@dimen/small_edge_margin"
+            android:text="@{Integer.toString(model.commentCount)}"
+            android:visibility="@{model.commentCount == 0 ? View.GONE : View.VISIBLE}"
             app:chipIcon="@drawable/ic_chat_bubble"
-            app:layout_constraintBottom_toBottomOf="@id/issue_details"
+            app:layout_constraintBottom_toBottomOf="@id/ipr_details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@id/issue_v_edge"
-            app:layout_constraintTop_toTopOf="@id/issue_details"
+            app:layout_constraintStart_toStartOf="@id/ipr_v_edge"
+            app:layout_constraintTop_toTopOf="@id/ipr_details"
             app:layout_constraintVertical_bias="0.5"
             tools:text="5000" />
 

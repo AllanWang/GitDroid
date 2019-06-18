@@ -21,6 +21,7 @@ fragment ShortRepoRowItem on Repository {
     watchers(first: 1) {
         totalCount
     }
+    isLocked
 }
 
 fragment ShortIssueRowItem on Issue {
@@ -39,12 +40,17 @@ fragment ShortIssueRowItem on Issue {
         totalCount
     }
     url
+    locked
 }
 
 fragment ShortPullRequestRowItem on PullRequest {
     id
     databaseId
     number
+    createdAt
+    author {
+        ...ShortActor
+    }
     title
     repository {
         nameWithOwner
@@ -52,8 +58,8 @@ fragment ShortPullRequestRowItem on PullRequest {
     comments(first: 1) {
         totalCount
     }
-    state
     url
+    locked
 }
 
 

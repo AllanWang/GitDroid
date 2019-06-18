@@ -5,6 +5,7 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.BaseActivity
 import ca.allanwang.gitdroid.databinding.ViewMainBinding
 import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
 import ca.allanwang.kau.animators.KauAnimator
 import ca.allanwang.kau.animators.SlideAnimatorAdd
@@ -12,6 +13,7 @@ import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import github.fragment.ShortIssueRowItem
+import github.fragment.ShortPullRequestRowItem
 import kotlinx.coroutines.CancellationException
 
 fun BaseActivity.bindMainView(parent: ViewGroup) {
@@ -30,6 +32,11 @@ fun BaseActivity.bindMainView(parent: ViewGroup) {
 
         val adapter = Adapter.bind(mainRecycler)
 
+        val samePanelAnimator = KauAnimator(addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f), removeAnimator = FadeScaleAnimatorRemove())
+        val switchPanelAnimator = KauAnimator(addAnimator = FadeScaleAnimatorAdd(), removeAnimator = FadeScaleAnimatorRemove())
+
+        mainRecycler.setHasFixedSize(false)
+
         /**
          * Submit a launch request on the main thread
          * Note that handling pending actions is dependent
@@ -43,6 +50,11 @@ fun BaseActivity.bindMainView(parent: ViewGroup) {
             }
             val tag = loader::class.java.simpleName
             val samePanel = currentId == id
+            val newItemAnimator =  if (samePanel) samePanelAnimator else switchPanelAnimator
+            // Setting animator cancels some animations, which we don't necessarily need
+            if (mainRecycler.itemAnimator !== newItemAnimator) {
+                mainRecycler.itemAnimator = newItemAnimator
+            }
             currentId = id
             if (samePanel) {
                 if (!forceRefresh || id in pending) {
@@ -87,10 +99,6 @@ fun BaseActivity.bindMainView(parent: ViewGroup) {
             }
         }
 
-        mainRecycler.itemAnimator =
-            KauAnimator(addAnimator = SlideAnimatorAdd(KAU_BOTTOM), removeAnimator = FadeScaleAnimatorRemove())
-        mainRecycler.setHasFixedSize(false)
-
         mainRefresh.setOnRefreshListener {
             request(currentId, true)
         }
@@ -105,7 +113,7 @@ fun BaseActivity.bindMainView(parent: ViewGroup) {
 
 }
 
-private fun loaders(): List<MainPanelLoader> = listOf(IssueLoader())
+private fun loaders(): List<MainPanelLoader> = listOf(IssueLoader(), PullRequestLoader())
 
 
 interface MainPanelLoader {
@@ -124,6 +132,31 @@ private class IssueLoader : MainPanelLoader {
         val issues: List<ShortIssueRowItem> =
             gdd.getIssues(me.login, count = 5).await() ?: return emptyList()
         L._d { issues }
-        return issues.map { IssueVhBinding(it)
+        return issues.map { IssueVhBinding(it) }
     }
 }
+
+
+private class PullRequestLoader : MainPanelLoader {
+    override val id: Int = R.id.nav_bottom_prs
+
+    override suspend fun BaseActivity.loadData(): List<VHBindingType> {
+        val me = me() ?: return emptyList()
+        val issues: List<ShortPullRequestRowItem> =
+            gdd.getPullRequests(me.login, count = 5).await() ?: return emptyList()
+        L._d { issues }
+        return issues.map { PullRequestVhBinding(it) }
+    }
+}
+//
+//private class RepoLoader : MainPanelLoader {
+//    override val id: Int = R.id.nav_bottom_repos
+//
+//    override suspend fun BaseActivity.loadData(): List<VHBindingType> {
+//        val me = me() ?: return emptyList()
+//        val issues: List<ShortRepoRowItem> =
+//            gdd.getRepos(me.login, count = 5).await() ?: return emptyList()
+//        L._d { issues }
+//        return issues.map { IssuePrVhBinding(it) }
+//    }
+//}

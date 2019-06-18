@@ -6,15 +6,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.databinding.ViewIssueItemBinding
+import ca.allanwang.gitdroid.data.GitIssueOrPr
+import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
 import github.fragment.ShortIssueRowItem
+import github.fragment.ShortPullRequestRowItem
 
 typealias VHBindingType = ViewHolderBinding<*>
 
 abstract class ViewHolderBinding<T : ViewDataBinding>(
     open val data: Any?,
-    private val layoutRes: Int,
-    val typeId: Int = layoutRes
+    open val layoutRes: Int,
+    open val typeId: Int = layoutRes
 ) {
 
     abstract val dataId: Int?
@@ -48,13 +50,19 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
 
 }
 
-class IssueVhBinding(override val data: ShortIssueRowItem) :
-    ViewHolderBinding<ViewIssueItemBinding>(data, R.layout.view_issue_item) {
+abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val typeId: Int) :
+    ViewHolderBinding<ViewIssueOrPrItemBinding>(data, R.layout.view_issue_or_pr_item) {
 
     override val dataId: Int?
         get() = data.databaseId
 
-    override fun ViewIssueItemBinding.bind(position: Int, payloads: MutableList<Any>) {
-        issue = data
+    override fun ViewIssueOrPrItemBinding.bind(position: Int, payloads: MutableList<Any>) {
+        model = data
     }
 }
+
+class IssueVhBinding(data: ShortIssueRowItem) :
+    IssuePrVhBinding(GitIssueOrPr.fromIssue(data), R.id.git_vh_issue)
+
+class PullRequestVhBinding(data: ShortPullRequestRowItem) :
+    IssuePrVhBinding(GitIssueOrPr.fromPullRequest(data), R.id.git_vh_pr)

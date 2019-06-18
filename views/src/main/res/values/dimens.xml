@@ -8,4 +8,6 @@
     <dimen name="login_card_margin_horizontal">64dp</dimen>
     <!--Enough for comment count with 4 digits-->
     <dimen name="small_edge_end">56dp</dimen>
+    <dimen name="small_icon_size">12dp</dimen>
+    <dimen name="small_edge_margin">4dp</dimen>
 </resources>

@@ -3,10 +3,10 @@ package ca.allanwang.gitdroid.data
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import github.GetProfileQuery
-import github.MeQuery
-import github.SearchIssuesQuery
+import github.*
 import github.fragment.ShortIssueRowItem
+import github.fragment.ShortPullRequestRowItem
+import github.fragment.ShortRepoRowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -35,6 +35,24 @@ interface GitGraphQl {
     ): Response<List<ShortIssueRowItem>> =
         query(SearchIssuesQuery(login, Input.optional(count), Input.optional(cursor))) {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem } ?: emptyList()
+        }
+
+    suspend fun getRepos(
+        login: String,
+        count: Int = GET_COUNT,
+        cursor: String? = null
+    ): Response<List<ShortRepoRowItem>> =
+        query(SearchReposQuery(login, Input.optional(count), Input.optional(cursor))) {
+            search.nodes?.mapNotNull { it.fragments.shortRepoRowItem } ?: emptyList()
+        }
+
+    suspend fun getPullRequests(
+        login: String,
+        count: Int = GET_COUNT,
+        cursor: String? = null
+    ): Response<List<ShortPullRequestRowItem>> =
+        query(SearchPullRequestsQuery(login, Input.optional(count), Input.optional(cursor))) {
+            search.nodes?.mapNotNull { it.fragments.shortPullRequestRowItem } ?: emptyList()
         }
 }
 
