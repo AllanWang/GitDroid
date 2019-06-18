@@ -4,6 +4,7 @@ import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.containsKey
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
@@ -46,13 +47,29 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        val item = holder.itemView.getTag(TAG_ITEM) as? ViewHolderBinding<*> ?: return
-        item.onRecycled(holder)
+        val item = holder.itemView.getTag(TAG_ITEM) as? ViewHolderBinding<*>
+        item?.onRecycled(holder)
+        holder.itemView.setTag(TAG_ADAPTER, null)
+        holder.itemView.setTag(TAG_ITEM, null)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return data.getOrNull(position)?.typeId ?: super.getItemViewType(position)
     }
 
     companion object {
         private const val TAG_ADAPTER = 293
         private const val TAG_ITEM = 829
+
+        fun bind(
+            recyclerView: RecyclerView,
+            layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(recyclerView.context)
+        ): Adapter {
+            val adapter = Adapter()
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = layoutManager
+            return adapter
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

@@ -21,18 +21,26 @@ fun TextView.languageColor(color: String) {
     setTextColor(c)
 }
 
-@BindingAdapter(value = arrayOf("glide", "glideRound"), requireAll = false)
-fun ImageView.glide(url: Any?, round: Boolean?) {
+@BindingAdapter("glide")
+fun ImageView.glide(url: Any?) {
     if (url == null) {
         Glide.with(this).clear(this)
     } else {
-        Glide.with(this).load(url).run {
-            if (round == true) {
-                apply(RequestOptions.circleCropTransform())
-            } else {
-                this
-            }
-        }.into(this)
+        Glide.with(this).load(url).into(this)
+    }
+}
+
+/**
+ * TODO
+ *
+ * Currently, multi param binding adapters don't seem to work; this is the workaround
+ */
+@BindingAdapter("glideRound")
+fun ImageView.glideRound(url: Any?) {
+    if (url == null) {
+        Glide.with(this).clear(this)
+    } else {
+        Glide.with(this).load(url).apply(RequestOptions.circleCropTransform()).into(this)
     }
 }
 

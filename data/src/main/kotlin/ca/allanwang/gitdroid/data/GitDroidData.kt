@@ -102,4 +102,5 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 apollo.query(query).toDeferred().await()
             }
         }
+
 }
