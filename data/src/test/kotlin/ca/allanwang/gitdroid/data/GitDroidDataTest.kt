@@ -29,14 +29,16 @@ class GitDroidDataTest : KoinTest {
         startKoin {
             printLogger()
             modules(
-                module {
-                    single<TokenSupplier> {
-                        object : TokenSupplier {
-                            override fun getToken(): String? = PrivProps.token
+                listOf(
+                    module {
+                        single<TokenSupplier> {
+                            object : TokenSupplier {
+                                override fun getToken(): String? = PrivProps.token
+                            }
                         }
-                    }
-                    single { GitDroidData() }
-                }
+                    },
+                    GitDroidData.module(null)
+                )
             )
         }
     }

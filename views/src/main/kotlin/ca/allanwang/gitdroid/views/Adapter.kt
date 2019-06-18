@@ -33,10 +33,10 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
-        val adapter = holder.itemView.getTag(TAG_ADAPTER) as? Adapter ?: return
+        val adapter = holder.itemView.getTag(R.id.git_view_adapter) as? Adapter ?: return
         val item: ViewHolderBinding<*> = adapter.data.getOrNull(position) ?: return
         item.onBind(holder, position, payloads)
-        holder.itemView.setTag(TAG_ITEM, item)
+        holder.itemView.setTag(R.id.git_view_item, item)
     }
 
     override fun getItemCount(): Int = data.size
@@ -47,10 +47,10 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         super.onViewRecycled(holder)
-        val item = holder.itemView.getTag(TAG_ITEM) as? ViewHolderBinding<*>
+        val item = holder.itemView.getTag(R.id.git_view_item) as? ViewHolderBinding<*>
         item?.onRecycled(holder)
-        holder.itemView.setTag(TAG_ADAPTER, null)
-        holder.itemView.setTag(TAG_ITEM, null)
+        holder.itemView.setTag(R.id.git_view_adapter, null)
+        holder.itemView.setTag(R.id.git_view_item, null)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -58,8 +58,6 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     companion object {
-        private const val TAG_ADAPTER = 293
-        private const val TAG_ITEM = 829
 
         fun bind(
             recyclerView: RecyclerView,

@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.data
 
+import android.content.Context
 import ca.allanwang.gitdroid.data.helpers.AuthInterceptor
 import ca.allanwang.gitdroid.data.helpers.DateApolloAdapter
 import ca.allanwang.gitdroid.data.helpers.ObjectApolloAdapter
@@ -7,6 +8,9 @@ import ca.allanwang.gitdroid.data.helpers.UriApolloAdapter
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.cache.http.HttpCache
+import com.apollographql.apollo.cache.http.ApolloHttpCache
+import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.coroutines.toDeferred
 import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +20,12 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import java.io.File
 import java.math.BigInteger
 import java.security.SecureRandom
+
 
 interface TokenSupplier {
     fun getToken(): String?
@@ -47,7 +54,44 @@ class GitDroidData : KoinComponent, GitGraphQl {
 
         const val REDIRECT_URL = "gitdroid://login"
 
-        fun module() = module {
+        const val CACHE_FILE = "gdd_cache_dir"
+
+        fun module(context: Context?) = module {
+            if (context != null) {
+                single(named(CACHE_FILE)) {
+                    File(context.applicationContext.cacheDir, "apolloCache")
+                }
+            }
+            single<ApolloClient> {
+
+                val tokenSupplier: TokenSupplier = get()
+                val cacheFile: File? = getOrNull(named(CACHE_FILE))
+
+                val cacheStore: HttpCache?
+
+                if (cacheFile != null) {
+                    val cacheSize = 1024L * 1024L
+                    cacheStore = ApolloHttpCache(DiskLruHttpCacheStore(cacheFile, cacheSize))
+                } else {
+                    cacheStore = null
+                }
+
+                val okHttpClient = OkHttpClient.Builder()
+                    .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
+                    .build()
+
+                val builder = ApolloClient.builder()
+                    .serverUrl(GRAPHQL_URL)
+                    .okHttpClient(okHttpClient)
+                    .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
+                    .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
+                    .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
+
+                if (cacheStore != null) {
+                    builder.httpCache(cacheStore)
+                }
+                builder.build()
+            }
             single { GitDroidData() }
         }
     }
@@ -81,18 +125,28 @@ class GitDroidData : KoinComponent, GitGraphQl {
         return OAuthRequest(url.build().toString(), state)
     }
 
-    private val apollo: ApolloClient by lazy {
-        val okHttpClient = OkHttpClient.Builder()
-            .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
-            .build()
+    private val apollo: ApolloClient by inject()
 
-        ApolloClient.builder()
-            .serverUrl(GRAPHQL_URL)
-            .okHttpClient(okHttpClient)
-            .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
-            .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
-            .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
-            .build()
+    fun module(context: Context) = module {
+        single<ApolloClient> {
+            val cacheFile = File(context.applicationContext.cacheDir, "apolloCache")
+            val cacheSize = 1024L * 1024L
+
+            val cacheStore = DiskLruHttpCacheStore(cacheFile, cacheSize)
+
+            val okHttpClient = OkHttpClient.Builder()
+                .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
+                .build()
+
+            ApolloClient.builder()
+                .serverUrl(GRAPHQL_URL)
+                .httpCache(ApolloHttpCache(cacheStore))
+                .okHttpClient(okHttpClient)
+                .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
+                .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
+                .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
+                .build()
+        }
     }
 
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>

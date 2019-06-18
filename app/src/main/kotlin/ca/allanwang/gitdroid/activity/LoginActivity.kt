@@ -21,6 +21,7 @@ import ca.allanwang.gitdroid.ktx.transition.add
 import ca.allanwang.gitdroid.ktx.transition.transitionSet
 import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.sql.Database
+import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.views.databinding.ViewLoginBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginContainerBinding
@@ -66,6 +67,7 @@ class LoginActivity : BaseActivity() {
         }
 
         fun logout(context: Context) {
+            L.d { "Logging out" }
             val prefs: Prefs = get()
             val db: Database = get()
             db.userQueries.delete(prefs.token)
@@ -75,6 +77,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
+        L.d { "Handle login intent" }
         val result = intent?.data ?: return
         if (!result.toString().startsWith(GitDroidData.REDIRECT_URL)) {
             return
@@ -92,6 +95,13 @@ class LoginActivity : BaseActivity() {
             val accessToken = gitAuthRest.accessToken(code, state)
             login(accessToken.token)
             gitState = null
+            // Verify I exist
+            val me = db.userQueries.select(prefs.token).awaitOptional()
+            if (me == null) {
+                snackbar(R.string.error_occurred)
+            } else {
+                startActivity<MainActivity>()
+            }
         }
     }
 

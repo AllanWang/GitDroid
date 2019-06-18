@@ -35,6 +35,7 @@ dependencies {
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     // TODO sync versions once 1.0.1 comes out
     implementation "com.apollographql.apollo:apollo-coroutines-support:1.0.1-SNAPSHOT"
+    implementation "com.apollographql.apollo:apollo-http-cache:${Versions.apollo}"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
     implementation "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"

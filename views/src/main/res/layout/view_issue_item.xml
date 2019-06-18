@@ -98,21 +98,21 @@
             app:layout_constraintTop_toBottomOf="@id/issue_title"
             tools:text="org/repo#123" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/issue_comments"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
-            android:text="@{issue.comments.totalCount}"
-            app:chipIcon="@drawable/ic_chat_bubble"
-            app:chipIconSize="12dp"
-            app:chipIconTint="?android:textColorTertiary"
-            app:layout_constraintBottom_toBottomOf="@id/issue_details"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="@id/issue_v_edge"
-            tools:text="5" />
+        <!--<com.google.android.material.chip.Chip-->
+            <!--android:id="@+id/issue_comments"-->
+            <!--style="@style/Widget.MaterialComponents.Button.UnelevatedButton"-->
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"-->
+            <!--android:text="@{issue.comments.totalCount}"-->
+            <!--app:chipIcon="@drawable/ic_chat_bubble"-->
+            <!--app:chipIconSize="12dp"-->
+            <!--app:chipIconTint="?android:textColorTertiary"-->
+            <!--app:layout_constraintBottom_toBottomOf="@id/issue_details"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0"-->
+            <!--app:layout_constraintStart_toStartOf="@id/issue_v_edge"-->
+            <!--tools:text="5" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
