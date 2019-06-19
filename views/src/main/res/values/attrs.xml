@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ContributionsView">
+        <attr name="contributionBounds" format="reference" />
+        <attr name="contributionColors" format="reference" />
+    </declare-styleable>
+
+    <integer-array name="contribution_bounds">
+        <item>1</item>
+        <item>5</item>
+        <item>11</item>
+        <item>18</item>
+    </integer-array>
+
+    <array name="contribution_colors_default">
+        <item>#ebedf0</item>
+        <item>#c6e48b</item>
+        <item>#7bc96f</item>
+        <item>#239a3b</item>
+        <item>#196127</item>
+    </array>
+</resources>

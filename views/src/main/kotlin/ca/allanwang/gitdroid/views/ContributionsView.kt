@@ -8,6 +8,7 @@ import android.graphics.PointF
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.res.getResourceIdOrThrow
 import androidx.databinding.BindingAdapter
 import github.fragment.ShortContributions
 
@@ -22,8 +23,36 @@ class ContributionsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val colorPaints: Array<Paint>
+    /**
+     * Bounds mapping to colors
+     * If contribution count is less than level at index i, then color at index i should be used.
+     * If contribution count is greater than all values, use the last color.
+     */
+    private val levels: IntArray
+
     init {
         setWillNotDraw(false)
+        context.theme.obtainStyledAttributes(attrs, R.styleable.ContributionsView, 0, R.style.Theme_GitDroid_Light).apply {
+            try {
+                val boundsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionBounds)
+                levels = resources.getIntArray(boundsId)
+                val colorsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionColors)
+                val colors = resources.getIntArray(colorsId)
+                if (colors.size != levels.size + 1) {
+                    throw IllegalArgumentException("Supplied ${colors.size} colors with ${levels.size} bounds; color count should be one greater than bounds count")
+                }
+                colorPaints = colors.map {
+                    Paint().apply {
+                        isAntiAlias = true
+                        style = Paint.Style.FILL
+                        color = it
+                    }
+                }.toTypedArray()
+            } finally {
+                recycle()
+            }
+        }
     }
 
     private val textPaint = TextPaint().apply {
@@ -37,14 +66,7 @@ class ContributionsView @JvmOverloads constructor(
             onNewData(value)
         }
     private var points: Array<IntArray> = emptyArray()
-    private var colorPaints: Array<Paint> = (0..levels.size).map { i ->
-        Paint().apply {
-            isAntiAlias = true
-            style = Paint.Style.FILL
-            color = Color.MAGENTA
-            alpha = (200 / (levels.size + 1) * i) + 55
-        }
-    }.toTypedArray()
+
     private var labels: Array<TitleEntry> = emptyArray()
     private var cellSize: Int = 0
     private var labelHeight: Int = 0
@@ -58,13 +80,11 @@ class ContributionsView @JvmOverloads constructor(
     private fun onNewData(data: ShortContributions?) {
         if (data == null) {
             points = emptyArray()
-            colorPaints = emptyArray()
             labels = emptyArray()
             cellSize = 0
             labelHeight = 0
             invalidate()
         } else {
-            colorPaints = data.contributionCalendar.colors.map { textPaint(it) }.toTypedArray()
             points = data.contributionCalendar.weeks.map {
                 it.contributionDays.map { d ->
                     levels.firstOrNull { max -> d.contributionCount < max } ?: levels.size
