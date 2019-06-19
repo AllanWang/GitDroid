@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.data.GitIssueOrPr
 import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
 import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
+import ca.allanwang.gitdroid.views.databinding.ViewSlimEntryBinding
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
@@ -69,12 +69,22 @@ class IssueVhBinding(data: ShortIssueRowItem) :
 class PullRequestVhBinding(data: ShortPullRequestRowItem) :
     IssuePrVhBinding(GitIssueOrPr.fromPullRequest(data), R.id.git_vh_pr)
 
-class RepoVhBinding(override val data: ShortRepoRowItem) : ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
+class RepoVhBinding(override val data: ShortRepoRowItem) :
+    ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
     override val dataId: Int?
         get() = data.databaseId
 
     override fun ViewRepoBinding.bind(position: Int, payloads: MutableList<Any>) {
         repo = data
     }
+}
 
+class SlimEntryVhBinding(override val data: SlimEntry) :
+    ViewHolderBinding<ViewSlimEntryBinding>(data, R.layout.view_slim_entry) {
+    override val dataId: Int?
+        get() = data.icon
+
+    override fun ViewSlimEntryBinding.bind(position: Int, payloads: MutableList<Any>) {
+        TODO("not implemented")
+    }
 }

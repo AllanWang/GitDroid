@@ -82,30 +82,6 @@
             app:layout_constraintTop_toBottomOf="@id/user_web"
             tools:text="Montreal, Canada" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/user_barrier_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="user_avatar,user_dev_program,user_location" />
-
-        <TextView
-            android:id="@+id/user_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
-            android:layout_marginTop="@dimen/kau_padding_normal"
-            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="@{user.bio}"
-            app:goneFlag="@{user.bio}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_barrier_header"
-            tools:text="@tools:sample/lorem/random" />
-
         <ImageButton
             android:id="@+id/user_follow_toggle"
             android:layout_width="@dimen/icon_size"
@@ -117,31 +93,41 @@
             app:layout_constraintVertical_bias="0.5"
             tools:src="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/user_following"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/user_barrier_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="user_avatar,user_dev_program,user_location" />
+
+        <TextView
+            android:id="@+id/user_desc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
             android:layout_marginTop="@dimen/kau_padding_normal"
-            android:layout_marginEnd="@dimen/kau_padding_small"
-            android:text="@{@string/following_n(user.following.totalCount)}"
-            app:layout_constraintEnd_toStartOf="@id/user_followers"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{user.bio}"
+            app:goneFlag="@{user.bio}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_desc"
-            tools:text="Following" />
+            app:layout_constraintTop_toBottomOf="@id/user_barrier_header"
+            tools:text="@tools:sample/lorem/random" />
 
-        <Button
-            android:id="@+id/user_followers"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_entries"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/kau_padding_small"
-            android:layout_marginTop="@dimen/kau_padding_normal"
-            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
-            android:text="@{@string/following_n(user.followers.totalCount)}"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/user_following"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_desc"
-            tools:text="Followers" />
+            app:slimItems="@{user}"
+            tools:itemCount="5"
+            tools:listitem="@layout/view_slim_entry" />
 
         <ca.allanwang.gitdroid.views.ContributionsView
             android:id="@+id/user_contributions"
@@ -150,7 +136,7 @@
             app:contributions="@{user.contributionsCollection.fragments.shortContributions}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_following" />
+            app:layout_constraintTop_toBottomOf="@id/user_entries" />
 
 
         <androidx.recyclerview.widget.RecyclerView

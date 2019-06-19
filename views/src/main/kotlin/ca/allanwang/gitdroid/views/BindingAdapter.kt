@@ -81,20 +81,6 @@ fun ImageView.glideRound(model: Any?) {
     }
 }
 
-@BindingAdapter("pinnedItems")
-fun RecyclerView.pinnedItems(
-    items: GetProfileQuery.PinnedItems
-) {
-    val adapter = Adapter.bind(this)
-    val models: List<VHBindingType> = items.pinnedItems?.map {
-        when (it) {
-            is ShortRepoRowItem -> RepoVhBinding(it)
-            else -> throw RuntimeException("Invalid pinned item type ${it.__typename}")
-        }
-    } ?: emptyList()
-    adapter.data = models
-}
-
 @BindingAdapter("compactNumberText")
 fun TextView.compactNumberText(count: Int) {
     fun compact(divisor: Float, suffix: Char): String {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="ca.allanwang.gitdroid.views.SlimEntry" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
+        android:layout_marginTop="@dimen/kau_padding_small"
+        android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/kau_padding_small"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center_vertical"
+        android:onClick="@{model.onClick}"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/slim_icon"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:src="@{model.icon}"
+            android:tint="?android:textColorTertiary"
+            tools:src="@drawable/ic_star" />
+
+        <TextView
+            android:id="@+id/slim_text"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_spacing_micro"
+            android:layout_marginEnd="@dimen/kau_spacing_micro"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{model.text}"
+            android:textColor="?android:textColorPrimary"
+            tools:text="@tools:sample/lorem/random" />
+
+        <ImageView
+            android:id="@+id/slim_indicator"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="?android:textColorTertiary"
+            app:goneFlag="@{model.onClick}" />
+    </LinearLayout>
+</layout>

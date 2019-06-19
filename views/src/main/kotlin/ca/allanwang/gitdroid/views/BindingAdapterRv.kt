@@ -1,0 +1,64 @@
+package ca.allanwang.gitdroid.views
+
+import android.text.format.DateFormat
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import github.GetProfileQuery
+import github.fragment.ShortRepoRowItem
+import java.text.SimpleDateFormat
+import java.util.*
+
+
+@BindingAdapter("pinnedItems")
+fun RecyclerView.pinnedItems(
+    items: GetProfileQuery.PinnedItems
+) {
+    val adapter = Adapter.bind(this)
+    val models: List<VHBindingType> = items.pinnedItems?.map {
+        when (it) {
+            is ShortRepoRowItem -> RepoVhBinding(it)
+            else -> throw RuntimeException("Invalid pinned item type ${it.__typename}")
+        }
+    } ?: emptyList()
+    adapter.data = models
+}
+
+@BindingAdapter("slimItems")
+fun RecyclerView.slimItems(
+    user: GetProfileQuery.User
+) {
+    val adapter = Adapter.bind(this)
+    val dateFormat =
+        SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "yyyyMMMdd"), Locale.getDefault())
+    val models = listOf(
+        SlimEntry(
+            R.drawable.ic_event,
+            context.getString(R.string.member_since_s, dateFormat.format(user.createdAt))
+        ),
+        SlimEntry(
+            R.drawable.ic_people,
+            context.resources.getQuantityString(R.plurals.followers_n, user.followers.totalCount)
+        ),
+        SlimEntry(
+            R.drawable.ic_group,
+            context.resources.getQuantityString(R.plurals.following_n, user.following.totalCount)
+        ),
+        SlimEntry(
+            R.drawable.ic_repo,
+            context.resources.getQuantityString(
+                R.plurals.repos_n,
+                user.repositories.totalCount,
+                user.repositories.totalCount
+            )
+        ),
+        SlimEntry(
+            R.drawable.ic_code,
+            context.resources.getQuantityString(
+                R.plurals.repos_n,
+                user.repositories.totalCount,
+                user.repositories.totalCount
+            )
+        )
+    )
+    adapter.data = models.map { SlimEntryVhBinding(it) }
+}

@@ -4,7 +4,21 @@
     <string name="login_select_password">Login with username and password</string>
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
-    <string name="following_n">Following (%d)</string>
-    <string name="followers_n">Followers (%d)</string>
+    <plurals name="following_n">
+        <item quantity="one">%d following</item>
+        <item quantity="other">%d following</item>
+    </plurals>
+    <plurals name="followers_n">
+        <item quantity="one">%d follower</item>
+        <item quantity="other">%d followers</item>
+    </plurals>
+    <plurals name="repos_n">
+        <item quantity="one">%d repository</item>
+        <item quantity="other">%d repositories</item>
+    </plurals>
+    <plurals name="gists_n">
+        <item quantity="one">%d gist</item>
+        <item quantity="other">%d gists</item>
+    </plurals>
     <string name="member_since_s">Member since %s</string>
 </resources>
