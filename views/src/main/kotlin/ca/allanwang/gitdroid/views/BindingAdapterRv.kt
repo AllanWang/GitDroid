@@ -1,11 +1,9 @@
 package ca.allanwang.gitdroid.views
 
-import android.text.format.DateFormat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import github.GetProfileQuery
 import github.fragment.ShortRepoRowItem
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -28,8 +26,7 @@ fun RecyclerView.slimItems(
     user: GetProfileQuery.User
 ) {
     val adapter = Adapter.bind(this)
-    val dateFormat =
-        SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "yyyyMMMdd"), Locale.getDefault())
+    val dateFormat = Locale.getDefault().bestDateFormat("yyyyMMMdd")
     val models = listOf(
         SlimEntry(
             R.drawable.ic_event,
