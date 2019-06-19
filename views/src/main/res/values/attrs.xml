@@ -3,7 +3,10 @@
     <declare-styleable name="ContributionsView">
         <attr name="contributionBounds" format="reference" />
         <attr name="contributionColors" format="reference" />
+        <attr name="contributionCellBorder" format="dimension" />
     </declare-styleable>
+
+    <dimen name="contribution_cell_border_default">0.5dp</dimen>
 
     <integer-array name="contribution_bounds">
         <item>1</item>

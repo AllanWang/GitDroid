@@ -6,6 +6,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCache
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.coroutines.toDeferred
@@ -148,10 +149,13 @@ class GitDroidData : KoinComponent, GitGraphQl {
     }
 
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
-            query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
+            query(
+        query: com.apollographql.apollo.api.Query<D, T, V>,
+        policy: HttpCachePolicy.ExpirePolicy
+    ): Response<T> =
         withContext(Dispatchers.IO) {
             withTimeout(15000) {
-                apollo.query(query).toDeferred().await()
+                apollo.query(query).httpCachePolicy(policy).toDeferred().await()
             }
         }
 
