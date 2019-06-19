@@ -2,13 +2,14 @@ package ca.allanwang.gitdroid.views
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.content.res.getResourceIdOrThrow
+import androidx.core.content.res.getColorOrThrow
 import androidx.databinding.BindingAdapter
+import ca.allanwang.gitdroid.ktx.utils.L
 import github.fragment.ShortContributions
 
 @BindingAdapter("contributions")
@@ -16,50 +17,28 @@ fun ContributionsView.contributions(data: ShortContributions?) {
     contributions = data
 }
 
-private class TitleEntry(val text: String, val loc: PointF)
-
 class ContributionsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val colorPaints: Array<Paint>
-    /**
-     * Bounds mapping to colors
-     * If contribution count is less than level at index i, then color at index i should be used.
-     * If contribution count is greater than all values, use the last color.
-     */
-    private val levels: IntArray
+    private var colorPaints: Array<Paint> = emptyArray()
     private val cellBorder: Float
+    private val baseColor: Int
+
+    private inline val Int.luminance: Int
+        get() = (0.299f * Color.red(this) + 0.587f * Color.green(this) + 0.114f * Color.blue(this)).toInt()
 
     init {
         setWillNotDraw(false)
-        context.theme.obtainStyledAttributes(attrs, R.styleable.ContributionsView, 0, R.style.Theme_GitDroid_Light)
+        context.theme.obtainStyledAttributes(attrs, R.styleable.ContributionsView, 0, 0)
             .apply {
                 try {
                     cellBorder = getDimension(R.styleable.ContributionsView_contributionCellBorder, 0f)
-                    val boundsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionBounds)
-                    levels = resources.getIntArray(boundsId)
-                    val colorsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionColors)
-                    val colors = resources.getIntArray(colorsId)
-                    if (colors.size != levels.size + 1) {
-                        throw IllegalArgumentException("Supplied ${colors.size} colors with ${levels.size} bounds; color count should be one greater than bounds count")
-                    }
-                    colorPaints = colors.map {
-                        Paint().apply {
-                            isAntiAlias = true
-                            style = Paint.Style.FILL
-                            color = it
-                        }
-                    }.toTypedArray()
+                    baseColor = getColorOrThrow(R.styleable.ContributionsView_contributionColor)
                 } finally {
                     recycle()
                 }
             }
-    }
-
-    private val textPaint = TextPaint().apply {
-        isAntiAlias = true
-        style = Paint.Style.STROKE
     }
 
     var contributions: ShortContributions? = null
@@ -68,23 +47,34 @@ class ContributionsView @JvmOverloads constructor(
             onNewData(value)
         }
     private var points: Array<IntArray> = emptyArray()
-
-    private var labels: Array<TitleEntry> = emptyArray()
     private var cellSize: Int = 0
-    private var labelHeight: Int = 0
+
+    private fun cellPaint(color: Int, alpha: Int) = Paint().also {
+        it.isAntiAlias = true
+        it.style = Paint.Style.FILL
+        it.color = color
+        // Order matters; place alpha below color
+        it.alpha = alpha
+    }
 
     private fun onNewData(data: ShortContributions?) {
         if (data == null) {
             points = emptyArray()
-            labels = emptyArray()
             cellSize = 0
-            labelHeight = 0
             invalidate()
         } else {
+            val colors = data.contributionCalendar.colors
+            colorPaints = arrayOf(cellPaint(0x888888, 20)) + colors.map {
+                cellPaint(
+                    baseColor,
+                    (255 - Color.parseColor(it).luminance.apply {
+                        L.d { "Luminance $this" }
+                    })
+                )
+            }
             points = data.contributionCalendar.weeks.map {
                 it.contributionDays.map { d ->
-                    val level = levels.indexOfFirst { max -> d.contributionCount < max }
-                    if (level == -1) levels.size else level
+                    colors.indexOf(d.color) + 1
                 }.toIntArray()
             }.toTypedArray()
             if (points.isNotEmpty() && points[0].size < 7) {
@@ -102,7 +92,7 @@ class ContributionsView @JvmOverloads constructor(
         points.forEachIndexed { col, week ->
             week.forEachIndexed { row, i ->
                 val left = col * cellSize.toFloat()
-                val top = labelHeight + row * cellSize.toFloat()
+                val top = row * cellSize.toFloat()
                 canvas.drawRect(
                     left + cellBorder,
                     top + cellBorder,
@@ -112,20 +102,15 @@ class ContributionsView @JvmOverloads constructor(
                 )
             }
         }
-        labels.forEach {
-            canvas.drawText(it.text, it.loc.x, it.loc.y, textPaint)
-        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val data = contributions ?: return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        data.startedAt
+        if (points.isEmpty()) {
+            return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        }
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
-        cellSize = (parentWidth) / points.size
-        labelHeight = cellSize * 2 // TODO add max cap for title? Currently height of 2
-        // TODO compute labels
-        val expectedHeight = cellSize * 7 + labelHeight
-        textPaint.textSize = cellSize * 2f
+        cellSize = (parentWidth - paddingStart - paddingEnd) / points.size
+        val expectedHeight = cellSize * 7 + paddingTop + paddingBottom
         setMeasuredDimension(parentWidth, expectedHeight)
     }
 }

@@ -28,6 +28,7 @@
             android:layout_height="@dimen/icon_size"
             android:src="@{model.icon}"
             android:tint="?android:textColorTertiary"
+            android:tintMode="src_in"
             tools:src="@drawable/ic_star" />
 
         <TextView

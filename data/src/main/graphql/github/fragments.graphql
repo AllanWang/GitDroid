@@ -3,6 +3,7 @@ fragment ShortRepoRowItem on Repository {
     databaseId
     name
     nameWithOwner
+    description
     isFork
     isArchived
     isPrivate
@@ -33,18 +34,12 @@ fragment ShortRepoRowItem on Repository {
 }
 
 fragment ShortContributions on ContributionsCollection {
-    startedAt
-    endedAt
     contributionCalendar {
         colors
         weeks {
             contributionDays {
-                contributionCount
+                color
             }
-        }
-        months {
-            name
-            firstDay
         }
     }
 }

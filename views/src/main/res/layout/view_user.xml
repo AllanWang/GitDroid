@@ -34,6 +34,7 @@
             android:layout_marginTop="@dimen/kau_padding_small"
             android:src="@drawable/ic_github_dev_program"
             android:tint="?android:textColorTertiary"
+            android:tintMode="src_in"
             app:layout_constraintStart_toStartOf="@id/user_avatar"
             app:layout_constraintTop_toBottomOf="@id/user_avatar" />
 
@@ -54,7 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoLink="email"
-            android:text="@{user.name}"
+            android:text="@{user.email}"
+            app:goneFlag="@{user.email}"
             app:layout_constraintStart_toStartOf="@id/user_name"
             app:layout_constraintTop_toBottomOf="@id/user_name"
             tools:text="me@github.com" />
@@ -67,6 +69,7 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:text="@{user.websiteUrl.toString()}"
+            app:goneFlag="@{user.websiteUrl}"
             app:layout_constraintStart_toStartOf="@id/user_name"
             app:layout_constraintTop_toBottomOf="@id/user_email"
             tools:text="google.ca" />
@@ -77,7 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoLink="map"
-            android:text="@{user.name}"
+            android:text="@{user.location}"
+            app:goneFlag="@{user.location}"
             app:layout_constraintStart_toStartOf="@id/user_name"
             app:layout_constraintTop_toBottomOf="@id/user_web"
             tools:text="Montreal, Canada" />
@@ -122,6 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_desc"
@@ -133,10 +138,13 @@
             android:id="@+id/user_contributions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
             app:contributions="@{user.contributionsCollection.fragments.shortContributions}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_entries" />
+            app:layout_constraintTop_toBottomOf="@id/user_entries"
+            tools:background="?colorAccent" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -145,6 +153,7 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_contributions"

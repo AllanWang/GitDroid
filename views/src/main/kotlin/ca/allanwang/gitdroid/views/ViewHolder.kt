@@ -85,6 +85,6 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
         get() = data.icon
 
     override fun ViewSlimEntryBinding.bind(position: Int, payloads: MutableList<Any>) {
-        TODO("not implemented")
+        model = data
     }
 }

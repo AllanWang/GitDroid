@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{repo.name}"
+            android:text="@{repo.description}"
+            app:goneFlag="@{repo.description}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/repo_name"
@@ -112,12 +113,12 @@
             style="@style/RepoChips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:textStartPadding="4dp"
             app:chipIcon="@drawable/ic_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/repo_language"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:relativeDateText="@{repo.updatedAt}"
+            app:textStartPadding="4dp"
             tools:text="@tools:sample/date/mmddyy" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

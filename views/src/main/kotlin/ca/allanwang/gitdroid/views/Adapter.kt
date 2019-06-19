@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.util.containsKey
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.util.*
@@ -102,14 +101,11 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
 
-        fun bind(
-            recyclerView: RecyclerView,
-            layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(recyclerView.context)
-        ): Adapter {
-            val adapter = Adapter()
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = layoutManager
-            return adapter
+        /**
+         * Attaches adapter, or returns existing one if it is found
+         */
+        fun bind(recyclerView: RecyclerView): Adapter {
+            return (recyclerView.adapter as? Adapter) ?: Adapter().also { recyclerView.adapter = it }
         }
     }
 
