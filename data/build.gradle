@@ -21,8 +21,7 @@ apollo {
             // Using java uri to support non android unit tests
             "URI" : "java.net.URI",
             // TEMP https://github.com/apollographql/apollo-android/issues/1380
-//            "Date": "java.lang.String",
-            "Date": "ca.allanwang.gitdroid.data.helpers.DateWrapper",
+            "Date": "java.lang.String",
 //            "Date": "java.util.Date",
             "DateTime": "java.util.Date",
             "Object": "java.lang.String"

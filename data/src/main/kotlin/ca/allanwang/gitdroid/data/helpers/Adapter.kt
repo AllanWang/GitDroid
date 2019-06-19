@@ -30,23 +30,6 @@ internal object DateApolloAdapter : CustomTypeAdapter<Date> {
     }
 }
 
-class DateWrapper(val date: Date)
-
-
-internal object DateApolloAdapter2 : CustomTypeAdapter<DateWrapper> {
-
-    override fun encode(value: DateWrapper): CustomTypeValue<*> = CustomTypeValue.fromRawValue(value.date)
-    override fun decode(value: CustomTypeValue<*>): DateWrapper {
-        return DateWrapper(try {
-            val date = value.value as String
-            SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date)!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Date()
-        })
-    }
-}
-
 internal object DateTimeApolloAdapter : CustomTypeAdapter<Date> {
 
     override fun encode(value: Date): CustomTypeValue<*> = CustomTypeValue.fromRawValue(value)

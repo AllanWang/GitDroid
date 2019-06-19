@@ -140,7 +140,7 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 .httpCache(ApolloHttpCache(cacheStore))
                 .okHttpClient(okHttpClient)
                 .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
-                .addCustomTypeAdapter(CustomType.DATE, DateApolloAdapter2)
+                .addCustomTypeAdapter(CustomType.DATE, DateApolloAdapter)
                 .addCustomTypeAdapter(CustomType.DATETIME, DateTimeApolloAdapter)
                 .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
                 .build()
