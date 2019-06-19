@@ -33,6 +33,17 @@ object L : KauLogger("GitDroid", {
             e(e, message)
     }
 
+    /**
+     * Crash on debug, log on release
+     */
+    inline fun fail(message: () -> Any?) {
+        if (BuildConfig.DEBUG) {
+            throw RuntimeException(message().toString())
+        } else {
+            e(null, message)
+        }
+    }
+
 //    override fun logImpl(priority: Int, message: String?, t: Throwable?) {
 //        if (BuildConfig.DEBUG)
 //            super.logImpl(priority, message, t)

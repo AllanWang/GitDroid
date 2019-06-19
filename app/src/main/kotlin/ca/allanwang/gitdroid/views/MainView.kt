@@ -54,7 +54,7 @@ fun BaseActivity.bindMainView(parent: ViewGroup) {
         fun request(id: Int, forceRefresh: Boolean) {
             val loader = loaders[id]
             if (loader == null) {
-                L.e { "Missing loader for main view" }
+                L.fail { "Missing loader for main view" }
                 return
             }
             val tag = loader::class.java.simpleName

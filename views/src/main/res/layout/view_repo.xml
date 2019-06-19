@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="repo"
+            name="model"
             type="github.fragment.ShortRepoRowItem" />
     </data>
 
@@ -26,7 +26,7 @@
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{repo.name}"
+            android:text="@{model.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{repo.description}"
-            app:goneFlag="@{repo.description}"
+            android:text="@{model.description}"
+            app:goneFlag="@{model.description}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/repo_name"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_star_border"
-            app:compactNumberText="@{repo.stargazers.totalCount}"
+            app:compactNumberText="@{model.stargazers.totalCount}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:layout_constraintWidth_percent="0.12"
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_fork"
-            app:compactNumberText="@{repo.forkCount}"
+            app:compactNumberText="@{model.forkCount}"
             app:layout_constraintStart_toEndOf="@id/repo_stars"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:layout_constraintWidth_percent="0.12"
@@ -76,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_issues"
-            app:compactNumberText="@{repo.issues.totalCount}"
+            app:compactNumberText="@{model.issues.totalCount}"
             app:layout_constraintStart_toEndOf="@id/repo_forks"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:layout_constraintWidth_percent="0.12"
@@ -88,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_pull_requests"
-            app:compactNumberText="@{repo.pullRequests.totalCount}"
+            app:compactNumberText="@{model.pullRequests.totalCount}"
             app:layout_constraintStart_toEndOf="@id/repo_issues"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:layout_constraintWidth_percent="0.12"
@@ -99,9 +99,9 @@
             style="@style/RepoChips"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{repo.primaryLanguage.name}"
+            android:text="@{model.primaryLanguage.name}"
             app:chipIcon="@drawable/ic_language"
-            app:languageColor="@{repo.primaryLanguage.color}"
+            app:languageColor="@{model.primaryLanguage.color}"
             app:layout_constraintEnd_toStartOf="@id/repo_date"
             app:layout_constraintStart_toEndOf="@id/repo_prs"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
@@ -117,7 +117,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/repo_language"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
-            app:relativeDateText="@{repo.updatedAt}"
+            app:relativeDateText="@{model.updatedAt}"
             app:textStartPadding="4dp"
             tools:text="@tools:sample/date/mmddyy" />
 

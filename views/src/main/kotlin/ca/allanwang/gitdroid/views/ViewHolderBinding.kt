@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.views.databinding.*
 import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
@@ -24,9 +25,17 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
 
     open fun T.create() {}
 
-    abstract fun T.bind(position: Int, payloads: MutableList<Any>)
+    open fun T.bind(position: Int, payloads: MutableList<Any>) {
+        if (setVariable(BR.model, data)) {
+            L.fail { "Could not bind model to ${this::class.java.simpleName}" }
+        }
+    }
 
-    open fun T.onRecycled() {}
+    open fun T.onRecycled() {
+        if (setVariable(BR.model, null)) {
+            L.fail { "Could not unbind model to ${this::class.java.simpleName}" }
+        }
+    }
 
     fun onCreate(parent: ViewGroup): View {
         val binding: T = DataBindingUtil.inflate(LayoutInflater.from(parent.context), layoutRes, parent, false)
@@ -58,10 +67,6 @@ abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val ty
 
     override val dataId: Int?
         get() = data.databaseId
-
-    override fun ViewIssueOrPrItemBinding.bind(position: Int, payloads: MutableList<Any>) {
-        model = data
-    }
 }
 
 class IssueVhBinding(data: ShortIssueRowItem) :
@@ -75,10 +80,6 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
     ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
     override val dataId: Int?
         get() = data.databaseId
-
-    override fun ViewRepoBinding.bind(position: Int, payloads: MutableList<Any>) {
-        repo = data
-    }
 }
 
 fun GetProfileQuery.PinnedItems.vhList(): List<VHBindingType> = pinnedItems?.mapNotNull { item ->
@@ -93,10 +94,6 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
     override val dataId: Int?
         get() = data.icon
 
-    override fun ViewSlimEntryBinding.bind(position: Int, payloads: MutableList<Any>) {
-        model = data
-    }
-
     override fun onClick(view: View, position: Int) {
         super.onClick(view, position)
         data.onClick?.invoke(view)
@@ -107,10 +104,6 @@ class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
     ViewHolderBinding<ViewUserHeaderBinding>(data, R.layout.view_user_header) {
     override val dataId: Int?
         get() = data.databaseId
-
-    override fun ViewUserHeaderBinding.bind(position: Int, payloads: MutableList<Any>) {
-        model = data
-    }
 }
 
 class UserContributionVhBinding(override val data: GetProfileQuery.User) :

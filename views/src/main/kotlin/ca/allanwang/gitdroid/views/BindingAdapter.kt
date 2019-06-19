@@ -24,7 +24,7 @@ fun View.goneFlag(value: Any?) {
         is String -> goneIf(value.isBlank())
         is Boolean -> goneIf(value)
         is Int -> goneIf(value == 0)
-        else -> L.e { "Unhandled goneFlag type ${value::class.java.simpleName}" }
+        else -> L.fail { "Unhandled goneFlag type ${value::class.java.simpleName}" }
     }
 }
 
