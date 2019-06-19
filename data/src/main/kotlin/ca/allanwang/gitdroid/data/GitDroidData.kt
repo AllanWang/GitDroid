@@ -125,29 +125,6 @@ class GitDroidData : KoinComponent, GitGraphQl {
 
     private val apollo: ApolloClient by inject()
 
-    fun module(context: Context) = module {
-        single<ApolloClient> {
-            val cacheFile = File(context.applicationContext.cacheDir, "apolloCache")
-            val cacheSize = 1024L * 1024L
-
-            val cacheStore = DiskLruHttpCacheStore(cacheFile, cacheSize)
-
-            val okHttpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
-                .build()
-
-            ApolloClient.builder()
-                .serverUrl(GRAPHQL_URL)
-                .httpCache(ApolloHttpCache(cacheStore))
-                .okHttpClient(okHttpClient)
-                .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
-                .addCustomTypeAdapter(CustomType.DATE, DateApolloAdapter)
-                .addCustomTypeAdapter(CustomType.DATETIME, DateTimeApolloAdapter)
-                .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
-                .build()
-        }
-    }
-
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,

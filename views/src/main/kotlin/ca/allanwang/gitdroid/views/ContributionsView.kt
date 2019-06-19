@@ -119,6 +119,7 @@ class ContributionsView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val data = contributions ?: return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        data.startedAt
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         cellSize = (parentWidth) / points.size
         labelHeight = cellSize * 2 // TODO add max cap for title? Currently height of 2
