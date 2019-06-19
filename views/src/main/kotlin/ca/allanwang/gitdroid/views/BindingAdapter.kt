@@ -3,14 +3,14 @@ package ca.allanwang.gitdroid.views
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.format.DateUtils
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.getSystemService
 import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.kau.utils.gone
+import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.round
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -19,6 +19,17 @@ import github.GetProfileQuery
 import github.fragment.ShortRepoRowItem
 import java.net.URI
 import java.util.*
+
+@BindingAdapter("goneFlag")
+fun View.goneFlag(value: Any?) {
+    when (value) {
+        null -> gone()
+        is String -> goneIf(value.isBlank())
+        is Boolean -> goneIf(value)
+        is Int -> goneIf(value == 0)
+        else -> L.e { "Unhandled goneFlag type ${value::class.java.simpleName}" }
+    }
+}
 
 @BindingAdapter("languageColor")
 fun TextView.languageColor(color: String) {
@@ -71,20 +82,17 @@ fun ImageView.glideRound(model: Any?) {
 }
 
 @BindingAdapter("pinnedItems")
-fun ViewGroup.pinnedItems(
+fun RecyclerView.pinnedItems(
     items: GetProfileQuery.PinnedItems
 ) {
-    removeAllViews()
-    val inflater = context.getSystemService<LayoutInflater>() ?: return
-    items.pinnedItems?.map {
-        val (layoutId, varId) = when (it) {
-            is ShortRepoRowItem -> R.layout.view_repo to BR.repo
+    val adapter = Adapter.bind(this)
+    val models: List<VHBindingType> = items.pinnedItems?.map {
+        when (it) {
+            is ShortRepoRowItem -> RepoVhBinding(it)
             else -> throw RuntimeException("Invalid pinned item type ${it.__typename}")
         }
-        val binding = DataBindingUtil
-            .inflate<ViewDataBinding>(inflater, layoutId, this, true)
-        binding.setVariable(varId, it)
-    }
+    } ?: emptyList()
+    adapter.data = models
 }
 
 @BindingAdapter("compactNumberText")
@@ -102,4 +110,9 @@ fun TextView.compactNumberText(count: Int) {
     }
 
     text = compactText
+}
+
+@BindingAdapter("memberSinceText")
+fun TextView.memberSinceText(date: Date) {
+    context.getString(R.string.member_since_s, date.toString())
 }

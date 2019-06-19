@@ -5,8 +5,6 @@
 
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="model"
             type="ca.allanwang.gitdroid.data.GitIssueOrPr" />
@@ -112,7 +110,7 @@
             android:layout_marginEnd="@dimen/small_edge_margin"
             android:src="@drawable/ic_lock"
             android:tint="?android:textColorTertiary"
-            android:visibility="@{model.locked ? View.VISIBLE : View.GONE}"
+            app:goneFlag="@{!model.locked}"
             app:layout_constraintBottom_toBottomOf="@id/ipr_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -127,9 +125,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_edge_margin"
             android:layout_marginEnd="@dimen/small_edge_margin"
-            android:visibility="@{model.commentCount == 0 ? View.GONE : View.VISIBLE}"
             app:chipIcon="@drawable/ic_chat_bubble"
             app:compactNumberText="@{model.commentCount}"
+            app:goneFlag="@{model.commentCount}"
             app:layout_constraintBottom_toBottomOf="@id/ipr_details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
