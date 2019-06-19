@@ -52,4 +52,4 @@ data class GitIssueOrPr(
     }
 }
 
-data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: View.OnClickListener? = null)
+data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)

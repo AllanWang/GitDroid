@@ -13,13 +13,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
-        android:layout_marginTop="@dimen/kau_padding_small"
-        android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/kau_padding_small"
+        android:paddingStart="@dimen/kau_activity_horizontal_margin"
+        android:paddingTop="@dimen/kau_padding_small"
+        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+        android:paddingBottom="@dimen/kau_padding_small"
         android:foreground="?selectableItemBackground"
         android:gravity="center_vertical"
-        android:onClick="@{model.onClick}"
         android:orientation="horizontal">
 
         <ImageView

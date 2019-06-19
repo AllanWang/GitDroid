@@ -76,6 +76,7 @@
             android:layout_marginStart="@dimen/kau_padding_normal"
             android:layout_marginEnd="@dimen/kau_padding_normal"
             android:autoLink="email"
+            android:linksClickable="true"
             android:text="@{user.email}"
             app:goneFlag="@{user.email}"
             app:layout_constraintEnd_toStartOf="@id/user_follow_toggle"

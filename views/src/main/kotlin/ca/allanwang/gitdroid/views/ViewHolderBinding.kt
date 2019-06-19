@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
-import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
-import ca.allanwang.gitdroid.views.databinding.ViewSlimEntryBinding
+import ca.allanwang.gitdroid.views.databinding.*
+import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
@@ -45,6 +44,8 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
         binding.onRecycled()
         binding.unbind()
     }
+
+    open fun onClick(view: View, position: Int) {}
 
     open fun isItemSame(vh: VHBindingType): Boolean = typeId == vh.typeId && dataId != null && dataId == vh.dataId
     open fun isContentSame(vh: VHBindingType): Boolean = typeId == vh.typeId && data == vh.data
@@ -86,5 +87,30 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
 
     override fun ViewSlimEntryBinding.bind(position: Int, payloads: MutableList<Any>) {
         model = data
+    }
+
+    override fun onClick(view: View, position: Int) {
+        super.onClick(view, position)
+        data.onClick?.invoke(view)
+    }
+}
+
+class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
+    ViewHolderBinding<ViewUserHeaderBinding>(data, R.layout.view_user_header) {
+    override val dataId: Int?
+        get() = data.databaseId
+
+    override fun ViewUserHeaderBinding.bind(position: Int, payloads: MutableList<Any>) {
+        model = data
+    }
+}
+
+class UserContributionVhBinding(override val data: GetProfileQuery.User) :
+    ViewHolderBinding<ViewUserContributionsBinding>(data, R.layout.view_user_contributions) {
+    override val dataId: Int?
+        get() = data.databaseId
+
+    override fun ViewUserContributionsBinding.bind(position: Int, payloads: MutableList<Any>) {
+        model = data.contributionsCollection.fragments.shortContributions
     }
 }

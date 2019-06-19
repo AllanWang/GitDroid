@@ -25,6 +25,15 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
 
+    fun insert(data: List<VHBindingType>) {
+        val newData = _data + data
+        if (job?.isActive == true) {
+            this.data = newData
+        } else {
+            this._data = newData
+            notifyItemRangeInserted(newData.size - data.size, data.size)
+        }
+    }
 
     private suspend fun update(data: List<VHBindingType>) = withContext(Dispatchers.Main) {
         val oldData = _data
@@ -71,6 +80,11 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val view = typeCache[viewType].onCreate(parent)
         val holder = ViewHolder(view)
         holder.itemView.setTag(R.id.git_view_adapter, this)
+        holder.itemView.setOnClickListener {
+            val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
+            val vhb = it.getTag(R.id.git_view_item) as? VHBindingType ?: return@setOnClickListener
+            vhb.onClick(it, pos)
+        }
         return holder
     }
 
@@ -98,6 +112,7 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return data.getOrNull(position)?.typeId ?: super.getItemViewType(position)
     }
+
 
     companion object {
 

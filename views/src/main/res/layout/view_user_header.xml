@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+
+        <variable
+            name="model"
+            type="github.GetProfileQuery.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/kau_activity_vertical_margin"
+        android:paddingBottom="@dimen/kau_activity_vertical_margin">
+
+        <ImageView
+            android:id="@+id/user_header_avatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
+            app:glide="@{model.avatarUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageButton
+            android:id="@+id/user_header_follow_toggle"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@{model.viewerIsFollowing ? @drawable/ic_person_remove : @drawable/ic_person_add}"
+            android:tint="?android:textColorTertiary"
+            app:goneFlag="@{model.viewerCanFollow}"
+            app:layout_constraintBottom_toBottomOf="@id/user_header_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/user_header_avatar"
+            app:layout_constraintVertical_bias="0.5"
+            tools:src="@drawable/ic_person_add" />
+
+        <ImageView
+            android:id="@+id/user_header_dev_program"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginTop="@dimen/kau_padding_small"
+            android:src="@drawable/ic_github_dev_program"
+            android:tint="?android:textColorTertiary"
+            android:tintMode="src_in"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/user_header_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_header_avatar" />
+
+        <TextView
+            android:id="@+id/user_header_name"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:text="@{model.name ?? model.login}"
+            app:layout_constraintEnd_toStartOf="@id/user_header_follow_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/user_header_avatar"
+            app:layout_constraintTop_toTopOf="@id/user_header_avatar"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/user_header_email"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:autoLink="email"
+            android:linksClickable="true"
+            android:text="@{model.email}"
+            app:goneFlag="@{model.email}"
+            app:layout_constraintEnd_toStartOf="@id/user_header_follow_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/user_header_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_header_name"
+            tools:text="me@github.com" />
+
+
+        <TextView
+            android:id="@+id/user_header_web"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:autoLink="web"
+            android:text="@{model.websiteUrl.toString()}"
+            app:goneFlag="@{model.websiteUrl}"
+            app:layout_constraintEnd_toStartOf="@id/user_header_follow_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/user_header_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_header_email"
+            tools:text="google.ca" />
+
+        <TextView
+            android:id="@+id/user_header_location"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:autoLink="map"
+            android:text="@{model.location}"
+            app:goneFlag="@{model.location}"
+            app:layout_constraintEnd_toStartOf="@id/user_header_follow_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/user_header_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_header_web"
+            tools:text="Montreal, Canada" />
+
+        <TextView
+            android:id="@+id/user_header_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/kau_padding_normal"
+            android:layout_marginEnd="@dimen/kau_padding_normal"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{model.bio}"
+            app:goneFlag="@{model.bio}"
+            app:layout_constraintEnd_toStartOf="@id/user_header_follow_toggle"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/user_header_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_header_location"
+            tools:text="@tools:sample/lorem/random" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
