@@ -70,6 +70,7 @@ class IssueVhBinding(data: ShortIssueRowItem) :
 class PullRequestVhBinding(data: ShortPullRequestRowItem) :
     IssuePrVhBinding(GitIssueOrPr.fromPullRequest(data), R.id.git_vh_pr)
 
+
 class RepoVhBinding(override val data: ShortRepoRowItem) :
     ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
     override val dataId: Int?
@@ -79,6 +80,13 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
         repo = data
     }
 }
+
+fun GetProfileQuery.PinnedItems.vhList(): List<VHBindingType> = pinnedItems?.mapNotNull { item ->
+    when (item) {
+        is GetProfileQuery.AsPinnableItem -> item.fragments.shortRepoRowItem?.vh()
+        else -> throw RuntimeException("Invalid pinned item type ${item.__typename} ${item::class.java.simpleName}")
+    }
+} ?: emptyList()
 
 class SlimEntryVhBinding(override val data: SlimEntry) :
     ViewHolderBinding<ViewSlimEntryBinding>(data, R.layout.view_slim_entry) {
@@ -114,3 +122,4 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
         model = data.contributionsCollection.fragments.shortContributions
     }
 }
+
