@@ -36,9 +36,10 @@ fragment ShortContributions on ContributionsCollection {
     startedAt
     endedAt
     contributionCalendar {
+        colors
         weeks {
             contributionDays {
-                color
+                contributionCount
             }
         }
         months {
