@@ -10,6 +10,7 @@ import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 private const val GET_COUNT = 30
 
@@ -23,7 +24,10 @@ interface GitGraphQl {
     suspend fun <D : Operation.Data, T, V : Operation.Variables, R>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,
-        policy: HttpCachePolicy.ExpirePolicy = HttpCachePolicy.CACHE_FIRST, mapper: T.() -> R
+        policy: HttpCachePolicy.ExpirePolicy = HttpCachePolicy.CACHE_FIRST.expireAfter(
+            if (BuildConfig.DEBUG) 30 else 1,
+            TimeUnit.MINUTES
+        ), mapper: T.() -> R
     ): Response<R> {
         val response = query(query)
         return withContext(Dispatchers.Default) {

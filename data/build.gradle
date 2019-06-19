@@ -34,6 +34,7 @@ repositories {
 }
 
 dependencies {
+    implementation "com.apollographql.apollo:apollo-android-support:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-http-cache:${Versions.apollo}"
