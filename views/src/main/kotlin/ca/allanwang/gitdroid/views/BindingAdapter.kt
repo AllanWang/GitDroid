@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.kau.utils.gone
 import ca.allanwang.kau.utils.goneIf
@@ -15,8 +14,6 @@ import ca.allanwang.kau.utils.round
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
-import github.GetProfileQuery
-import github.fragment.ShortRepoRowItem
 import java.net.URI
 import java.util.*
 
@@ -79,6 +76,11 @@ fun ImageView.glideRound(model: Any?) {
             .apply(RequestOptions.circleCropTransform())
             .into(this)
     }
+}
+
+@BindingAdapter("android:src")
+fun ImageView.setImageViewResource(resource: Int) {
+    setImageResource(resource)
 }
 
 @BindingAdapter("compactNumberText")
