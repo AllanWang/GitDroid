@@ -34,27 +34,19 @@ fun RecyclerView.slimItems(
         ),
         SlimEntry(
             R.drawable.ic_people,
-            context.resources.getQuantityString(R.plurals.followers_n, user.followers.totalCount)
+            context.quantityN(R.plurals.followers_n, user.followers.totalCount)
         ),
         SlimEntry(
             R.drawable.ic_group,
-            context.resources.getQuantityString(R.plurals.following_n, user.following.totalCount)
+            context.quantityN(R.plurals.following_n, user.following.totalCount)
         ),
         SlimEntry(
             R.drawable.ic_repo,
-            context.resources.getQuantityString(
-                R.plurals.repos_n,
-                user.repositories.totalCount,
-                user.repositories.totalCount
-            )
+            context.quantityN(R.plurals.repos_n, user.repositories.totalCount)
         ),
         SlimEntry(
             R.drawable.ic_code,
-            context.resources.getQuantityString(
-                R.plurals.repos_n,
-                user.repositories.totalCount,
-                user.repositories.totalCount
-            )
+            context.quantityN(R.plurals.repos_n, user.repositories.totalCount)
         )
     )
     adapter.data = models.map { SlimEntryVhBinding(it) }
