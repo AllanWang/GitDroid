@@ -20,7 +20,10 @@ apollo {
     customTypeMapping = [
             // Using java uri to support non android unit tests
             "URI" : "java.net.URI",
-            "Date": "java.util.Date",
+            // TEMP https://github.com/apollographql/apollo-android/issues/1380
+//            "Date": "java.lang.String",
+            "Date": "ca.allanwang.gitdroid.data.helpers.DateWrapper",
+//            "Date": "java.util.Date",
             "DateTime": "java.util.Date",
             "Object": "java.lang.String"
     ]

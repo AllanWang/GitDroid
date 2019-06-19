@@ -1,10 +1,7 @@
 package ca.allanwang.gitdroid.data
 
 import android.content.Context
-import ca.allanwang.gitdroid.data.helpers.AuthInterceptor
-import ca.allanwang.gitdroid.data.helpers.DateApolloAdapter
-import ca.allanwang.gitdroid.data.helpers.ObjectApolloAdapter
-import ca.allanwang.gitdroid.data.helpers.UriApolloAdapter
+import ca.allanwang.gitdroid.data.helpers.*
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
@@ -143,7 +140,8 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 .httpCache(ApolloHttpCache(cacheStore))
                 .okHttpClient(okHttpClient)
                 .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
-                .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
+                .addCustomTypeAdapter(CustomType.DATE, DateApolloAdapter2)
+                .addCustomTypeAdapter(CustomType.DATETIME, DateTimeApolloAdapter)
                 .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
                 .build()
         }
