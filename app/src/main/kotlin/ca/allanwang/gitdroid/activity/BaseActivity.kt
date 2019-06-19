@@ -15,6 +15,7 @@ import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
 import com.apollographql.apollo.api.Response
 import github.sql.GitUser
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -25,10 +26,17 @@ abstract class BaseActivity : KauBaseActivity() {
     val db: Database by inject()
     val gdd: GitDroidData by inject()
 
-    suspend fun me(): GitUser? {
+    /**
+     * Returns current user based on token
+     * If not found, will auto redirect to the login page.
+     */
+    suspend fun me(): GitUser {
         val me = db.userQueries.select(prefs.token).awaitOptional()
         if (me == null) {
-            LoginActivity.logout(this)
+            withContext(Dispatchers.Main) {
+                LoginActivity.logout(this@BaseActivity)
+            }
+            throw  CancellationException("GitUser not found")
         }
         return me
     }

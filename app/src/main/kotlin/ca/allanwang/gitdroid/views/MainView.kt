@@ -151,8 +151,7 @@ fun <T> mainPanelLoader(
         override val id: Int = id
 
         override suspend fun BaseActivity.loadData(): List<VHBindingType> {
-            val me = me() ?: return emptyList()
-            val result: List<T> = gdd.loader(me).await() ?: return emptyList()
+            val result: List<T> = gdd.loader(me()).await() ?: return emptyList()
             return result.map { vhBinding(it) }
         }
     }
