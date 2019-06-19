@@ -20,7 +20,9 @@ apollo {
     customTypeMapping = [
             // Using java uri to support non android unit tests
             "URI" : "java.net.URI",
-            "Date": "java.util.Date",
+            // TEMP https://github.com/apollographql/apollo-android/issues/1380
+            "Date": "java.lang.String",
+//            "Date": "java.util.Date",
             "DateTime": "java.util.Date",
             "Object": "java.lang.String"
     ]
@@ -32,6 +34,7 @@ repositories {
 }
 
 dependencies {
+    implementation "com.apollographql.apollo:apollo-android-support:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-coroutines-support:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-http-cache:${Versions.apollo}"

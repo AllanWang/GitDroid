@@ -6,4 +6,5 @@
     <string name="login_password">Password</string>
     <string name="following_n">Following (%d)</string>
     <string name="followers_n">Followers (%d)</string>
+    <string name="member_since_s">Member since %s</string>
 </resources>

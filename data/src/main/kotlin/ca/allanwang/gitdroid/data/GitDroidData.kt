@@ -8,9 +8,17 @@ import ca.allanwang.gitdroid.data.helpers.UriApolloAdapter
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.cache.http.HttpCache
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
+import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
+import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.coroutines.toDeferred
 import github.type.CustomType
 import kotlinx.coroutines.Dispatchers
@@ -36,8 +44,6 @@ data class OAuthRequest(val url: String, val state: String) {
 }
 
 class GitDroidData : KoinComponent, GitGraphQl {
-
-    private val tokenSupplier: TokenSupplier by inject()
 
     companion object {
         internal const val API_BASE_URL = "https://api.github.com"
@@ -90,6 +96,38 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 if (cacheStore != null) {
                     builder.httpCache(cacheStore)
                 }
+                // I'm not convinced that this does anything useful, given we don't provide keys
+                // for field arguments
+//                if (context != null) {
+//                    val sqlHelper = ApolloSqlHelper.create(context, "apolloDb")
+//                    val sqlCacheFactory = SqlNormalizedCacheFactory(sqlHelper)
+//                    val resolver = object : CacheKeyResolver() {
+//                        override fun fromFieldRecordSet(
+//                            field: ResponseField,
+//                            recordSet: MutableMap<String, Any>
+//                        ): CacheKey {
+//                            val type = recordSet["__typename"] as? String ?: return CacheKey.NO_KEY
+//                            val id = recordSet["id"] as? String ?: return CacheKey.NO_KEY
+//                            return CacheKey.from("$type.$id")
+//                        }
+//
+//                        override fun fromFieldArguments(
+//                            field: ResponseField,
+//                            variables: Operation.Variables
+//                        ): CacheKey {
+//                            return CacheKey.NO_KEY
+//                        }
+//                    }
+//
+//                    builder.normalizedCache(
+//                        LruNormalizedCacheFactory(
+//                            EvictionPolicy.builder()
+//                                .maxSizeBytes(10 * 1024)
+//                                .build()
+//                        ).chain(sqlCacheFactory), resolver
+//                    )
+//                }
+
                 builder.build()
             }
             single { GitDroidData() }
@@ -127,33 +165,14 @@ class GitDroidData : KoinComponent, GitGraphQl {
 
     private val apollo: ApolloClient by inject()
 
-    fun module(context: Context) = module {
-        single<ApolloClient> {
-            val cacheFile = File(context.applicationContext.cacheDir, "apolloCache")
-            val cacheSize = 1024L * 1024L
-
-            val cacheStore = DiskLruHttpCacheStore(cacheFile, cacheSize)
-
-            val okHttpClient = OkHttpClient.Builder()
-                .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
-                .build()
-
-            ApolloClient.builder()
-                .serverUrl(GRAPHQL_URL)
-                .httpCache(ApolloHttpCache(cacheStore))
-                .okHttpClient(okHttpClient)
-                .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
-                .addCustomTypeAdapter(CustomType.DATETIME, DateApolloAdapter)
-                .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
-                .build()
-        }
-    }
-
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
-            query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T> =
+            query(
+        query: com.apollographql.apollo.api.Query<D, T, V>,
+        policy: HttpCachePolicy.ExpirePolicy
+    ): Response<T> =
         withContext(Dispatchers.IO) {
             withTimeout(15000) {
-                apollo.query(query).toDeferred().await()
+                apollo.query(query).httpCachePolicy(policy).toDeferred().await()
             }
         }
 

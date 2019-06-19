@@ -3,21 +3,32 @@ package ca.allanwang.gitdroid.data
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import github.*
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 private const val GET_COUNT = 30
 
 interface GitGraphQl {
     suspend fun <D : Operation.Data, T, V : Operation.Variables>
-            query(query: com.apollographql.apollo.api.Query<D, T, V>): Response<T>
+            query(
+        query: com.apollographql.apollo.api.Query<D, T, V>,
+        policy: HttpCachePolicy.ExpirePolicy = HttpCachePolicy.CACHE_FIRST
+    ): Response<T>
 
     suspend fun <D : Operation.Data, T, V : Operation.Variables, R>
-            query(query: com.apollographql.apollo.api.Query<D, T, V>, mapper: T.() -> R): Response<R> {
+            query(
+        query: com.apollographql.apollo.api.Query<D, T, V>,
+        policy: HttpCachePolicy.ExpirePolicy = HttpCachePolicy.CACHE_FIRST.expireAfter(
+            if (BuildConfig.DEBUG) 30 else 1,
+            TimeUnit.MINUTES
+        ), mapper: T.() -> R
+    ): Response<R> {
         val response = query(query)
         return withContext(Dispatchers.Default) {
             response.map(mapper)

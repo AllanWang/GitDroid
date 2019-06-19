@@ -2,7 +2,6 @@ package ca.allanwang.gitdroid.views
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.text.TextPaint
@@ -30,29 +29,32 @@ class ContributionsView @JvmOverloads constructor(
      * If contribution count is greater than all values, use the last color.
      */
     private val levels: IntArray
+    private val cellBorder: Float
 
     init {
         setWillNotDraw(false)
-        context.theme.obtainStyledAttributes(attrs, R.styleable.ContributionsView, 0, R.style.Theme_GitDroid_Light).apply {
-            try {
-                val boundsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionBounds)
-                levels = resources.getIntArray(boundsId)
-                val colorsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionColors)
-                val colors = resources.getIntArray(colorsId)
-                if (colors.size != levels.size + 1) {
-                    throw IllegalArgumentException("Supplied ${colors.size} colors with ${levels.size} bounds; color count should be one greater than bounds count")
-                }
-                colorPaints = colors.map {
-                    Paint().apply {
-                        isAntiAlias = true
-                        style = Paint.Style.FILL
-                        color = it
+        context.theme.obtainStyledAttributes(attrs, R.styleable.ContributionsView, 0, R.style.Theme_GitDroid_Light)
+            .apply {
+                try {
+                    cellBorder = getDimension(R.styleable.ContributionsView_contributionCellBorder, 0f)
+                    val boundsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionBounds)
+                    levels = resources.getIntArray(boundsId)
+                    val colorsId = getResourceIdOrThrow(R.styleable.ContributionsView_contributionColors)
+                    val colors = resources.getIntArray(colorsId)
+                    if (colors.size != levels.size + 1) {
+                        throw IllegalArgumentException("Supplied ${colors.size} colors with ${levels.size} bounds; color count should be one greater than bounds count")
                     }
-                }.toTypedArray()
-            } finally {
-                recycle()
+                    colorPaints = colors.map {
+                        Paint().apply {
+                            isAntiAlias = true
+                            style = Paint.Style.FILL
+                            color = it
+                        }
+                    }.toTypedArray()
+                } finally {
+                    recycle()
+                }
             }
-        }
     }
 
     private val textPaint = TextPaint().apply {
@@ -71,12 +73,6 @@ class ContributionsView @JvmOverloads constructor(
     private var cellSize: Int = 0
     private var labelHeight: Int = 0
 
-    private companion object {
-        // If less than el at i, then level i
-        // Max level i + 1
-        private val levels = intArrayOf(1, 5, 11, 18)
-    }
-
     private fun onNewData(data: ShortContributions?) {
         if (data == null) {
             points = emptyArray()
@@ -87,7 +83,8 @@ class ContributionsView @JvmOverloads constructor(
         } else {
             points = data.contributionCalendar.weeks.map {
                 it.contributionDays.map { d ->
-                    levels.firstOrNull { max -> d.contributionCount < max } ?: levels.size
+                    val level = levels.indexOfFirst { max -> d.contributionCount < max }
+                    if (level == -1) levels.size else level
                 }.toIntArray()
             }.toTypedArray()
             if (points.isNotEmpty() && points[0].size < 7) {
@@ -95,12 +92,6 @@ class ContributionsView @JvmOverloads constructor(
             }
             requestLayout()
         }
-    }
-
-    private fun textPaint(color: String): Paint = Paint().apply {
-        isAntiAlias = true
-        style = Paint.Style.FILL
-        setColor(Color.parseColor(color))
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -113,10 +104,10 @@ class ContributionsView @JvmOverloads constructor(
                 val left = col * cellSize.toFloat()
                 val top = labelHeight + row * cellSize.toFloat()
                 canvas.drawRect(
-                    left,
-                    top,
-                    left + cellSize,
-                    top + cellSize,
+                    left + cellBorder,
+                    top + cellBorder,
+                    left + cellSize - cellBorder,
+                    top + cellSize - cellBorder,
                     colorPaints[i]
                 )
             }
@@ -128,6 +119,7 @@ class ContributionsView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val data = contributions ?: return super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        data.startedAt
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         cellSize = (parentWidth) / points.size
         labelHeight = cellSize * 2 // TODO add max cap for title? Currently height of 2

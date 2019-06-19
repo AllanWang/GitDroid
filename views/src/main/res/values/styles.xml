@@ -6,6 +6,7 @@
         <item name="windowNoTitle">true</item>
         <item name="contributionBounds">@array/contribution_bounds</item>
         <item name="contributionColors">@array/contribution_colors_default</item>
+        <item name="contributionCellBorder">@dimen/contribution_cell_border_default</item>
     </style>
 
     <style name="Theme.GitDroid" parent="Theme.MaterialComponents">
@@ -13,6 +14,7 @@
         <item name="windowNoTitle">true</item>
         <item name="contributionBounds">@array/contribution_bounds</item>
         <item name="contributionColors">@array/contribution_colors_default</item>
+        <item name="contributionCellBorder">@dimen/contribution_cell_border_default</item>
     </style>
 
     <style name="Theme.GitDroid.Light.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
