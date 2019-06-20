@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.views.databinding.*
+import com.bumptech.glide.Glide
 import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
@@ -36,10 +37,28 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
         }
     }
 
+    /**
+     * Called when view is recycled.
+     * Note that simply setting a variable to null doesn't actually do anything,
+     * meaning that this needs to be done manually
+     */
     open fun T.onRecycled() {
-        if (!setVariable(BR.model, null)) {
-            L.fail { "Could not unbind model to ${this::class.java.simpleName}" }
+    }
+
+    protected fun glideRecycle(vararg imageView: ImageView) {
+        if (imageView.isEmpty()) {
+            return
         }
+        val manager = Glide.with(imageView.first().context)
+        imageView.forEach { manager.clear(it) }
+    }
+
+    protected fun recycle(vararg imageView: ImageView) {
+        imageView.forEach { it.setImageDrawable(null) }
+    }
+
+    protected fun recycle(vararg textView: TextView) {
+        textView.forEach { it.text = null }
     }
 
     fun onCreate(parent: ViewGroup): View {
@@ -76,6 +95,11 @@ abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val ty
 
     override val dataId: Int?
         get() = data.databaseId
+
+    override fun ViewIssueOrPrItemBinding.onRecycled() {
+        glideRecycle(iprAvatar)
+        recycle(iprLogin, iprDate, iprTitle, iprDetails, iprComments)
+    }
 }
 
 class IssueVhBinding(data: ShortIssueRowItem) :
@@ -89,6 +113,10 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
     ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
     override val dataId: Int?
         get() = data.databaseId
+
+    override fun ViewRepoBinding.onRecycled() {
+        recycle(repoName, repoDesc, repoStars, repoForks, repoIssues, repoPrs, repoLanguage, repoDate)
+    }
 }
 
 class SlimEntryVhBinding(override val data: SlimEntry) :
@@ -100,12 +128,23 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
         super.onClick(view, info)
         data.onClick?.invoke(view)
     }
+
+    override fun ViewSlimEntryBinding.onRecycled() {
+        recycle(slimIcon)
+        recycle(slimText)
+    }
 }
 
 class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
     ViewHolderBinding<ViewUserHeaderBinding>(data, R.layout.view_user_header) {
     override val dataId: Int?
         get() = data.databaseId
+
+    override fun ViewUserHeaderBinding.onRecycled() {
+        glideRecycle(userHeaderAvatar)
+        recycle(userHeaderFollowToggle)
+        recycle(userHeaderName, userHeaderEmail, userHeaderWeb, userHeaderLocation, userHeaderDesc)
+    }
 }
 
 class UserContributionVhBinding(override val data: GetProfileQuery.User) :
@@ -115,6 +154,10 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 
     override fun ViewUserContributionsBinding.bind(info: BindInfo, payloads: MutableList<Any>) {
         model = data.contributionsCollection.fragments.shortContributions
+    }
+
+    override fun ViewUserContributionsBinding.onRecycled() {
+        userContributions.contributions = null
     }
 }
 
@@ -128,6 +171,10 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
         val isLast = info.position == info.totalCount - 1
         pathText.alpha = if (isLast) 1f else 0.7f
     }
+
+    override fun ViewPathCrumbBinding.onRecycled() {
+        recycle(pathText)
+    }
 }
 
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
@@ -135,33 +182,23 @@ class TreeEntryVhBinding(override val data: TreeEntryItem) :
     override val dataId: GitObjectID
         get() = data.oid // todo verify
 
-   companion object {
+    override fun ViewTreeEntryBinding.onRecycled() {
+        recycle(treeEntryIcon)
+        recycle(treeEntryText, treeEntrySize)
+    }
 
-       @BindingAdapter("treeEntrySrc")
-       @JvmStatic
-       fun ImageView.treeEntrySrc(obj: TreeEntryItem?) {
-           val src = when (obj?.obj) {
-               null -> null
-               is TreeEntryItem.AsBlob -> R.drawable.ic_file
-               else -> R.drawable.ic_folder
-           }
-           if (src == null) {
-               setImageDrawable(null)
-           } else {
-               setImageResource(src)
-           }
-       }
+    companion object {
 
-       @BindingAdapter("treeEntrySizeText")
-       @JvmStatic
-       fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
-           val blob = obj?.obj as? TreeEntryItem.AsBlob
-           if (blob == null) {
-               text = null
-           } else {
-               text = blob.byteSize.toString()
-           }
-       }
-   }
+        @BindingAdapter("treeEntrySizeText")
+        @JvmStatic
+        fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
+            val blob = obj?.obj as? TreeEntryItem.AsBlob
+            if (blob == null) {
+                text = null
+            } else {
+                text = blob.byteSize.toString()
+            }
+        }
+    }
 }
 

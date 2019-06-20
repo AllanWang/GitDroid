@@ -27,7 +27,7 @@
             android:id="@+id/tree_entry_icon"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            app:treeEntrySrc="@{model}"
+            android:src="@{model.obj instanceof AsBlob ? @drawable/ic_file : @drawable/ic_folder}"
             tools:src="@drawable/ic_file" />
 
         <TextView
