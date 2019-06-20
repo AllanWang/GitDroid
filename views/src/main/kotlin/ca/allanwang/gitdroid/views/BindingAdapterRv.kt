@@ -38,11 +38,11 @@ fun RecyclerView.slimItems(
             context.getString(R.string.member_since_s, dateFormat.format(user.createdAt))
         ),
         SlimEntry(
-            R.drawable.ic_people,
+            R.drawable.ic_followers,
             context.quantityN(R.plurals.followers_n, user.followers.totalCount)
         ),
         SlimEntry(
-            R.drawable.ic_group,
+            R.drawable.ic_following,
             context.quantityN(R.plurals.following_n, user.following.totalCount)
         ),
         SlimEntry(

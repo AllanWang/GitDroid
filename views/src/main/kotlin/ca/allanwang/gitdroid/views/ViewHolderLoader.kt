@@ -20,11 +20,11 @@ fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
             context.getString(R.string.member_since_s, dateFormat.format(createdAt))
         ),
         SlimEntry(
-            R.drawable.ic_people,
+            R.drawable.ic_followers,
             context.quantityN(R.plurals.followers_n, followers.totalCount)
         ),
         SlimEntry(
-            R.drawable.ic_group,
+            R.drawable.ic_following,
             context.quantityN(R.plurals.following_n, following.totalCount)
         ),
         SlimEntry(

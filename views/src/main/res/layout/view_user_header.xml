@@ -31,7 +31,7 @@
             android:id="@+id/user_header_follow_toggle"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/kau_padding_large"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@{model.viewerIsFollowing ? @drawable/ic_person_remove : @drawable/ic_person_add}"
             android:tint="?android:textColorTertiary"
