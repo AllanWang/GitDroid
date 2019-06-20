@@ -168,11 +168,11 @@ class GitDroidData : KoinComponent, GitGraphQl {
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,
-        policy: HttpCachePolicy.ExpirePolicy
+        forceRefresh: Boolean
     ): Response<T> =
         withContext(Dispatchers.IO) {
             withTimeout(15000) {
-                apollo.query(query).httpCachePolicy(policy).toDeferred().await()
+                apollo.query(query).policy(forceRefresh).toDeferred().await()
             }
         }
 

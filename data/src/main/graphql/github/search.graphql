@@ -1,65 +1,85 @@
 query me {
-  viewer {
-    login
-    avatarUrl
-    email
-    id
-    name
-  }
+    viewer {
+        login
+        avatarUrl
+        email
+        id
+        name
+    }
 }
 
 query searchRepos($query: String!, $count: Int, $cursor: String) {
-  search(query: $query, type: REPOSITORY, first: $count, after: $cursor) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+    search(query: $query, type: REPOSITORY, first: $count, after: $cursor) {
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        nodes {
+            ...ShortRepoRowItem
+        }
     }
-    nodes {
-        ...ShortRepoRowItem
+}
+
+query repoInfo($query: String!) {
+    search(query: $query, type: REPOSITORY, first: 1) {
+        nodes {
+            ...FullRepo
+        }
     }
-  }
+}
+
+query fileInfo($query: String!, $oid: GitObjectID!) {
+    search(query: $query, type: REPOSITORY, first: 1) {
+        nodes {
+            ... on Repository {
+                object(oid: $oid) {
+                    ...ObjectItem
+                }
+            }
+        }
+    }
 }
 
 query searchIssues($query: String!, $count: Int, $cursor: String) {
-  search(query: $query, type: ISSUE, first: $count, after: $cursor) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+    search(query: $query, type: ISSUE, first: $count, after: $cursor) {
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        nodes {
+            ...ShortIssueRowItem
+        }
     }
-    nodes {
-        ...ShortIssueRowItem
-    }
-  }
 }
 
 query searchPullRequests($query: String!, $count: Int, $cursor: String) {
-  search(query: $query, type: ISSUE, first: $count, after: $cursor) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+    search(query: $query, type: ISSUE, first: $count, after: $cursor) {
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        nodes {
+            ...ShortPullRequestRowItem
+        }
     }
-    nodes {
-        ...ShortPullRequestRowItem
-    }
-  }
 }
 
 query searchUser($query: String!, $count: Int, $cursor: String) {
-  search(query: $query, type: USER, first: $count, after: $cursor) {
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
+    search(query: $query, type: USER, first: $count, after: $cursor) {
+        pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+        nodes {
+            ...ShortUserRowItem
+        }
     }
-    nodes {
-        ...ShortUserRowItem
-    }
-  }
 }

@@ -1,3 +1,49 @@
+fragment ObjectItem on GitObject {
+    ... on Tree {
+        entries {
+            ...TreeEntryItem
+        }
+    }
+    ... on Blob {
+        text
+        isTruncated
+    }
+}
+
+fragment TreeEntryItem on TreeEntry {
+    oid
+    name
+    type
+    object {
+        ... on Blob {
+            byteSize
+            isBinary
+        }
+    }
+}
+
+fragment FullRepo on Repository {
+    ... ShortRepoRowItem
+    url
+    openGraphImageUrl
+    licenseInfo {
+        key
+        featured
+    }
+    defaultBranchRef {
+        name
+        target {
+            ... on Commit {
+                tree {
+                    entries {
+                        ...TreeEntryItem
+                    }
+                }
+            }
+        }
+    }
+}
+
 fragment ShortRepoRowItem on Repository {
     id
     databaseId
