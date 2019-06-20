@@ -42,7 +42,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gitState = null
-        sceneRoot = DataBindingUtil.setContentView(this, R.layout.view_login_container)
+        sceneRoot = bindContentView(R.layout.view_login_container)
         showSelectorScene(false)
     }
 

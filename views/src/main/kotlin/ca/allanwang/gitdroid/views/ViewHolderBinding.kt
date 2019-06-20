@@ -115,7 +115,7 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 }
 
 class PathCrumbVhBinding(override val data: PathCrumb) :
-    ViewHolderBinding<ViewPathCrumbBinding>(data, R.layout.view_user_contributions) {
+    ViewHolderBinding<ViewPathCrumbBinding>(data, R.layout.view_path_crumb) {
     override val dataId: String
         get() = data.fullPath
 
@@ -123,7 +123,6 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
         model = data
         val isLast = info.position == info.totalCount - 1
         pathText.alpha = if (isLast) 1f else 0.7f
-        pathChevron.goneIf(isLast)
     }
 }
 

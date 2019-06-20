@@ -11,3 +11,5 @@ fun Locale.bestDateFormat(skeleton: String): SimpleDateFormat =
 
 fun Context.quantityN(@PluralsRes res: Int, n: Int): String =
     resources.getQuantityString(res, n, n)
+
+internal fun <T> List<T>.repeat(n: Int): List<T> = generateSequence { this }.take(n).flatten().toList()

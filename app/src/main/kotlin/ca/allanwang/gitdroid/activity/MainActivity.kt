@@ -18,7 +18,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        bindings = bindContentView(R.layout.activity_main)
         bindings.bind()
         bindMainView(bindings.contentContainer)
     }

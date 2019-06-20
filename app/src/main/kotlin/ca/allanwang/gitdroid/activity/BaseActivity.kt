@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.activity
 
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.BuildConfig
@@ -25,6 +26,9 @@ abstract class BaseActivity : KauBaseActivity() {
     val prefs: Prefs by inject()
     val db: Database by inject()
     val gdd: GitDroidData by inject()
+
+    fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int) =
+        DataBindingUtil.setContentView<T>(this, layoutRes)
 
     /**
      * Returns current user based on token
