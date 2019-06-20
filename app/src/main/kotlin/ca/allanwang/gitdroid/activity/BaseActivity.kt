@@ -48,7 +48,7 @@ abstract class BaseActivity : KauBaseActivity() {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    suspend fun <T : Any> GitCall<T?>.await(forceRefresh: Boolean = false): T =
+    suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean = false): T =
         with(call(forceRefresh = forceRefresh)) {
             errors().also {
                 if (it.isNotEmpty()) {

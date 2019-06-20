@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit
 
 private const val GET_COUNT = 30
 
-interface GitCall<T> {
-    suspend fun call(forceRefresh: Boolean = false): Response<T>
+interface GitCall<T : Any> {
+    suspend fun call(forceRefresh: Boolean = false): Response<T?>
 }
 
 interface GitGraphQl {
@@ -38,26 +38,26 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun <D : Operation.Data, T, V : Operation.Variables>
+    suspend fun <D : Operation.Data, T : Any, V : Operation.Variables>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>
     ): GitCall<T> {
         val q = apollo.query(query)
         return object : GitCall<T> {
-            override suspend fun call(forceRefresh: Boolean): Response<T> = withContext(Dispatchers.IO) {
+            override suspend fun call(forceRefresh: Boolean): Response<T?> = withContext(Dispatchers.IO) {
                 q.policy(forceRefresh).toDeferred().await()
             }
         }
     }
 
-    suspend fun <D : Operation.Data, T, V : Operation.Variables, R>
+    suspend fun <D : Operation.Data, T: Any, V : Operation.Variables, R : Any>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,
-        mapper: T.() -> R
+        mapper: T.() -> R?
     ): GitCall<R> {
         val q = apollo.query(query)
         return object : GitCall<R> {
-            override suspend fun call(forceRefresh: Boolean): Response<R> = withContext(Dispatchers.IO) {
+            override suspend fun call(forceRefresh: Boolean): Response<R?> = withContext(Dispatchers.IO) {
                 q.policy(forceRefresh).toDeferred().await().map(mapper)
             }
         }
@@ -65,7 +65,7 @@ interface GitGraphQl {
 
     suspend fun me(forceRefresh: Boolean = false): GitCall<MeQuery.Data> = query(MeQuery())
 
-    suspend fun getProfile(login: String, forceRefresh: Boolean = false): GitCall<GetProfileQuery.User?> =
+    suspend fun getProfile(login: String, forceRefresh: Boolean = false): GitCall<GetProfileQuery.User> =
         query(GetProfileQuery(login)) {
             user
         }
@@ -82,7 +82,7 @@ interface GitGraphQl {
                 Input.optional(count), Input.optional(cursor)
             )
         ) {
-            search.nodes?.mapNotNull { it.fragments.shortIssueRowItem } ?: emptyList()
+            search.nodes?.mapNotNull { it.fragments.shortIssueRowItem }
         }
 
     suspend fun getRepos(
@@ -97,17 +97,17 @@ interface GitGraphQl {
                 Input.optional(count), Input.optional(cursor)
             )
         ) {
-            search.nodes?.mapNotNull { it.fragments.shortRepoRowItem } ?: emptyList()
+            search.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
         }
 
     suspend fun getRepo(
         query: String
-    ): GitCall<FullRepo?> =
+    ): GitCall<FullRepo> =
         query(RepoInfoQuery(query)) {
             search.nodes?.firstOrNull()?.fragments?.fullRepo
         }
 
-    suspend fun getFileInfo(query: String, oid: String): GitCall<ObjectItem?> =
+    suspend fun getFileInfo(query: String, oid: String): GitCall<ObjectItem> =
         query(ObjectInfoQuery(query, oid)) {
             search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.`object`?.fragments?.objectItem
         }
@@ -124,7 +124,7 @@ interface GitGraphQl {
                 Input.optional(count), Input.optional(cursor)
             )
         ) {
-            search.nodes?.mapNotNull { it.fragments.shortPullRequestRowItem } ?: emptyList()
+            search.nodes?.mapNotNull { it.fragments.shortPullRequestRowItem }
         }
 }
 

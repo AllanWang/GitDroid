@@ -164,16 +164,4 @@ class GitDroidData : KoinComponent, GitGraphQl {
         return OAuthRequest(url.build().toString(), state)
     }
 
-
-    override suspend fun <D : Operation.Data, T, V : Operation.Variables>
-            query(
-        query: com.apollographql.apollo.api.Query<D, T, V>,
-        forceRefresh: Boolean
-    ): Response<T> =
-        withContext(Dispatchers.IO) {
-            withTimeout(15000) {
-                apollo.query(query).policy(forceRefresh).toDeferred().await()
-            }
-        }
-
 }
