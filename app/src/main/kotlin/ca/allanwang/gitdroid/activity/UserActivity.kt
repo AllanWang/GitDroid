@@ -13,7 +13,7 @@ class UserActivity : BaseActivity() {
         val binding = bindContentView<ActivityUserBinding>(R.layout.activity_user)
         val adapter = Adapter.bind(binding.recycler)
         launchMain {
-            val user = gdd.getProfile(me().login).await()?.user ?: return@launchMain
+            val user = gdd.getProfile(me().login).await()
             adapter.data = user.vhFull(this@UserActivity)
         }
     }

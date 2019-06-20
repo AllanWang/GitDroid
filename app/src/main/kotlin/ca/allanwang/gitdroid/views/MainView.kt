@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.BaseActivity
+import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.databinding.ViewMainBinding
 import ca.allanwang.gitdroid.ktx.utils.L
@@ -145,13 +146,13 @@ interface MainPanelLoader {
 fun <T> mainPanelLoader(
     id: Int,
     vhBinding: (T) -> VHBindingType,
-    loader: suspend GitDroidData.(me: GitUser) -> Response<List<T>>
+    loader: suspend GitDroidData.(me: GitUser) -> GitCall<List<T>>
 ): MainPanelLoader {
     return object : MainPanelLoader {
         override val id: Int = id
 
         override suspend fun BaseActivity.loadData(): List<VHBindingType> {
-            val result: List<T> = gdd.loader(me()).await() ?: return emptyList()
+            val result: List<T> = gdd.loader(me()).await<List<T>>() ?: return emptyList()
             return result.map { vhBinding(it) }
         }
     }

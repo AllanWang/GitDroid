@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.data
 
 import android.content.Context
+import ca.allanwang.gitdroid.data.GitGraphQl.Companion.apollo
 import ca.allanwang.gitdroid.data.helpers.AuthInterceptor
 import ca.allanwang.gitdroid.data.helpers.DateApolloAdapter
 import ca.allanwang.gitdroid.data.helpers.ObjectApolloAdapter
@@ -163,7 +164,6 @@ class GitDroidData : KoinComponent, GitGraphQl {
         return OAuthRequest(url.build().toString(), state)
     }
 
-    private val apollo: ApolloClient by inject()
 
     override suspend fun <D : Operation.Data, T, V : Operation.Variables>
             query(

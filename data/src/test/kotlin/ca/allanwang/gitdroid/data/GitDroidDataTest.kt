@@ -1,7 +1,6 @@
 package ca.allanwang.gitdroid.data
 
 import ca.allanwang.gitdroid.data.internal.PrivProps
-import com.apollographql.apollo.api.Response
 import kotlinx.coroutines.runBlocking
 import org.junit.Assume
 import org.junit.BeforeClass
@@ -48,9 +47,9 @@ class GitDroidDataTest : KoinTest {
         stopKoin()
     }
 
-    fun <T : Any> Response<T>.validate(): T {
+    private suspend fun <T : Any> GitCall<T>.validate(): T = with(call(forceRefresh = true)) {
         assertTrue(errors().isEmpty(), "Found errors: ${errors()}")
-        return assertNotNull(data(), "Result is empty")
+        assertNotNull(data(), "Result is empty")
     }
 
     @Test

@@ -30,7 +30,7 @@ query repoInfo($query: String!) {
     }
 }
 
-query fileInfo($query: String!, $oid: GitObjectID!) {
+query objectInfo($query: String!, $oid: GitObjectID!) {
     search(query: $query, type: REPOSITORY, first: 1) {
         nodes {
             ... on Repository {
