@@ -44,7 +44,16 @@ fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
     }
 }
 
+fun GetProfileQuery.PinnedItems.vhList(): List<VHBindingType> = pinnedItems?.mapNotNull { item ->
+    when (item) {
+        is GetProfileQuery.AsPinnableItem -> item.fragments.shortRepoRowItem?.vh()
+        else -> throw RuntimeException("Invalid pinned item type ${item.__typename} ${item::class.java.simpleName}")
+    }
+} ?: emptyList()
+
 fun GetProfileQuery.User.vhHeader(): VHBindingType = UserHeaderVhBinding(this)
 
 
 fun GetProfileQuery.User.vhContribution(): VHBindingType = UserContributionVhBinding(this)
+
+fun PathCrumb.vh(): VHBindingType = PathCrumbVhBinding(this)

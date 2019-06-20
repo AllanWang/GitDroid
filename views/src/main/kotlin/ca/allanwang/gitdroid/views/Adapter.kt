@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.util.*
 
+typealias AdapterOnClick = (vhb: VHBindingType, view: View, info: ClickInfo) -> Boolean
+
 class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var _data: List<VHBindingType> = emptyList()
@@ -34,6 +36,17 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             notifyItemRangeInserted(newData.size - data.size, data.size)
         }
     }
+
+    private fun <T> List<T>.subListSafe(start: Int, end: Int): List<T> =
+        if (start < end) subList(Math.max(start, 0), Math.min(end, size)) else emptyList()
+
+    fun remove(index: Int, count: Int) {
+        val newData = _data.subListSafe(0, index) + _data.subListSafe(index + count, _data.size)
+        _data = newData
+        notifyItemRangeRemoved(index, count)
+    }
+
+    var onClick: AdapterOnClick? = null
 
     private suspend fun update(data: List<VHBindingType>) = withContext(Dispatchers.Main) {
         val oldData = _data
@@ -83,7 +96,11 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         holder.itemView.setOnClickListener {
             val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
             val vhb = it.getTag(R.id.git_view_item) as? VHBindingType ?: return@setOnClickListener
-            vhb.onClick(it, pos)
+            val info = ClickInfo(position = pos, totalCount = data.size)
+            if (onClick?.invoke(vhb, it, info) == true) {
+                return@setOnClickListener
+            }
+            vhb.onClick(it, info)
         }
         return holder
     }
@@ -91,7 +108,8 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
         val adapter = holder.itemView.getTag(R.id.git_view_adapter) as? Adapter ?: return
         val item: VHBindingType = adapter.data.getOrNull(position) ?: return
-        item.onBind(holder, position, payloads)
+        val info = BindInfo(position = position, totalCount = data.size)
+        item.onBind(holder, info, payloads)
         holder.itemView.setTag(R.id.git_view_item, item)
     }
 

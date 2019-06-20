@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="ca.allanwang.gitdroid.views.PathCrumb" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/path_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/kau_padding_small"
+            android:paddingTop="@dimen/kau_padding_small"
+            android:paddingEnd="@dimen/kau_padding_small"
+            android:paddingBottom="@dimen/kau_padding_small"
+            android:text="@{model.segment}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textColor="?android:textColorPrimary"
+            tools:text="SubPath" />
+
+        <ImageView
+            android:id="@+id/path_chevron"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginEnd="@dimen/kau_padding_small"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="?android:textColorSecondary"
+            android:tintMode="src_in" />
+
+    </LinearLayout>
+</layout>
