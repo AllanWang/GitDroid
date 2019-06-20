@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
             android:id="@+id/main_refresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -19,7 +19,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:context=".activity.MainActivity" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -11,12 +11,14 @@
 
     </data>
 
-    <ca.allanwang.gitdroid.views.ContributionsView
+    <ca.allanwang.gitdroid.views.custom.ContributionsView
         android:id="@+id/user_contributions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/kau_activity_horizontal_margin"
+        android:layout_marginTop="@dimen/kau_padding_small"
         android:layout_marginEnd="@dimen/kau_activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/kau_padding_small"
         app:contributions="@{model}"
         tools:background="?colorAccent" />
 </layout>

@@ -26,13 +26,13 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
     open fun T.create() {}
 
     open fun T.bind(position: Int, payloads: MutableList<Any>) {
-        if (setVariable(BR.model, data)) {
+        if (!setVariable(BR.model, data)) {
             L.fail { "Could not bind model to ${this::class.java.simpleName}" }
         }
     }
 
     open fun T.onRecycled() {
-        if (setVariable(BR.model, null)) {
+        if (!setVariable(BR.model, null)) {
             L.fail { "Could not unbind model to ${this::class.java.simpleName}" }
         }
     }

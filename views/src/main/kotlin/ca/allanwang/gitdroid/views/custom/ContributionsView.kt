@@ -1,15 +1,15 @@
-package ca.allanwang.gitdroid.views
+package ca.allanwang.gitdroid.views.custom
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.getColorOrThrow
 import androidx.databinding.BindingAdapter
 import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.views.R
 import github.fragment.ShortContributions
 
 @BindingAdapter("contributions")
@@ -67,9 +67,7 @@ class ContributionsView @JvmOverloads constructor(
             colorPaints = arrayOf(cellPaint(0x888888, 20)) + colors.map {
                 cellPaint(
                     baseColor,
-                    (255 - Color.parseColor(it).luminance.apply {
-                        L.d { "Luminance $this" }
-                    })
+                    (255 - Color.parseColor(it).luminance)
                 )
             }
             points = data.contributionCalendar.weeks.map {

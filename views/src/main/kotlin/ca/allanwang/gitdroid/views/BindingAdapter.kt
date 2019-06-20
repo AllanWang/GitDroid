@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.kau.utils.gone
 import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.round
@@ -23,8 +22,8 @@ fun View.goneFlag(value: Any?) {
         null -> gone()
         is String -> goneIf(value.isBlank())
         is Boolean -> goneIf(value)
-        is Int -> goneIf(value == 0)
-        else -> L.fail { "Unhandled goneFlag type ${value::class.java.simpleName}" }
+        is Number -> goneIf(value == 0)
+        // Else keep as is
     }
 }
 

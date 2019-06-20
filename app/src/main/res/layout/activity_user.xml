@@ -27,7 +27,7 @@
         <!--android:layout_height="match_parent"-->
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
             android:id="@+id/refresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
