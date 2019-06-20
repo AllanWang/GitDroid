@@ -5,6 +5,7 @@ import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
+import github.fragment.TreeEntryItem
 import java.util.*
 
 fun ShortIssueRowItem.vh(): VHBindingType = IssueVhBinding(this)
@@ -57,3 +58,5 @@ fun GetProfileQuery.User.vhHeader(): VHBindingType = UserHeaderVhBinding(this)
 fun GetProfileQuery.User.vhContribution(): VHBindingType = UserContributionVhBinding(this)
 
 fun PathCrumb.vh(): VHBindingType = PathCrumbVhBinding(this)
+
+fun TreeEntryItem.vh(): VHBindingType = TreeEntryVhBinding(this)

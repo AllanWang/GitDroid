@@ -26,6 +26,13 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs = ['-XXLanguage:+InlineClasses']
+    }
+}
+
 subprojects {
     switch (it.name) {
         case "gradle-plugin":
@@ -87,9 +94,6 @@ subprojects {
             }
         }
 
-    }
-
-    android {
         sourceSets {
             main.java.srcDirs += 'src/main/kotlin'
             test.java.srcDirs += 'src/test/kotlin'
@@ -141,7 +145,6 @@ subprojects {
         androidTestImplementation kau.Dependencies.testRunner
         androidTestImplementation kau.Dependencies.kotlinReflect
     }
-
 
     def kotlinResolutions = ['kotlin-reflect',
                               'kotlin-stdlib',

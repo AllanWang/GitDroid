@@ -3,16 +3,20 @@ package ca.allanwang.gitdroid.views
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.views.databinding.*
-import ca.allanwang.kau.utils.goneIf
 import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import github.fragment.ShortRepoRowItem
+import github.fragment.TreeEntryItem
 
 typealias VHBindingType = ViewHolderBinding<*>
 
@@ -124,5 +128,40 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
         val isLast = info.position == info.totalCount - 1
         pathText.alpha = if (isLast) 1f else 0.7f
     }
+}
+
+class TreeEntryVhBinding(override val data: TreeEntryItem) :
+    ViewHolderBinding<ViewTreeEntryBinding>(data, R.layout.view_tree_entry) {
+    override val dataId: GitObjectID
+        get() = data.oid // todo verify
+
+   companion object {
+
+       @BindingAdapter("treeEntrySrc")
+       @JvmStatic
+       fun ImageView.treeEntrySrc(obj: TreeEntryItem?) {
+           val src = when (obj?.obj) {
+               null -> null
+               is TreeEntryItem.AsBlob -> R.drawable.ic_file
+               else -> R.drawable.ic_folder
+           }
+           if (src == null) {
+               setImageDrawable(null)
+           } else {
+               setImageResource(src)
+           }
+       }
+
+       @BindingAdapter("treeEntrySizeText")
+       @JvmStatic
+       fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
+           val blob = obj?.obj as? TreeEntryItem.AsBlob
+           if (blob == null) {
+               text = null
+           } else {
+               text = blob.byteSize.toString()
+           }
+       }
+   }
 }
 

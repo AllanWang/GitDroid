@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="error">Error</string>
+    <string name="error_not_found">Request not found</string>
     <string name="error_occurred">An error occurred; please try again</string>
     <string name="error_login_state">Login state does not match request; please try again</string>
 </resources>

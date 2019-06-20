@@ -57,7 +57,7 @@ class GitDroidDataTest : KoinTest {
         runBlocking {
             val r = gdd.getProfile("allanwang").validate()
 //            r.user!!.contributionsCollection.fragments.shortContributions.contributionCalendar.months[0].firstDay
-            assertEquals("AllanWang", r.user?.login)
+            assertEquals("AllanWang", r.login)
             println(r)
         }
     }

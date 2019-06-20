@@ -50,7 +50,7 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun <D : Operation.Data, T: Any, V : Operation.Variables, R : Any>
+    suspend fun <D : Operation.Data, T : Any, V : Operation.Variables, R : Any>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,
         mapper: T.() -> R?
@@ -107,9 +107,9 @@ interface GitGraphQl {
             search.nodes?.firstOrNull()?.fragments?.fullRepo
         }
 
-    suspend fun getFileInfo(query: String, oid: String): GitCall<ObjectItem> =
+    suspend fun getFileInfo(query: String, oid: GitObjectID): GitCall<ObjectItem> =
         query(ObjectInfoQuery(query, oid)) {
-            search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.`object`?.fragments?.objectItem
+            search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.obj?.fragments?.objectItem
         }
 
     suspend fun getPullRequests(

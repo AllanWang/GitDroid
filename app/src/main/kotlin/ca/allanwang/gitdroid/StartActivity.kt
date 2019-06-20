@@ -12,7 +12,7 @@ class StartActivity : BaseActivity() {
 
         when {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
-            else -> startActivity<RepoActivity>()
+            else -> RepoActivity.launch(this, "AllanWang/KAU")
 //            else -> startActivity<MainActivity>()
         }
     }

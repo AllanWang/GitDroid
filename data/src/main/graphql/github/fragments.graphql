@@ -14,7 +14,7 @@ fragment TreeEntryItem on TreeEntry {
     oid
     name
     type
-    object {
+    obj: object {
         ... on Blob {
             byteSize
             isBinary

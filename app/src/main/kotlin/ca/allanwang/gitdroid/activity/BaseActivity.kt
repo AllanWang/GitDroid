@@ -70,6 +70,9 @@ abstract class BaseActivity : KauBaseActivity() {
             }
             data().let {
                 if (it == null) {
+                    withContext(Dispatchers.Main) {
+                        snackbar(R.string.error_not_found) // todo this isn't really an error
+                    }
                     throw CancellationException(("Null data received"))
                 }
                 it

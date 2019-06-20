@@ -28,9 +28,7 @@ class PathCrumbsView @JvmOverloads constructor(
 
     init {
         clipToPadding = false
-        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
-            stackFromEnd = true
-        }
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         super.setAdapter(adapter)
         adapter.onClick = { vhb, _, info ->
             if (vhb is PathCrumbVhBinding) {

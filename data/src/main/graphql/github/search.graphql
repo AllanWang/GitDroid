@@ -34,7 +34,7 @@ query objectInfo($query: String!, $oid: GitObjectID!) {
     search(query: $query, type: REPOSITORY, first: 1) {
         nodes {
             ... on Repository {
-                object(oid: $oid) {
+                obj: object(oid: $oid) {
                     ...ObjectItem
                 }
             }

@@ -24,6 +24,7 @@ apollo {
             "Date": "java.lang.String",
 //            "Date": "java.util.Date",
             "DateTime": "java.util.Date",
+            "GitObjectID": "ca.allanwang.gitdroid.data.GitObjectID",
             "Object": "java.lang.String"
     ]
     useJavaBeansSemanticNaming = true

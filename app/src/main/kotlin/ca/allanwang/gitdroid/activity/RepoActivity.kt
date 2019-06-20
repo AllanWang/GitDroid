@@ -3,17 +3,26 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.data.helpers.GitComparators
+import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.views.Adapter
+import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
+import ca.allanwang.gitdroid.views.vh
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     override val layoutRes: Int = R.layout.view_repo_files
 
     val query by stringExtra(ARG_QUERY)
+
+    val pathCrumbs: PathCrumbsView
+        get() = binding.repoPathCrumbs
 
     lateinit var treeAdapter: Adapter
 
@@ -25,14 +34,18 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             if (defaultBranch == null) {
 
             } else {
-                val entries = defaultBranch
-                    .target
-                    .let { it as FullRepo.AsCommit }
-                    .tree
-                    .entries
-                    ?.map { it.fragments.treeEntryItem }?: emptyList()
+                val entries = withContext(Dispatchers.Default) {
+                    defaultBranch
+                        .target
+                        .let { it as FullRepo.AsCommit }
+                        .tree
+                        .entries
+                        ?.map { it.fragments.treeEntryItem }
+                        ?.sortedWith(GitComparators.treeEntryItem())
+                        ?: emptyList()
+                }
+                treeAdapter.data = entries.map { it.vh() }
             }
-
         }
     }
 

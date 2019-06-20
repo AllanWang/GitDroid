@@ -31,7 +31,7 @@ abstract class LoadingActivity<Binding : ViewDataBinding> : BaseActivity() {
     }
 
     protected inner class IntentDelegate<T>(val getter: Intent.() -> T) {
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): T = intent.getter()
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T = intent!!.getter()
     }
 
     private fun missingExtras(intent: Intent?): Boolean {
@@ -43,7 +43,7 @@ abstract class LoadingActivity<Binding : ViewDataBinding> : BaseActivity() {
             finish()
             return true
         }
-        val missing = requiredExtras.filter { intent.hasExtra(it) }
+        val missing = requiredExtras.filter { !intent.hasExtra(it) }
         if (missing.isEmpty()) {
             return false
         }

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.util.containsKey
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.ktx.utils.L
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -106,11 +107,11 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
-        val adapter = holder.itemView.getTag(R.id.git_view_adapter) as? Adapter ?: return
-        val item: VHBindingType = adapter.data.getOrNull(position) ?: return
+        val item: VHBindingType = data.getOrNull(position) ?: return
         val info = BindInfo(position = position, totalCount = data.size)
-        item.onBind(holder, info, payloads)
+        holder.itemView.setTag(R.id.git_view_adapter, this)
         holder.itemView.setTag(R.id.git_view_item, item)
+        item.onBind(holder, info, payloads)
     }
 
     override fun getItemCount(): Int = data.size

@@ -13,6 +13,7 @@ import ca.allanwang.kau.utils.round
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import github.fragment.TreeEntryItem
 import java.net.URI
 import java.util.*
 
