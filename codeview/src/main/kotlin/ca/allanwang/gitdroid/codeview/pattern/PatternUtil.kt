@@ -26,11 +26,34 @@ object PatternUtil {
         else -> throw RuntimeException("Cannot supply count under 1 ($n)")
     }
 
+    fun String.wrap(prefix: String = "", suffix: String = ""): String {
+        val hasPrefix = prefix.isEmpty() || startsWith(prefix)
+        val hasSuffix = suffix.isEmpty() || endsWith(suffix)
+        if (hasPrefix && hasSuffix) {
+            return this
+        }
+        val wrappedPrefix = startsWith("(")
+        val wrappedSuffix = endsWith(")")
+        if (startsWith("$prefix(?:") && wrappedSuffix) {
+            return "$this$suffix"
+        }
+        if (wrappedPrefix && endsWith(")$suffix")) {
+            return "$prefix$this"
+        }
+        val wrapped = if (wrappedPrefix && wrappedSuffix) this else "(?:$this)"
+        return "$prefix$wrapped$suffix"
+    }
+
+    fun String.fromStart(): String = wrap(prefix = "^")
+
+    fun String.fullMatch(): String = wrap(prefix = "^", suffix = "$")
 }
 
-fun Pattern.fromStart() = Pattern.compile("^(?:${pattern()})")
+fun Pattern.update(action: PatternUtil.(String) -> String): Pattern =
+    PatternUtil.action(pattern()).toPattern(flags())
 
-fun Pattern.fullMatch() = Pattern.compile("^(?:${pattern()})$")
+fun CodePattern.update(action: PatternUtil.(String) -> String): CodePattern =
+    copy(pattern = pattern.update(action))
 
 object CodePatternUtil {
 
@@ -38,10 +61,10 @@ object CodePatternUtil {
         PatternUtil.action().combine()
 
     // '''multi-line-string''', 'single-line-string', and double-quoted
-    fun tripleQuotedStrings(vararg quotes: String): CodePattern {
+    fun tripleQuotedStrings(vararg quotes: String = arrayOf("'", "\\\"", "`")): CodePattern {
         val p = combine {
-            quotes.flatMap { listOf(singleQuoted(it), tripleQuoted(it)) }
-        }.fromStart()
+            quotes.map { tripleQuoted(it) } + quotes.map { singleQuoted(it) }
+        }.update { it.fromStart() }
         val s = quotes.joinToString("")
         return CodePattern(PR.String, p, s)
     }
