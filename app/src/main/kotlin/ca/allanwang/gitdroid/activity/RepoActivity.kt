@@ -29,24 +29,24 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     override fun onCreate2(savedInstanceState: Bundle?) {
         treeAdapter = Adapter.bind(binding.repoRecycler).apply {
-            onClick = { vhb, _, info ->
-                when {
-                    info.isLast -> true
-                    vhb is TreeEntryVhBinding -> {
-                        treeAdapter.data = emptyList()
-                        onClick(vhb.data)
-                        true
-                    }
-                    else -> false
+            onClick = { vhb, _, _ ->
+                if (vhb is TreeEntryVhBinding) {
+                    treeAdapter.data = emptyList()
+                    onClick(vhb.data)
+                    true
+                } else {
+                    false
                 }
             }
         }
-        pathCrumbs.callback = { data ->
-            data.oid.also {
-                if (it == null) {
-                    loadRepo()
-                } else {
-                    loadFolder(it)
+        pathCrumbs.callback = { data, info ->
+            if (info?.isLast != true) {
+                data.oid.also {
+                    if (it == null) {
+                        loadRepo()
+                    } else {
+                        loadFolder(it)
+                    }
                 }
             }
         }

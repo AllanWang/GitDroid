@@ -7,16 +7,18 @@ import android.widget.LinearLayout
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.PathCrumb
-import ca.allanwang.gitdroid.views.PathCrumbVhBinding
-import ca.allanwang.gitdroid.views.R
+import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.itemdecoration.SquareDecoration
-import ca.allanwang.gitdroid.views.vh
 import ca.allanwang.kau.utils.drawable
 import ca.allanwang.kau.utils.tint
 import ca.allanwang.kau.utils.withAlpha
 
-typealias PathCrumbsCallback = (data: PathCrumb) -> Unit
+/**
+ *  Callback from crumb selection
+ *  [info] is nonnull if the callback comes from a click event in the adapter.
+ *  It is null otherwise, such as on back press
+ */
+typealias PathCrumbsCallback = (data: PathCrumb, info: ClickInfo?) -> Unit
 
 
 class PathCrumbsView @JvmOverloads constructor(
@@ -37,7 +39,7 @@ class PathCrumbsView @JvmOverloads constructor(
         super.setAdapter(adapter)
         adapter.onClick = { vhb, _, info ->
             if (vhb is PathCrumbVhBinding) {
-                callback?.invoke(vhb.data)
+                callback?.invoke(vhb.data, info)
                 adapter.remove(info.position + 1, info.totalCount - info.position)
                 true
             } else {
@@ -68,13 +70,9 @@ class PathCrumbsView @JvmOverloads constructor(
         if (data.size <= 1) {
             return false
         }
-        callback?.invoke((data[data.lastIndex - 1] as PathCrumbVhBinding).data)
+        callback?.invoke((data[data.lastIndex - 1] as PathCrumbVhBinding).data, null)
         adapter.remove(adapter.data.lastIndex, 1)
         return true
-    }
-
-    companion object {
-        private const val SEP = '/'
     }
 
 }

@@ -21,7 +21,8 @@ class SquareDecoration(
     context: Context,
     private val drawable: Drawable,
     @DimenRes sizeRes: Int = R.dimen.icon_size,
-    orientation: Int = LinearLayout.VERTICAL
+    orientation: Int = LinearLayout.VERTICAL,
+    private val childIndices: (count: Int) -> IntRange = { (0..it - 2) }
 ) : RecyclerView.ItemDecoration() {
 
     private val size = context.dimenPixelSize(sizeRes)
@@ -47,7 +48,7 @@ class SquareDecoration(
         c.restore()
     }
 
-    private fun RecyclerView.children() = (0..childCount - 2).asSequence().map { getChildAt(it) }
+    private fun RecyclerView.children() = childIndices(childCount).asSequence().map { getChildAt(it) }
 
     private fun drawHorizontal(c: Canvas, parent: RecyclerView) {
         val top: Int
