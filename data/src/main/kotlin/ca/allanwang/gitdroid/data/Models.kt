@@ -7,4 +7,4 @@ data class GitAccessToken(
     val scope: String, @Json(name = "token_type") val type: String
 )
 
-inline class GitObjectID(val oid: String)
+data class GitObjectID(val oid: String)

@@ -17,6 +17,7 @@
                 android:id="@+id/repo_path_crumbs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?colorPrimaryDark"
                 android:clipToPadding="false"
                 android:paddingStart="@dimen/kau_padding_small"
                 android:paddingEnd="@dimen/kau_padding_small"

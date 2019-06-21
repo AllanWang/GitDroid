@@ -1,17 +1,22 @@
 package ca.allanwang.gitdroid.views.custom
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.PathCrumb
+import ca.allanwang.gitdroid.views.PathCrumbVhBinding
+import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.itemdecoration.SquareDecoration
+import ca.allanwang.gitdroid.views.vh
 import ca.allanwang.kau.utils.drawable
-import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.tint
+import ca.allanwang.kau.utils.withAlpha
 
-typealias PathCrumbsCallback = (String) -> Unit
+typealias PathCrumbsCallback = (data: PathCrumb) -> Unit
 
 
 class PathCrumbsView @JvmOverloads constructor(
@@ -32,29 +37,40 @@ class PathCrumbsView @JvmOverloads constructor(
         super.setAdapter(adapter)
         adapter.onClick = { vhb, _, info ->
             if (vhb is PathCrumbVhBinding) {
-                callback?.invoke(vhb.data.fullPath)
+                callback?.invoke(vhb.data)
                 adapter.remove(info.position + 1, info.totalCount - info.position)
                 true
             } else {
                 false
             }
         }
-        adapter.data = listOf(PathCrumb("/", "/").vh()).repeat(5)
+        adapter.data = listOf(PathCrumb("/", null).vh())
         addItemDecoration(
             SquareDecoration(
                 context,
                 context.drawable(R.drawable.ic_chevron_right)
-                    .tint(context.resolveColor(android.R.attr.textColorSecondary)),
+                    .tint(Color.WHITE.withAlpha(150)),
                 R.dimen.icon_size,
                 LinearLayout.HORIZONTAL
             )
         )
     }
 
-    fun addCrumb(path: String) {
-        val crumb = PathCrumb(path, "${(adapter.data.last() as PathCrumbVhBinding).data.fullPath.trim(SEP)}$path")
+    fun addCrumb(crumb: PathCrumb) {
         adapter.insert(listOf(crumb.vh()))
-        adapter.notifyItemChanged(adapter.data.size - 2) // No longer last element
+        postDelayed(100) {
+            smoothScrollToPosition(adapter.data.lastIndex)
+        }
+    }
+
+    fun onBackPressed(): Boolean {
+        val data = adapter.data
+        if (data.size <= 1) {
+            return false
+        }
+        callback?.invoke((data[data.lastIndex - 1] as PathCrumbVhBinding).data)
+        adapter.remove(adapter.data.lastIndex, 1)
+        return true
     }
 
     companion object {

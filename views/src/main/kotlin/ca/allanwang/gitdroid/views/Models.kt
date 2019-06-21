@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.views
 
 import android.view.View
 import androidx.annotation.DrawableRes
+import ca.allanwang.gitdroid.data.GitObjectID
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
 import java.net.URI
@@ -54,4 +55,4 @@ data class GitIssueOrPr(
 
 data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)
 
-data class PathCrumb(val segment: String, val fullPath: String)
+data class PathCrumb(val segment: String, val oid: GitObjectID?)

@@ -163,8 +163,8 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 
 class PathCrumbVhBinding(override val data: PathCrumb) :
     ViewHolderBinding<ViewPathCrumbBinding>(data, R.layout.view_path_crumb) {
-    override val dataId: String
-        get() = data.fullPath
+    override val dataId: GitObjectID?
+        get() = data.oid
 
     override fun ViewPathCrumbBinding.bind(info: BindInfo, payloads: MutableList<Any>) {
         model = data
@@ -180,7 +180,7 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
     ViewHolderBinding<ViewTreeEntryBinding>(data, R.layout.view_tree_entry) {
     override val dataId: GitObjectID
-        get() = data.oid // todo verify
+        get() = data.oid
 
     override fun ViewTreeEntryBinding.onRecycled() {
         recycle(treeEntryIcon)
