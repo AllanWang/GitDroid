@@ -34,7 +34,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 subprojects {
-    switch (it.name) {
+    def projectName = it.name
+
+    switch (projectName) {
         case "gradle-plugin":
             return
         case "app":
@@ -44,7 +46,7 @@ subprojects {
             apply plugin: 'com.android.library'
     }
 
-    if (it.name == 'data') {
+    if (projectName == 'data') {
         apply plugin: 'com.apollographql.android'
     }
 
@@ -132,9 +134,14 @@ subprojects {
     }
 
     dependencies {
+        if (projectName != 'core') {
+            implementation project(':core')
+        }
         implementation kau.Dependencies.kotlin
         implementation "org.koin:koin-android:${Versions.koin}"
         implementation kau.Dependencies.coroutines
+        //noinspection GradleDependency
+        implementation "ca.allanwang.kau:core:${KAU}"
 
         testImplementation "org.koin:koin-test:${Versions.koin}"
         testImplementation kau.Dependencies.kotlinTest

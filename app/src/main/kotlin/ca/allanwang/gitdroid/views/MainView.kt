@@ -7,7 +7,7 @@ import ca.allanwang.gitdroid.activity.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.databinding.ViewMainBinding
-import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
 import ca.allanwang.kau.animators.KauAnimator
@@ -15,7 +15,6 @@ import ca.allanwang.kau.animators.SlideAnimatorAdd
 import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
-import com.apollographql.apollo.api.Response
 import github.sql.GitUser
 import kotlinx.coroutines.CancellationException
 

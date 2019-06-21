@@ -1,0 +1,12 @@
+android {
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation kau.Dependencies.appcompat
+    implementation kau.Dependencies.recyclerView
+    implementation kau.Dependencies.coroutines
+    implementation "androidx.core:core-ktx:${Versions.ktx}"
+}

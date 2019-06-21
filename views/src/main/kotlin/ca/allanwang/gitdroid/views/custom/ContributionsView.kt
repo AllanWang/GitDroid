@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.getColorOrThrow
 import androidx.databinding.BindingAdapter
-import ca.allanwang.gitdroid.ktx.utils.L
 import ca.allanwang.gitdroid.views.R
 import github.fragment.ShortContributions
 

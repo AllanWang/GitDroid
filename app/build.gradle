@@ -19,6 +19,7 @@ android {
 dependencies {
     implementation project(':data')
     implementation project(':ktx')
+    implementation project(':codeview')
     implementation project(':views')
     implementation project(':sql')
 
