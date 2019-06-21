@@ -12,17 +12,11 @@
 
     <TextView
         android:id="@+id/path_text"
+        style="@style/PathCrumbText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ripple_white_borderless"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/kau_padding_small"
-        android:paddingTop="@dimen/kau_padding_small"
-        android:paddingEnd="@dimen/kau_padding_small"
-        android:paddingBottom="@dimen/kau_padding_small"
         android:text="@{model.segment}"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-        android:textColor="@android:color/white"
         tools:text="SubPath" />
 
 

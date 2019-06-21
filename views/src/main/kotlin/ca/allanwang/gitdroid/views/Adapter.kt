@@ -14,6 +14,12 @@ typealias AdapterOnClick = (vhb: VHBindingType, view: View, info: ClickInfo) -> 
 class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var _data: List<VHBindingType> = emptyList()
+        set(value) {
+            field = value
+            value.forEach {
+                registerType(it)
+            }
+        }
 
     private var job: Job? = null
 
@@ -37,6 +43,9 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if (start < end) subList(Math.max(start, 0), Math.min(end, size)) else emptyList()
 
     fun remove(index: Int, count: Int) {
+        if (count <= 0) {
+            return
+        }
         cancelJob()
         val newData = _data.subListSafe(0, index) + _data.subListSafe(index + count, _data.size)
         _data = newData
@@ -51,9 +60,6 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var onClick: AdapterOnClick? = null
 
     private fun update(oldData: List<VHBindingType>, data: List<VHBindingType>) {
-        data.forEach {
-            registerType(it)
-        }
         when {
             oldData.isEmpty() -> notifyItemRangeInserted(0, data.size)
             data.isEmpty() -> notifyItemRangeRemoved(0, oldData.size)

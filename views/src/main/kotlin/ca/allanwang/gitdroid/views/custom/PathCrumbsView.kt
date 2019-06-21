@@ -18,7 +18,7 @@ import ca.allanwang.kau.utils.withAlpha
  *  [info] is nonnull if the callback comes from a click event in the adapter.
  *  It is null otherwise, such as on back press
  */
-typealias PathCrumbsCallback = (data: PathCrumb, info: ClickInfo?) -> Unit
+typealias PathCrumbsCallback = (data: PathCrumb?, info: ClickInfo?) -> Unit
 
 
 class PathCrumbsView @JvmOverloads constructor(
@@ -38,15 +38,21 @@ class PathCrumbsView @JvmOverloads constructor(
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         super.setAdapter(adapter)
         adapter.onClick = { vhb, _, info ->
-            if (vhb is PathCrumbVhBinding) {
-                callback?.invoke(vhb.data, info)
-                adapter.remove(info.position + 1, info.totalCount - info.position)
-                true
-            } else {
-                false
+            when (vhb) {
+                is PathCrumbHomeVhBinding -> {
+                    callback?.invoke(null, null)
+                    adapter.remove(1, info.totalCount - 1)
+                    true
+                }
+                is PathCrumbVhBinding -> {
+                    callback?.invoke(vhb.data, info)
+                    adapter.remove(info.position + 1, info.totalCount - info.position)
+                    true
+                }
+                else -> false
             }
         }
-        adapter.data = listOf(PathCrumb("/", null).vh())
+        adapter.data = listOf(PathCrumbHomeVhBinding)
         addItemDecoration(
             SquareDecoration(
                 context,

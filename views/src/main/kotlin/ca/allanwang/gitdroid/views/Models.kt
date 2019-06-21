@@ -55,4 +55,4 @@ data class GitIssueOrPr(
 
 data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)
 
-data class PathCrumb(val segment: String, val oid: GitObjectID?)
+data class PathCrumb(val segment: String, val oid: GitObjectID)

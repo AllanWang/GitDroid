@@ -86,6 +86,27 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
 
 }
 
+open class BlankViewHolderBinding<T : ViewDataBinding>(
+    override val layoutRes: Int,
+    override val typeId: Int = layoutRes
+) : ViewHolderBinding<T>(Unit, layoutRes, typeId) {
+
+    // Always equal
+    override val dataId: Unit = Unit
+
+    final override fun T.bind(info: BindInfo, payloads: MutableList<Any>) {
+        // no op
+    }
+
+    final override fun T.onRecycled() {
+        // no op
+    }
+
+    final override fun T.create() {
+        // no op
+    }
+}
+
 data class BindInfo(val position: Int, val totalCount: Int) {
     val isLast: Boolean get() = position == totalCount - 1
 }
@@ -179,6 +200,8 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
         recycle(pathText)
     }
 }
+
+object PathCrumbHomeVhBinding : BlankViewHolderBinding<ViewPathCrumbHomeBinding>(R.layout.view_path_crumb_home)
 
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
     ViewHolderBinding<ViewTreeEntryBinding>(data, R.layout.view_tree_entry) {

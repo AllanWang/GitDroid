@@ -41,12 +41,10 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
         }
         pathCrumbs.callback = { data, info ->
             if (info?.isLast != true) {
-                data.oid.also {
-                    if (it == null) {
-                        loadRepo()
-                    } else {
-                        loadFolder(it)
-                    }
+                if (data == null) {
+                    loadRepo()
+                } else {
+                    loadFolder(data.oid)
                 }
             }
         }
