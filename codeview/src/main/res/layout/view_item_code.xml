@@ -13,8 +13,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/code_line_horizontal_margins"
-            android:textAlignment="textEnd"
             android:paddingEnd="@dimen/code_line_horizontal_margins"
+            android:background="?colorControlHighlight"
+            android:textAlignment="textEnd"
             tools:text="123" />
 
         <TextView

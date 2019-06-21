@@ -210,7 +210,6 @@ class BidirectionalScrollView @JvmOverloads constructor(
                     val initialVelocityX = velocityTracker.getXVelocity(activePointerId)
                     val initialVelocityY = velocityTracker.getYVelocity(activePointerId)
 
-                    L.d { "Fling request $initialVelocityX $initialVelocityY $minVelocity" }
                     if (childCount > 0) {
                         if (Math.abs(initialVelocityX) > minVelocity || Math.abs(initialVelocityY) > minVelocity) {
                             fling(-initialVelocityX.toInt(), -initialVelocityY.toInt())

@@ -3,17 +3,25 @@ package ca.allanwang.gitdroid.codeview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.doOnNextLayout
+import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
+import ca.allanwang.gitdroid.logger.L
 import kotlinx.coroutines.*
+import java.nio.channels.FileLock
 import java.util.*
 import kotlin.math.log10
 
 class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
 
     private var data: List<CodeLine> = emptyList()
-    private var maxLineNum: Double = 0.0
+    private var ems: Int = 0
+
+    private fun emsDec(count: Float): Int =
+        log10(count).toInt() + 1
 
 
     suspend fun setData(content: String) {
@@ -24,7 +32,7 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
                 val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
                 withContext(Dispatchers.Main) {
                     this@CodeAdapter.data = data
-                    maxLineNum = data.size.toDouble()
+                    ems = emsDec(data.size.toFloat())
                     notifyDataSetChanged()
                 }
             }
@@ -35,7 +43,6 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
         val binding: ViewItemCodeBinding =
             DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.view_item_code, parent, false)
         val holder = CodeViewHolder(binding.root)
-        binding.codeItemLine.setEms(log10(maxLineNum).toInt() + 1)
         holder.itemView.setOnClickListener {
             val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
             val data = it.getTag(R.id.code_view_item_data) as? CodeLine ?: return@setOnClickListener
@@ -56,6 +63,9 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
         val item: CodeLine = data.getOrNull(position) ?: return
         val binding: ViewItemCodeBinding = DataBindingUtil.getBinding(holder.itemView) ?: return
         binding.codeItemLineNum.text = item.lineNumber?.toString()
+        // Unfortunately this doesn't work during onCreateViewHolder
+        // Requesting a layout then causes the width to reset, as it isn't bound
+        binding.codeItemLineNum.setEms(ems)
         binding.codeItemLine.text = item.code
         holder.itemView.setTag(R.id.code_view_item_data, item)
     }
