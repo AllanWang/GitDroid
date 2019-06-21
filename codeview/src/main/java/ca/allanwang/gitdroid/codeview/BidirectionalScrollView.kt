@@ -12,6 +12,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.OverScroller
+import ca.allanwang.gitdroid.logger.L
 
 /**
  * Scrollview that handles both x and y scrolling
@@ -29,8 +30,8 @@ class BidirectionalScrollView @JvmOverloads constructor(
     private var lastMotionX = 0f
     private var lastMotionY = 0f
     private var dragged = false
-    private val touchSlop: Int
     private val scroller = OverScroller(context)
+    private val touchSlop: Int
     private val minVelocity: Float
     private val maxVelocity: Float
     private val horizontalScrollFactor: Float
@@ -130,6 +131,7 @@ class BidirectionalScrollView @JvmOverloads constructor(
         return ev.findPointerIndex(activePointerId)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
         velocityTracker.addMovement(ev)
         when (ev.actionMasked) {
@@ -185,15 +187,15 @@ class BidirectionalScrollView @JvmOverloads constructor(
                         overscrollMode == View.OVER_SCROLL_ALWAYS
                                 || (overscrollMode == View.OVER_SCROLL_IF_CONTENT_SCROLLS
                                 && (rangeX > 0 || rangeY > 0))
-                    if (overScrollBy(
-                            dx.toInt(), dy.toInt(),
-                            scrollX, scrollY,
-                            rangeX, rangeY,
-                            overscrollDistance, overscrollDistance, true
-                        )
-                    ) {
-                        _velocityTracker?.clear()
-                    }
+                    // TODO verify
+                    // before, velocity was cleared
+                    // may have effect on edge views
+                    overScrollBy(
+                        dx.toInt(), dy.toInt(),
+                        scrollX, scrollY,
+                        rangeX, rangeY,
+                        overscrollDistance, overscrollDistance, true
+                    )
                     if (canOverscroll) {
                         val pulledToX = oldX + dx
                         val pulledToY = oldY + dy
@@ -208,6 +210,7 @@ class BidirectionalScrollView @JvmOverloads constructor(
                     val initialVelocityX = velocityTracker.getXVelocity(activePointerId)
                     val initialVelocityY = velocityTracker.getYVelocity(activePointerId)
 
+                    L.d { "Fling request $initialVelocityX $initialVelocityY $minVelocity" }
                     if (childCount > 0) {
                         if (Math.abs(initialVelocityX) > minVelocity || Math.abs(initialVelocityY) > minVelocity) {
                             fling(-initialVelocityX.toInt(), -initialVelocityY.toInt())
