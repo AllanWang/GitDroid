@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.core.util.containsKey
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.ktx.utils.L
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -21,37 +20,37 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var data: List<VHBindingType>
         get() = _data
         set(value) {
-            job?.cancel()
-            // TODO use better scope
-            job = GlobalScope.launch {
-                update(value)
-            }
+            cancelJob()
+            val oldData = _data
+            _data = value
+            update(oldData, value)
         }
 
     fun insert(data: List<VHBindingType>) {
+        cancelJob()
         val newData = _data + data
-        if (job?.isActive == true) {
-            this.data = newData
-        } else {
-            this._data = newData
-            notifyItemRangeInserted(newData.size - data.size, data.size)
-        }
+        _data = newData
+        notifyItemRangeInserted(newData.size - data.size, data.size)
     }
 
     private fun <T> List<T>.subListSafe(start: Int, end: Int): List<T> =
         if (start < end) subList(Math.max(start, 0), Math.min(end, size)) else emptyList()
 
     fun remove(index: Int, count: Int) {
+        cancelJob()
         val newData = _data.subListSafe(0, index) + _data.subListSafe(index + count, _data.size)
         _data = newData
         notifyItemRangeRemoved(index, count)
     }
 
+    private fun cancelJob() {
+        job?.cancel()
+        job = null
+    }
+
     var onClick: AdapterOnClick? = null
 
-    private suspend fun update(data: List<VHBindingType>) = withContext(Dispatchers.Main) {
-        val oldData = _data
-        _data = data
+    private fun update(oldData: List<VHBindingType>, data: List<VHBindingType>) {
         data.forEach {
             registerType(it)
         }
@@ -59,23 +58,28 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             oldData.isEmpty() -> notifyItemRangeInserted(0, data.size)
             data.isEmpty() -> notifyItemRangeRemoved(0, oldData.size)
             else -> {
-                val result: DiffUtil.DiffResult = withContext(Dispatchers.Default) {
-                    DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                            oldData[oldItemPosition].isItemSame(data[newItemPosition])
+                // TODO use better scope
+                job = GlobalScope.launch {
+                    val result: DiffUtil.DiffResult = withContext(Dispatchers.Default) {
+                        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                                oldData[oldItemPosition].isItemSame(data[newItemPosition])
 
-                        override fun getOldListSize(): Int = oldData.size
+                            override fun getOldListSize(): Int = oldData.size
 
-                        override fun getNewListSize(): Int = data.size
+                            override fun getNewListSize(): Int = data.size
 
-                        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                            oldData[oldItemPosition].isContentSame(data[newItemPosition])
+                            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                                oldData[oldItemPosition].isContentSame(data[newItemPosition])
 
-                        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
-                            oldData[oldItemPosition].changePayload(data[newItemPosition])
-                    }, true)
+                            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
+                                oldData[oldItemPosition].changePayload(data[newItemPosition])
+                        }, true)
+                    }
+                    withContext(Dispatchers.Main) {
+                        result.dispatchUpdatesTo(this@Adapter)
+                    }
                 }
-                result.dispatchUpdatesTo(this@Adapter)
             }
 
         }

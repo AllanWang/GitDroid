@@ -49,8 +49,8 @@ class PathCrumbsView @JvmOverloads constructor(
             SquareDecoration(
                 context,
                 context.drawable(R.drawable.ic_chevron_right)
-                    .tint(Color.WHITE.withAlpha(150)),
-                R.dimen.icon_size,
+                    .tint(Color.WHITE.withAlpha(180)),
+                R.dimen.path_crumbs_icon_size,
                 LinearLayout.HORIZONTAL
             )
         )

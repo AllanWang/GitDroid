@@ -86,9 +86,13 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
 
 }
 
-data class BindInfo(val position: Int, val totalCount: Int)
+data class BindInfo(val position: Int, val totalCount: Int) {
+    val isLast: Boolean get() = position == totalCount - 1
+}
 
-data class ClickInfo(val position: Int, val totalCount: Int)
+data class ClickInfo(val position: Int, val totalCount: Int) {
+    val isLast: Boolean get() = position == totalCount - 1
+}
 
 abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val typeId: Int) :
     ViewHolderBinding<ViewIssueOrPrItemBinding>(data, R.layout.view_issue_or_pr_item) {
@@ -168,8 +172,7 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
 
     override fun ViewPathCrumbBinding.bind(info: BindInfo, payloads: MutableList<Any>) {
         model = data
-        val isLast = info.position == info.totalCount - 1
-        pathText.alpha = if (isLast) 1f else 0.7f
+        pathText.alpha = if (info.isLast) 1f else 0.7f
     }
 
     override fun ViewPathCrumbBinding.onRecycled() {

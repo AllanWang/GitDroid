@@ -5,12 +5,9 @@ import android.os.Bundle
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
-import ca.allanwang.gitdroid.views.Adapter
-import ca.allanwang.gitdroid.views.PathCrumb
-import ca.allanwang.gitdroid.views.TreeEntryVhBinding
+import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
-import ca.allanwang.gitdroid.views.vh
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
@@ -32,12 +29,15 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     override fun onCreate2(savedInstanceState: Bundle?) {
         treeAdapter = Adapter.bind(binding.repoRecycler).apply {
-            onClick = { vhb, view, info ->
-                if (vhb !is TreeEntryVhBinding) {
-                    false
-                } else {
-                    onClick(vhb.data)
-                    true
+            onClick = { vhb, _, info ->
+                when {
+                    info.isLast -> true
+                    vhb is TreeEntryVhBinding -> {
+                        treeAdapter.data = emptyList()
+                        onClick(vhb.data)
+                        true
+                    }
+                    else -> false
                 }
             }
         }
@@ -54,7 +54,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
     }
 
     private suspend fun showEntries(entries: List<TreeEntryItem>) {
-        val sorted = withContext(Dispatchers.Default) {
+        val sorted: List<VHBindingType> = withContext(Dispatchers.Default) {
             entries.sortedWith(GitComparators.treeEntryItem()).map { it.vh() }
         }
         withContext(Dispatchers.Main) {
