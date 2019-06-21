@@ -3,15 +3,11 @@ package ca.allanwang.gitdroid.codeview
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.view.doOnNextLayout
-import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
-import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import kotlinx.coroutines.*
-import java.nio.channels.FileLock
 import java.util.*
 import kotlin.math.log10
 
@@ -28,7 +24,7 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
         withContext(Dispatchers.Default) {
             val lines = content.split('\n')
             coroutineScope {
-                val spans = lines.map { async { Highlighter.highlight(it) } }.awaitAll()
+                val spans = lines.map { async { CodeHighlighter.highlight(it) } }.awaitAll()
                 val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
                 withContext(Dispatchers.Main) {
                     this@CodeAdapter.data = data
