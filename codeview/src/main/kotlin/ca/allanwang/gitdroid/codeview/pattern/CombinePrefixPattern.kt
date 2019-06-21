@@ -11,12 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package ca.allanwang.gitdroid.codeview.highlighter
+package ca.allanwang.gitdroid.codeview.pattern
 
 
 import java.util.*
 import java.util.regex.Pattern
 
+
+fun List<Pattern>.combine(): Pattern = CombinePrefixPattern().combinePrefixPattern(this)
 
 /**
  * This is similar to the combinePrefixPattern.js in JavaScript Prettify.
@@ -111,7 +113,9 @@ class CombinePrefixPattern {
                         // Replace with an unambiguous escape sequence so that
                         // an octal escape sequence does not turn into a backreference
                         // to a capturing group from an earlier regex.
-                        parts[i] = encodeEscape(decimalValue)
+                        parts[i] = encodeEscape(
+                            decimalValue
+                        )
                     }
                 } catch (ex: NumberFormatException) {
                 }
@@ -245,7 +249,9 @@ class CombinePrefixPattern {
                     val start = decodeEscape(p)
                     val end: Int
                     if (i + 2 < n && "-" == charsetParts[i + 1]) {
-                        end = decodeEscape(charsetParts[i + 2])
+                        end = decodeEscape(
+                            charsetParts[i + 2]
+                        )
                         i += 2
                     } else {
                         end = start

@@ -11,8 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package ca.allanwang.gitdroid.codeview.highlighter
+package ca.allanwang.gitdroid.codeview.pattern
 
+import ca.allanwang.gitdroid.codeview.highlighter.CodePattern
+import ca.allanwang.gitdroid.codeview.highlighter.Decoration
+import ca.allanwang.gitdroid.codeview.highlighter.Job
+import ca.allanwang.gitdroid.codeview.highlighter.PR
 import java.util.regex.Pattern
 
 /**
@@ -46,30 +50,35 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
             }
         }
         allRegexes.add("[\u0000-\\uffff]".toPattern())
-        this.tokenizer = CombinePrefixPattern().combinePrefixPattern(allRegexes)
+        this.tokenizer = allRegexes.combine()
         this.shortcuts = shortcuts
 
     }
 
     fun decorate(job: Job): Job {
-        val decorations: MutableList<Decoration> = mutableListOf(Decoration(job.basePos, CodeHighlighter.PR.Plain))
+        val decorations: MutableList<Decoration> = mutableListOf(
+            Decoration(
+                job.basePos,
+                PR.Plain
+            )
+        )
         var pos = 0
         var embedded = false
         val tokens = tokenizer.match(job.source, true)
-        val styleCache: MutableMap<String, CodeHighlighter.PR> = mutableMapOf()
+        val styleCache: MutableMap<String, PR> = mutableMapOf()
         var match: Array<String>? = null
 
-        fun addDecor(pos: Int, style: CodeHighlighter.PR?) {
+        fun addDecor(pos: Int, style: PR?) {
             decorations.add(
                 Decoration(
                     job.basePos + pos,
-                    style ?: CodeHighlighter.PR.Plain
+                    style ?: PR.Plain
                 )
             )
         }
 
         for (token in tokens) {
-            var style: CodeHighlighter.PR? = styleCache[token]
+            var style: PR? = styleCache[token]
             if (style == null) {
                 val shortcutPattern = shortcuts[token[0]]
                 if (shortcutPattern != null) {
@@ -86,12 +95,12 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
                 }
                 // Unlike google's variant, we don't have custom keys
                 // All lang- patterns should be labelled source
-                embedded = style == CodeHighlighter.PR.Source
+                embedded = style == PR.Source
                 if (embedded && match?.get(1) != null) {
                     embedded = false
                 }
                 if (!embedded) {
-                    styleCache[token] = style ?: CodeHighlighter.PR.Plain
+                    styleCache[token] = style ?: PR.Plain
                 }
             }
 
@@ -134,7 +143,11 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
             }
         }
 
-        return job.copy(decorations = removeDuplicates(decorations, job.source))
+        return job.copy(decorations = removeDuplicates(
+            decorations,
+            job.source
+        )
+        )
     }
 
     companion object {

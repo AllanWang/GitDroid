@@ -20,29 +20,15 @@ object CodeHighlighter {
 //        JAVA("java"), KOTLIN("kt")
 //    }
 
-    enum class PR {
-        AttrName, AttrValue, Comment, Declaration, Keyword, Literal, Nocode, Plain, Punctuation, Source, String, Tag, Type
-    }
-
-    interface Language {
-        val extension: Pattern
-        val patterns: CodePatterns
-    }
-
-//    object KotlinLang : Language {
-//        override val extension: Pattern = "kt".toPattern()
-//        override val patterns: CodePatterns = with(PatternUtil) {
-//            enumMapOf(PR.Keyword to matchLiteral("public, private").toPattern())
-//        }
-//    }
-
 }
 
-typealias CodePatterns = List<CodePattern>
+enum class PR {
+    AttrName, AttrValue, Comment, Declaration, Keyword, Literal, Nocode, Plain, Punctuation, Source, String, Tag, Type
+}
 
-data class CodePattern(val pr: CodeHighlighter.PR, val pattern: Pattern, val shortcut: String? = null)
+data class CodePattern(val pr: PR, val pattern: Pattern, val shortcut: String? = null)
 
-internal data class Decoration(val pos: Int, val pr: CodeHighlighter.PR)
+internal data class Decoration(val pos: Int, val pr: PR)
 
 internal data class Job(val basePos: Int, val source: String, val decorations: List<Decoration>)
 
