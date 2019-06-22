@@ -98,37 +98,6 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 if (cacheStore != null) {
                     builder.httpCache(cacheStore)
                 }
-                // I'm not convinced that this does anything useful, given we don't provide keys
-                // for field arguments
-//                if (context != null) {
-//                    val sqlHelper = ApolloSqlHelper.create(context, "apolloDb")
-//                    val sqlCacheFactory = SqlNormalizedCacheFactory(sqlHelper)
-//                    val resolver = object : CacheKeyResolver() {
-//                        override fun fromFieldRecordSet(
-//                            field: ResponseField,
-//                            recordSet: MutableMap<String, Any>
-//                        ): CacheKey {
-//                            val type = recordSet["__typename"] as? String ?: return CacheKey.NO_KEY
-//                            val id = recordSet["id"] as? String ?: return CacheKey.NO_KEY
-//                            return CacheKey.from("$type.$id")
-//                        }
-//
-//                        override fun fromFieldArguments(
-//                            field: ResponseField,
-//                            variables: Operation.Variables
-//                        ): CacheKey {
-//                            return CacheKey.NO_KEY
-//                        }
-//                    }
-//
-//                    builder.normalizedCache(
-//                        LruNormalizedCacheFactory(
-//                            EvictionPolicy.builder()
-//                                .maxSizeBytes(10 * 1024)
-//                                .build()
-//                        ).chain(sqlCacheFactory), resolver
-//                    )
-//                }
 
                 builder.build()
             }
