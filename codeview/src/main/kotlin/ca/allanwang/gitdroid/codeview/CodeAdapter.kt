@@ -56,7 +56,7 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
                 prevLexer = lexer
             }
             val decorations = lexer.decorate(content)
-            // TODO make default based on attributes
+            // TODO make default theme based on attributes
             val spannable = CodeHighlighter.highlight(content, decorations, theme ?: CodeTheme.default())
             val lines = spannable.splitCharSequence('\n')
             withContext(Dispatchers.Main) {

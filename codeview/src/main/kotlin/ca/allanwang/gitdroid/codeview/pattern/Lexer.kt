@@ -55,9 +55,12 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
     internal fun tokens(content: String): Array<String> =
         tokenizer.match(content, true).filterNotNull().toTypedArray()
 
-    fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
+    suspend fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
 
-    fun decorate(job: LexerJob): List<Decoration> {
+    /**
+     * Main function that extracts decorations recursively.
+     */
+    suspend fun decorate(job: LexerJob): List<Decoration> {
         val decorations: MutableList<Decoration> = mutableListOf(
             Decoration(
                 job.basePos,
@@ -68,11 +71,11 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
         val tokens = tokens(job.source)
         val styleCache: MutableMap<String, PR> = mutableMapOf()
 
-        fun addDecor(pos: Int, style: PR?) {
+        fun addDecor(pos: Int, style: PR) {
             decorations.add(
                 Decoration(
                     job.basePos + pos,
-                    style ?: PR.Plain
+                    style
                 )
             )
         }
@@ -106,11 +109,10 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
             val embedded = style == PR.Source && match?.getOrNull(1) != null
             if (!embedded) {
                 styleCache[token] = style
-            }
-
-            if (!embedded) {
+                println("Add $token $pos $style")
                 addDecor(tokenStart, style)
             } else {
+                // TODO add embedded source
                 val embeddedSource = match?.getOrNull(1) ?: continue
                 var embeddedSourceStart = token.indexOf(embeddedSource)
                 var embeddedSourceEnd = embeddedSourceStart + embeddedSource.length
@@ -122,6 +124,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                     embeddedSourceEnd = token.length - match2.length
                     embeddedSourceStart = embeddedSourceEnd - embeddedSource.length
                 }
+                // TODO coroutines?
                 listOf(
                     // Decorate the left of the embedded source
                     decorate(
@@ -206,7 +209,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                     )
                     fallthroughPatterns.add(
                         CodePattern(
-                            PR.Plain,
+                            PR.Literal,
                             Pattern.compile(
                                 "^(?:"
                                         // A hex number

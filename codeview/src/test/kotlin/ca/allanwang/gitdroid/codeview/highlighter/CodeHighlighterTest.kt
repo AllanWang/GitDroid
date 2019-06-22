@@ -23,7 +23,7 @@ class CodeHighlighterTest {
         const val RESET = "${ESC}0m"
         const val BOLD = "${ESC}1m"
         const val ITALIC = "${ESC}3m"
-        const val UNDERSCORE = "${ESC}4m"
+        const val UNDERLINE = "${ESC}4m"
         const val BLACK = "${ESC}30m"
         const val RED = "${ESC}31m"
         const val GREEN = "${ESC}32m"
@@ -36,17 +36,17 @@ class CodeHighlighterTest {
         override fun create(pr: PR, text: String): String {
             val flag: String = when (pr) {
                 PR.AttrName -> "$RED$BOLD"
-                PR.AttrValue -> "$RED$ITALIC"
+                PR.AttrValue -> RED
                 PR.Comment -> "$GREEN$ITALIC"
                 PR.Declaration -> "$CYAN$BOLD"
                 PR.Keyword -> "$BLACK$BOLD"
                 PR.Literal -> BLUE
-                PR.Nocode -> "$BLACK$ITALIC"
+                PR.Nocode -> YELLOW
                 PR.Plain -> RESET
                 PR.Punctuation -> MAGENTA
                 PR.Source -> "$MAGENTA$BOLD"
                 PR.String -> "$BLUE$BOLD"
-                PR.Tag -> YELLOW
+                PR.Tag -> "$BLUE$UNDERLINE"
                 PR.Type -> CYAN
             }
             return "$flag$text$RESET"
@@ -60,15 +60,12 @@ class CodeHighlighterTest {
 
     @Test
     fun ansiPreview() {
-
-//        AnsiConsole.systemInstall()
-        AnsiConsole.out.println(ansi().fgBlue().a("Jansi Hello"))
-//        AnsiConsole.systemUninstall()
         with(AnsiHighlightBuilder) {
             println("Normal text")
-            println("$BLACK$BOLD Black and bold")
+            println("$BLACK${BOLD}Black and bold")
+            println("$WHITE${ITALIC}White and italic")
+            println("$BLUE${UNDERLINE}Blue and underline")
         }
-
     }
 
     @Test
@@ -78,10 +75,10 @@ class CodeHighlighterTest {
 
     fun highlight(path: String, lang: CodeLanguage, options: LexerOptions? = null) {
         val content = resource("source/$path")
-        val lexer = Lexer(lang, options)
-        val decorations = lexer.decorate(content)
         val result = runBlocking {
             withContext(Dispatchers.Default) {
+                val lexer = Lexer(lang, options)
+                val decorations = lexer.decorate(content)
                 CodeHighlighter.highlight(content, decorations, AnsiHighlightBuilder)
             }
         }

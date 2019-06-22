@@ -62,7 +62,7 @@ object KotlinLang : CodeLanguage {
             // number literals
             CodePattern(
                 PR.Literal,
-                Pattern.compile("0[xX][0-9a-fA-F_]+L?|0[bB][0-1]+L?|[0-9_.]+([eE]-?[0-9]+)?[fFL]?")
+                Pattern.compile("^(0[xX][0-9a-fA-F_]+L?|0[bB][0-1]+L?|[0-9_.]+([eE]-?[0-9]+)?[fFL]?)")
             ),
             CodePattern(
                 PR.Type,
