@@ -7,20 +7,29 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
+import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.log10
 
-class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
+class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
 
     private var data: List<CodeLine> = emptyList()
     private var ems: Int = 0
+    internal var theme: CodeTheme? = null
 
     private fun emsDec(count: Float): Int =
         log10(count).toInt() + 1
 
+    override fun setCodeTheme(theme: CodeTheme) {
+        if (this.theme === theme) {
+            return
+        }
+        this.theme = theme
+        notifyDataSetChanged()
+    }
 
-    suspend fun setData(content: String) {
+    override suspend fun setData(content: String) {
         withContext(Dispatchers.Default) {
             val lines = content.split('\n')
             coroutineScope {
@@ -58,11 +67,19 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
     override fun onBindViewHolder(holder: CodeViewHolder, position: Int, payloads: MutableList<Any>) {
         val item: CodeLine = data.getOrNull(position) ?: return
         val binding: ViewItemCodeBinding = DataBindingUtil.getBinding(holder.itemView) ?: return
-        binding.codeItemLineNum.text = item.lineNumber?.toString()
-        // Unfortunately this doesn't work during onCreateViewHolder
-        // Requesting a layout then causes the width to reset, as it isn't bound
-        binding.codeItemLineNum.setEms(ems)
-        binding.codeItemLine.text = item.code
+
+        with(binding) {
+            codeItemLineNum.text = item.lineNumber?.toString()
+            // Unfortunately this doesn't work during onCreateViewHolder
+            // Requesting a layout then causes the width to reset, as it isn't bound
+            codeItemLineNum.setEms(ems)
+            codeItemLine.text = item.code
+            theme?.also {
+                codeItemLineNum.setTextColor(it.lineNumTextColor)
+                codeItemLineNum.setBackgroundColor(it.lineNumBg)
+                root.setBackgroundColor(it.contentBg)
+            }
+        }
         holder.itemView.setTag(R.id.code_view_item_data, item)
     }
 

@@ -1,9 +1,8 @@
 package ca.allanwang.gitdroid.activity
 
 import android.os.Bundle
-import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.codeview.CodeAdapter
-import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
+import ca.allanwang.gitdroid.codeview.CodeView
+import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -12,9 +11,8 @@ class CodeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = bindContentView<ViewCodeFrameBinding>(R.layout.view_code_frame)
-        val adapter = CodeAdapter()
-        binding.codeViewRecycler.adapter = adapter
+        val codeView = CodeView(this)
+        setContentView(codeView)
         launch {
             withContext(Dispatchers.Default) {
                 val content = buildString {
@@ -25,7 +23,8 @@ class CodeActivity : BaseActivity() {
                         }
                     }
                 }
-                adapter.setData(content)
+                codeView.setData(content)
+                codeView.setCodeTheme(CodeTheme.default())
             }
         }
     }
