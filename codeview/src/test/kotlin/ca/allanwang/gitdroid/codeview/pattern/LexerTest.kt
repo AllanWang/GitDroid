@@ -2,14 +2,19 @@ package ca.allanwang.gitdroid.codeview.pattern
 
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.language.KotlinLang
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.fail
 
 class LexerTest {
 
-    private fun decorations(file: String, lang: CodeLanguage): List<Decoration> {
-        return Lexer(lang).decorate(resource("source/$file"))
+    private fun decorations(file: String, lang: CodeLanguage): List<Decoration> = runBlocking {
+        withContext(Dispatchers.Default) {
+            Lexer(lang).decorate(resource("source/$file"))
+        }
     }
 
     @Test
