@@ -23,8 +23,8 @@ class CodeActivity : BaseActivity() {
                         }
                     }
                 }
-                codeView.setData(content)
-                codeView.setCodeTheme(CodeTheme.default())
+//                codeView.setData(content)
+//                codeView.setCodeTheme(CodeTheme.default())
             }
         }
     }

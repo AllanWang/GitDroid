@@ -62,7 +62,7 @@ object CodeHighlighter {
 
 }
 
-class SpannableStringHighlightBuilder(val theme: CodeTheme) :
+internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :
     CodeHighlightBuilder<SpannableStringBuilder, SpannableString> {
 
     override fun create(pr: PR, text: String): SpannableString {

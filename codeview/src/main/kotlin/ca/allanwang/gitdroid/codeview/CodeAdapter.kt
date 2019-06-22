@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
+import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
@@ -53,6 +54,9 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
                 lexer = Lexer(lang, options)
                 prevLexer = lexer
             }
+            val decorations = lexer.decorate(content)
+            // TODO make default based on attributes
+            val spannable = CodeHighlighter.highlight(content, decorations, theme ?: CodeTheme.default())
             val lines = content.split('\n')
             withContext(Dispatchers.Main) {
                 data = lines.mapIndexed { i, s -> CodeLine(i, s) }
