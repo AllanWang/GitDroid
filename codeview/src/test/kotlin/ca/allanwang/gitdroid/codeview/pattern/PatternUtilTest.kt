@@ -1,6 +1,5 @@
 package ca.allanwang.gitdroid.codeview.pattern
 
-import ca.allanwang.gitdroid.codeview.highlighter.CodePattern
 import java.util.regex.Pattern
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +9,7 @@ import kotlin.test.assertTrue
 class PatternUtilTest {
 
     fun test(pattern: PatternUtil.() -> Pattern, action: TestContext.() -> Unit) {
-        val p = PatternUtil.pattern()
+        val p = PatternUtil.pattern().update { it.fullMatch() }
         TestContext.from(p).apply(action)
     }
 
@@ -64,17 +63,25 @@ class PatternUtilTest {
 
     @Test
     fun singleQuote() {
-        test({ singleQuoted("'").update { it.fullMatch() } }) {
+        test({ singleQuoted("'") }) {
             singleQuoteTest("'")
         }
-        test({ singleQuoted("\\\"").update { it.fullMatch() } }) {
+        test({ singleQuoted("\\\"") }) {
             singleQuoteTest("\"")
         }
     }
 
     @Test
     fun singleAndMultiQuote() {
-        testCodePattern({ tripleQuotedStrings().update { it.fullMatch() } }) {
+        testCodePattern({ tripleQuotedStrings() }) {
+            singleQuoteTest("'")
+            singleQuoteTest("\"")
+        }
+    }
+
+    @Test
+    fun singleLineQuoted() {
+        testCodePattern({ singleLineStrings() }) {
             singleQuoteTest("'")
             singleQuoteTest("\"")
         }

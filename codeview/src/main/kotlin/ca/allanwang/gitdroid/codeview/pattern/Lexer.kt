@@ -13,9 +13,6 @@
 // limitations under the License.
 package ca.allanwang.gitdroid.codeview.pattern
 
-import ca.allanwang.gitdroid.codeview.highlighter.CodePattern
-import ca.allanwang.gitdroid.codeview.highlighter.Decoration
-import ca.allanwang.gitdroid.codeview.highlighter.Job
 import ca.allanwang.gitdroid.codeview.highlighter.PR
 import java.util.regex.Pattern
 
