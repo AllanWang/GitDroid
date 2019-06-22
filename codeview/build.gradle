@@ -9,4 +9,8 @@ dependencies {
     implementation kau.Dependencies.recyclerView
     implementation kau.Dependencies.coroutines
     implementation "androidx.core:core-ktx:${Versions.ktx}"
+
+    // https://mvnrepository.com/artifact/org.fusesource.jansi/jansi
+    testImplementation "org.fusesource.jansi:jansi:1.18"
+
 }

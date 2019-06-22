@@ -1,5 +1,7 @@
 package ca.allanwang.gitdroid.codeview.highlighter
 
+import org.fusesource.jansi.Ansi.ansi
+import org.fusesource.jansi.AnsiConsole
 import org.junit.Test
 import java.lang.RuntimeException
 
@@ -50,11 +52,10 @@ class CodeHighlighterTest {
     }
 
     @Test
-    fun ansi() {
-        with(AnsiHighlightBuilder) {
-            println("$BLACK$BOLD Black Bold $RESET")
-            throw RuntimeException("S")
-        }
+    fun ansiPreview() {
+        AnsiConsole.systemInstall()
+        AnsiConsole.out.println(ansi().fgBlue().a("Hello"))
+        AnsiConsole.systemUninstall()
     }
 
 
