@@ -15,7 +15,7 @@ class LexerTest {
 
 
     private fun decorations(file: String, lang: CodeLanguage): List<Decoration> {
-        return Lexer(LexerOptions(lang)).decorate(resource("source/$file"))
+        return Lexer(lang).decorate(resource("source/$file"))
     }
 
     @Test

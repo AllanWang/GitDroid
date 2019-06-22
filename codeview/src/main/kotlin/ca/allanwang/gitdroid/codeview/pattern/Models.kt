@@ -11,7 +11,6 @@ data class Decoration(val pos: Int, val pr: PR)
 data class LexerJob(val basePos: Int, val source: String)
 
 data class LexerOptions(
-    val lang: CodeLanguage,
     val regexLiterals: Boolean = true,
     val tripeQuotedStrings: Boolean = false,
     val multiLineStrings: Boolean = false,

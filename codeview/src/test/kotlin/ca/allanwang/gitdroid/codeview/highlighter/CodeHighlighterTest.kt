@@ -12,7 +12,7 @@ class CodeHighlighterTest {
      */
     object AnsiHighlightBuilder : CodeHighlightBuilder<StringBuilder, String> {
 
-        const val ESC = "\\033["
+        const val ESC = "\u001B["
         const val RESET = "${ESC}0m"
         const val BOLD = "${ESC}1m"
         const val ITALIC = "${ESC}3m"
@@ -42,7 +42,7 @@ class CodeHighlighterTest {
                 PR.Tag -> YELLOW
                 PR.Type -> CYAN
             }
-            return "$RESET$flag$text"
+            return "$flag$text$RESET"
         }
 
         override fun createBuilder(): StringBuilder = StringBuilder()
@@ -53,9 +53,15 @@ class CodeHighlighterTest {
 
     @Test
     fun ansiPreview() {
-        AnsiConsole.systemInstall()
-        AnsiConsole.out.println(ansi().fgBlue().a("Hello"))
-        AnsiConsole.systemUninstall()
+
+//        AnsiConsole.systemInstall()
+        AnsiConsole.out.println(ansi().fgBlue().a("Jansi Hello"))
+//        AnsiConsole.systemUninstall()
+        with (AnsiHighlightBuilder) {
+            println("Normal text")
+            println("$BLACK$BOLD Black and bold")
+        }
+
     }
 
 

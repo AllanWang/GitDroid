@@ -14,6 +14,7 @@
 package ca.allanwang.gitdroid.codeview.pattern
 
 import ca.allanwang.gitdroid.codeview.highlighter.PR
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import java.util.regex.Pattern
 
 /**
@@ -153,11 +154,11 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
 
     companion object {
 
-        internal operator fun invoke(options: LexerOptions): Lexer {
+        internal operator fun invoke(lang: CodeLanguage, options: LexerOptions? = null): Lexer {
             val shortcutPatterns: MutableList<CodePattern> = mutableListOf()
             val fallthroughPatterns: MutableList<CodePattern> = mutableListOf()
             CodePatternUtil.apply {
-                options.apply {
+                (options ?: LexerOptions()).apply {
                     shortcutPatterns.add(
                         when {
                             tripeQuotedStrings -> tripleQuotedStrings()
@@ -176,6 +177,8 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                     // TODO hashcomments
                     // TODO cstyle comments
                     // TODO regex literals
+                    fallthroughPatterns.addAll(lang.patterns()) // place where appropriate
+
                     fallthroughPatterns.add(
                         CodePattern(
                             PR.Literal,

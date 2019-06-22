@@ -8,6 +8,8 @@ import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
 
 class CodeView @JvmOverloads constructor(
     context: Context,
@@ -27,6 +29,6 @@ class CodeView @JvmOverloads constructor(
 }
 
 interface CodeViewLoader {
-    suspend fun setData(content: String)
+    suspend fun setData(content: String, lang: CodeLanguage, options: LexerOptions? = null, theme: CodeTheme? = null)
     fun setCodeTheme(theme: CodeTheme)
 }

@@ -7,6 +7,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.pattern.Lexer
+import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -16,7 +19,15 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
 
     private var data: List<CodeLine> = emptyList()
     private var ems: Int = 0
+    // TODO add default theme
     internal var theme: CodeTheme? = null
+
+    @Volatile
+    private var prevLang: CodeLanguage? = null
+    @Volatile
+    private var prevOptions: LexerOptions? = null
+    @Volatile
+    private var prevLexer: Lexer? = null
 
     private fun emsDec(count: Float): Int =
         log10(count).toInt() + 1
@@ -29,8 +40,19 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
         notifyDataSetChanged()
     }
 
-    override suspend fun setData(content: String) {
+    override suspend fun setData(content: String, lang: CodeLanguage, options: LexerOptions?, theme: CodeTheme?) {
+        withContext(Dispatchers.Main) {
+            this@CodeAdapter.theme = theme
+            val oldSize = data.size
+            data = emptyList()
+            notifyItemRangeRemoved(0, oldSize)
+        }
         withContext(Dispatchers.Default) {
+            var lexer = prevLexer
+            if (lexer == null || prevLang?.id != lang.id || prevOptions != options) {
+                lexer = Lexer(lang, options)
+                prevLexer = lexer
+            }
             val lines = content.split('\n')
             withContext(Dispatchers.Main) {
                 data = lines.mapIndexed { i, s -> CodeLine(i, s) }
