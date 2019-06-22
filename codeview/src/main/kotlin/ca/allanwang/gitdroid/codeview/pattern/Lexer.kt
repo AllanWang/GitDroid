@@ -53,7 +53,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
     }
 
     internal fun tokens(content: String): Array<String> =
-        tokenizer.match(content, true)
+        tokenizer.match(content, true).filterNotNull().toTypedArray()
 
     fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
 
@@ -86,7 +86,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                 continue
             }
             var style: PR = PR.Plain
-            var match: Array<String>? = null
+            var match: Array<String?>? = null
 
             val shortcutPattern = shortcuts[token[0]]
             if (shortcutPattern != null) {
@@ -111,14 +111,15 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
             if (!embedded) {
                 addDecor(tokenStart, style)
             } else {
-                val embeddedSource = match!![1]
+                val embeddedSource = match?.getOrNull(1) ?: continue
                 var embeddedSourceStart = token.indexOf(embeddedSource)
                 var embeddedSourceEnd = embeddedSourceStart + embeddedSource.length
-                if (match.getOrNull(2) != null) {
+                val match2 = match.getOrNull(2)
+                if (match2 != null) {
                     // If embeddedSource can be blank, then it would match at the
                     // beginning which would cause us to infinitely recurse on the
                     // entire token, so we catch the right context in match[2].
-                    embeddedSourceEnd = token.length - match[2].length
+                    embeddedSourceEnd = token.length - match2.length
                     embeddedSourceStart = embeddedSourceEnd - embeddedSource.length
                 }
                 listOf(
@@ -235,7 +236,8 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
          * Shortens decoration list to remove unnecessary entries.
          * Namely, if multiple decorations reference the same position, we use the last entry.
          * If multiple sequential decorations have the same style, we only keep the first one.
-         * If there is a decoration for the very last index, we ignore it.
+         * We will remove all decorations that exceed the source length, and guarantee that
+         * the list ends with a plain color resetter at the last index
          *
          * Google's implementation uses a treemap, but I achieved the same results with just a list sort.
          * We don't need O(1) access by position.
@@ -261,9 +263,10 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
             }
 
             // remove last zero length tag
-            if (results.size >= 2 && results.last().pos == source.length) {
+            while (results.size >= 2 && results.last().pos >= source.length) {
                 results.removeAt(results.lastIndex)
             }
+            results.add(Decoration(source.length, PR.Plain))
             return results
         }
     }

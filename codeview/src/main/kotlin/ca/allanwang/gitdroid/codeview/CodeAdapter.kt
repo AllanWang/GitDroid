@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
+import ca.allanwang.gitdroid.codeview.highlighter.splitCharSequence
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
@@ -57,21 +58,11 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
             val decorations = lexer.decorate(content)
             // TODO make default based on attributes
             val spannable = CodeHighlighter.highlight(content, decorations, theme ?: CodeTheme.default())
-            val lines = content.split('\n')
+            val lines = spannable.splitCharSequence('\n')
             withContext(Dispatchers.Main) {
                 data = lines.mapIndexed { i, s -> CodeLine(i, s) }
                 notifyDataSetChanged()
             }
-//            coroutineScope {
-//                val spans =
-//                    lines.map { async { CodeHighlighter.highlight(it, Lexer(LexerOptions(KotlinLang))) } }.awaitAll()
-//                val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
-//                withContext(Dispatchers.Main) {
-//                    this@CodeAdapter.data = data
-//                    ems = emsDec(data.size.toFloat())
-//                    notifyDataSetChanged()
-//                }
-//            }
         }
     }
 

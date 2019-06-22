@@ -1,9 +1,16 @@
 package ca.allanwang.gitdroid.codeview.highlighter
 
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.KotlinLang
+import ca.allanwang.gitdroid.codeview.pattern.Lexer
+import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
+import ca.allanwang.gitdroid.codeview.pattern.resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.fusesource.jansi.Ansi.ansi
 import org.fusesource.jansi.AnsiConsole
 import org.junit.Test
-import java.lang.RuntimeException
 
 class CodeHighlighterTest {
 
@@ -35,7 +42,7 @@ class CodeHighlighterTest {
                 PR.Keyword -> "$BLACK$BOLD"
                 PR.Literal -> BLUE
                 PR.Nocode -> "$BLACK$ITALIC"
-                PR.Plain -> BLACK
+                PR.Plain -> RESET
                 PR.Punctuation -> MAGENTA
                 PR.Source -> "$MAGENTA$BOLD"
                 PR.String -> "$BLUE$BOLD"
@@ -57,12 +64,28 @@ class CodeHighlighterTest {
 //        AnsiConsole.systemInstall()
         AnsiConsole.out.println(ansi().fgBlue().a("Jansi Hello"))
 //        AnsiConsole.systemUninstall()
-        with (AnsiHighlightBuilder) {
+        with(AnsiHighlightBuilder) {
             println("Normal text")
             println("$BLACK$BOLD Black and bold")
         }
 
     }
 
+    @Test
+    fun kotlin() {
+        highlight("Test.kt", KotlinLang)
+    }
+
+    fun highlight(path: String, lang: CodeLanguage, options: LexerOptions? = null) {
+        val content = resource("source/$path")
+        val lexer = Lexer(lang, options)
+        val decorations = lexer.decorate(content)
+        val result = runBlocking {
+            withContext(Dispatchers.Default) {
+                CodeHighlighter.highlight(content, decorations, AnsiHighlightBuilder)
+            }
+        }
+        println(result)
+    }
 
 }

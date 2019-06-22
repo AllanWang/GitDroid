@@ -40,7 +40,7 @@ object CodeHighlighter {
             async {
                 with(builder) {
                     val b = createBuilder()
-                    (0..decors.lastIndex).forEach { i ->
+                    (0 until decors.lastIndex).forEach { i ->
                         val segment = text.substring(decors[i].pos, decors[i + 1].pos)
                         val charseq = create(decors[i].pr, segment)
                         b.append(charseq)
@@ -60,6 +60,21 @@ object CodeHighlighter {
         }
     }
 
+}
+
+/**
+ * Split [CharSequence], while retaining the [CharSequence] interface
+ */
+fun CharSequence.splitCharSequence(char: Char): List<CharSequence> {
+    val splits: MutableList<CharSequence> = mutableListOf()
+    var prev = 0
+    var next = indexOf(char)
+    while (next > 0) {
+        splits.add(subSequence(prev, next))
+        prev = next + 1
+        next = indexOf(char, prev)
+    }
+    return splits
 }
 
 internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :

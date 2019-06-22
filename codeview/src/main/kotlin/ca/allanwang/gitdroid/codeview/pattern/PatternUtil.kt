@@ -99,13 +99,13 @@ fun Pattern.update(action: PatternUtil.(String) -> String): Pattern =
 fun CodePattern.update(action: PatternUtil.(String) -> String): CodePattern =
     copy(pattern = pattern.update(action))
 
-fun Pattern.match(input: String, isGlobal: Boolean): Array<String> {
-    val result: MutableList<String> = mutableListOf()
+fun Pattern.match(input: String, isGlobal: Boolean): Array<String?> {
+    val result: MutableList<String?> = mutableListOf()
     val matcher = matcher(input)
     while (matcher.find()) {
         result.add(matcher.group(0))
         if (!isGlobal) {
-            (1..matcher.groupCount()).forEach {
+            (1 until matcher.groupCount()).forEach {
                 result.add(matcher.group(it))
             }
         }

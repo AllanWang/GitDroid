@@ -101,6 +101,9 @@ class CombinePrefixPattern {
         // mapping.
         var groupIndex = 0
         parts.forEachIndexed { i, p ->
+            if (p == null) {
+                return@forEachIndexed
+            }
             if (p == "(") {
                 // groups are 1-indexed, so max group index is count of '('
                 ++groupIndex
@@ -131,6 +134,9 @@ class CombinePrefixPattern {
         }
 
         parts.forEachIndexed { i, p ->
+            if (p == null) {
+                return@forEachIndexed
+            }
             if (p == "(") {
                 ++groupIndex
                 if (capturedGroups[groupIndex] == null) {
@@ -160,6 +166,9 @@ class CombinePrefixPattern {
         if ((regex.flags() and Pattern.CASE_INSENSITIVE) != 0 && needToFoldCase) {
             val azPattern = Pattern.compile("[a-zA-Z]")
             parts.forEachIndexed { i, p ->
+                if (p == null) {
+                    return@forEachIndexed
+                }
                 val ch0 = if (p.isNotEmpty()) p[0] else 0
                 if (p.length >= 2 && ch0 == '[') {
                     parts[i] = caseFoldCharset(p)
@@ -242,7 +251,7 @@ class CombinePrefixPattern {
             var i = if (inverse) 1 else 0
             val n = charsetParts.size
             while (i < n) {
-                val p = charsetParts[i]
+                val p = charsetParts[i] ?: break
                 if (bdswPattern.test(p)) {  // Don't muck with named groups.
                     out.append(p)
                 } else {
@@ -250,7 +259,7 @@ class CombinePrefixPattern {
                     val end: Int
                     if (i + 2 < n && "-" == charsetParts[i + 1]) {
                         end = decodeEscape(
-                            charsetParts[i + 2]
+                            charsetParts[i + 2]!!
                         )
                         i += 2
                     } else {
