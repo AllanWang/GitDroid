@@ -142,7 +142,6 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return data.getOrNull(position)?.typeId ?: super.getItemViewType(position)
     }
 
-
     companion object {
 
         /**

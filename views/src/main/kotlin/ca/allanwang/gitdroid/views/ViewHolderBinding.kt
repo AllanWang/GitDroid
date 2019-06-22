@@ -27,8 +27,6 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
     open val typeId: Int = layoutRes
 ) {
 
-    abstract val dataId: Any?
-
     open fun T.create() {}
 
     open fun T.bind(info: BindInfo, payloads: MutableList<Any>) {
@@ -80,7 +78,7 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
 
     open fun onClick(view: View, info: ClickInfo) {}
 
-    open fun isItemSame(vh: VHBindingType): Boolean = typeId == vh.typeId && dataId != null && dataId == vh.dataId
+    open fun isItemSame(vh: VHBindingType): Boolean = typeId == vh.typeId
     open fun isContentSame(vh: VHBindingType): Boolean = typeId == vh.typeId && data == vh.data
     open fun changePayload(vh: VHBindingType): Any? = vh.data
 
@@ -90,9 +88,6 @@ open class BlankViewHolderBinding<T : ViewDataBinding>(
     override val layoutRes: Int,
     override val typeId: Int = layoutRes
 ) : ViewHolderBinding<T>(Unit, layoutRes, typeId) {
-
-    // Always equal
-    override val dataId: Unit = Unit
 
     final override fun T.bind(info: BindInfo, payloads: MutableList<Any>) {
         // no op
@@ -118,9 +113,6 @@ data class ClickInfo(val position: Int, val totalCount: Int) {
 abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val typeId: Int) :
     ViewHolderBinding<ViewIssueOrPrItemBinding>(data, R.layout.view_issue_or_pr_item) {
 
-    override val dataId: Int?
-        get() = data.databaseId
-
     override fun ViewIssueOrPrItemBinding.onRecycled() {
         glideRecycle(iprAvatar)
         recycle(iprLogin, iprDate, iprTitle, iprDetails, iprComments)
@@ -136,8 +128,6 @@ class PullRequestVhBinding(data: ShortPullRequestRowItem) :
 
 class RepoVhBinding(override val data: ShortRepoRowItem) :
     ViewHolderBinding<ViewRepoBinding>(data, R.layout.view_repo) {
-    override val dataId: Int?
-        get() = data.databaseId
 
     override fun ViewRepoBinding.onRecycled() {
         recycle(repoName, repoDesc, repoStars, repoForks, repoIssues, repoPrs, repoLanguage, repoDate)
@@ -146,8 +136,6 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
 
 class SlimEntryVhBinding(override val data: SlimEntry) :
     ViewHolderBinding<ViewSlimEntryBinding>(data, R.layout.view_slim_entry) {
-    override val dataId: Int?
-        get() = data.icon
 
     override fun onClick(view: View, info: ClickInfo) {
         super.onClick(view, info)
@@ -162,8 +150,6 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
 
 class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
     ViewHolderBinding<ViewUserHeaderBinding>(data, R.layout.view_user_header) {
-    override val dataId: Int?
-        get() = data.databaseId
 
     override fun ViewUserHeaderBinding.onRecycled() {
         glideRecycle(userHeaderAvatar)
@@ -174,8 +160,6 @@ class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
 
 class UserContributionVhBinding(override val data: GetProfileQuery.User) :
     ViewHolderBinding<ViewUserContributionsBinding>(data, R.layout.view_user_contributions) {
-    override val dataId: Int?
-        get() = data.databaseId
 
     override fun ViewUserContributionsBinding.bind(info: BindInfo, payloads: MutableList<Any>) {
         model = data.contributionsCollection.fragments.shortContributions
@@ -188,8 +172,6 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 
 class PathCrumbVhBinding(override val data: PathCrumb) :
     ViewHolderBinding<ViewPathCrumbBinding>(data, R.layout.view_path_crumb) {
-    override val dataId: GitObjectID?
-        get() = data.oid
 
     override fun ViewPathCrumbBinding.bind(info: BindInfo, payloads: MutableList<Any>) {
         model = data
@@ -205,8 +187,6 @@ object PathCrumbHomeVhBinding : BlankViewHolderBinding<ViewPathCrumbHomeBinding>
 
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
     ViewHolderBinding<ViewTreeEntryBinding>(data, R.layout.view_tree_entry) {
-    override val dataId: GitObjectID
-        get() = data.oid
 
     override fun ViewTreeEntryBinding.onRecycled() {
         recycle(treeEntryIcon)

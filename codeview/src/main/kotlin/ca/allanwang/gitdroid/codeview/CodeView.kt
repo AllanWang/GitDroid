@@ -7,23 +7,38 @@ import android.widget.FrameLayout
 import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
+import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
+
 
 class CodeView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    private val adapter: CodeAdapter = CodeAdapter()
-) : FrameLayout(context, attrs, defStyleAttr), CodeViewLoader by adapter {
+    private val codeAdapter: CodeAdapter = CodeAdapter(context)
+) : FrameLayout(context, attrs, defStyleAttr), CodeViewLoader by codeAdapter {
+
 
     private val binding: ViewCodeFrameBinding
 
     init {
         val inflater = context.getSystemService<LayoutInflater>() ?: throw RuntimeException("No layout inflater")
+
+        val scrap: ViewItemCodeBinding = DataBindingUtil.inflate(inflater, R.layout.view_item_code, this, false)
+        val textPaint = scrap.codeItemLine.paint
+        scrap.unbind()
+        val codeLayoutManager = CodeLayoutManager(context).apply {
+            initialPrefetchItemCount = 10
+        }
+        codeAdapter.bind(textPaint, codeLayoutManager)
+
         binding = DataBindingUtil.inflate(inflater, R.layout.view_code_frame, this, true)
-        binding.codeViewRecycler.adapter = adapter
+        binding.codeViewRecycler.apply {
+            layoutManager = codeLayoutManager
+            adapter = codeAdapter
+        }
     }
 
 }

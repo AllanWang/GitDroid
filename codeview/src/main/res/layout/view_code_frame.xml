@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ca.allanwang.gitdroid.codeview.BidirectionalScrollView
-        android:id="@+id/code_view_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/code_view_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/view_item_code" />
-
-    </ca.allanwang.gitdroid.codeview.BidirectionalScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/code_view_recycler"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/view_item_code" />
 </layout>
