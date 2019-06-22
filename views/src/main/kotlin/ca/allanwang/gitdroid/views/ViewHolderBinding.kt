@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.data.GitObjectID
-import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.databinding.*
 import com.bumptech.glide.Glide
 import github.GetProfileQuery

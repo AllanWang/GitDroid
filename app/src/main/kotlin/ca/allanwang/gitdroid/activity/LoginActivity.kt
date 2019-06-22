@@ -19,7 +19,7 @@ import ca.allanwang.gitdroid.ktx.browser.launchUrl
 import ca.allanwang.gitdroid.ktx.transition.ColorTransition
 import ca.allanwang.gitdroid.ktx.transition.add
 import ca.allanwang.gitdroid.ktx.transition.transitionSet
-import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs

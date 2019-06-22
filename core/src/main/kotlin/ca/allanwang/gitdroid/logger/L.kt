@@ -1,7 +1,6 @@
-package ca.allanwang.gitdroid.ktx.utils
+package ca.allanwang.gitdroid.logger
 
 import android.util.Log
-import ca.allanwang.gitdroid.ktx.BuildConfig
 import ca.allanwang.kau.logging.KauLogger
 
 object L : KauLogger("GitDroid", {

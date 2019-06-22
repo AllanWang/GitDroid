@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/code_item_line_num"
+            style="@style/CodeViewLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/code_line_horizontal_margins"
+            android:paddingEnd="@dimen/code_line_horizontal_margins"
+            android:background="?colorControlHighlight"
+            android:textAlignment="textEnd"
+            tools:text="123" />
+
+        <TextView
+            android:id="@+id/code_item_line"
+            style="@style/CodeViewLine"
+            android:layout_width="800dp"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:paddingStart="@dimen/code_line_horizontal_margins"
+            android:paddingEnd="@dimen/code_line_horizontal_margins"
+            tools:text="@tools:sample/lorem/random" />
+
+    </LinearLayout>
+
+</layout>

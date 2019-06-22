@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.ktx.utils.L
+import ca.allanwang.gitdroid.logger.L
 import kotlin.reflect.KProperty
 
 abstract class LoadingActivity<Binding : ViewDataBinding> : BaseActivity() {

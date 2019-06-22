@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="git_view_item" />
-    <item type="id" name="git_view_adapter" />
-    <item type="id" name="git_vh_issue" />
-    <item type="id" name="git_vh_pr" />
+    <item name="git_view_item" type="id" />
+    <item name="git_view_adapter" type="id" />
+    <item name="git_vh_issue" type="id" />
+    <item name="git_vh_pr" type="id" />
 </resources>

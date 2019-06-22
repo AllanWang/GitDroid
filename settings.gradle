@@ -1,4 +1,6 @@
 include ':app',
+        ':core',
+        ':codeview',
         ':data',
         ':views',
         ':ktx',
