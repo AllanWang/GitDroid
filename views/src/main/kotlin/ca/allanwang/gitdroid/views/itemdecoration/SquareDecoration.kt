@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.kau.utils.dimenPixelSize
+import kotlin.math.min
 
 /**
  * Based on [DividerItemDecoration],
@@ -61,7 +62,7 @@ class SquareDecoration(
             top = 0
             bottom = parent.height
         }
-        val trueSize = Math.min(size, bottom - top)
+        val trueSize = min(size, bottom - top)
         val offset = (bottom - top - trueSize) / 2
         parent.children().forEach { v ->
             parent.layoutManager!!.getDecoratedBoundsWithMargins(v, bounds)
@@ -83,7 +84,7 @@ class SquareDecoration(
             left = 0
             right = parent.width
         }
-        val trueSize = Math.min(size, right - left)
+        val trueSize = min(size, right - left)
         val offset = (right - left - trueSize) / 2
         parent.children().forEach { v ->
             parent.layoutManager!!.getDecoratedBoundsWithMargins(v, bounds)

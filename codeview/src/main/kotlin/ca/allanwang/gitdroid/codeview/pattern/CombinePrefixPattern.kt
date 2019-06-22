@@ -16,6 +16,9 @@ package ca.allanwang.gitdroid.codeview.pattern
 
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 
 fun List<Pattern>.combine(): Pattern = CombinePrefixPattern().combinePrefixPattern(this)
@@ -109,7 +112,7 @@ class CombinePrefixPattern {
                 ++groupIndex
             } else if ('\\' == p.first()) {
                 try {
-                    val decimalValue = Math.abs(Integer.parseInt(p.substring(1)))
+                    val decimalValue = abs(Integer.parseInt(p.substring(1)))
                     if (decimalValue <= groupIndex) {
                         capturedGroups[decimalValue] = -1
                     } else {
@@ -144,7 +147,7 @@ class CombinePrefixPattern {
                 }
             } else if ('\\' == p.first()) {
                 try {
-                    val decimalValue = Math.abs(Integer.parseInt(p.substring(1)))
+                    val decimalValue = abs(Integer.parseInt(p.substring(1)))
                     if (decimalValue <= groupIndex) {
                         parts[i] = "\\${capturedGroups[decimalValue]}"
                     }
@@ -272,10 +275,10 @@ class CombinePrefixPattern {
                     // It works for latin source code identifiers though.
                     if (!(end < 65 || start > 122)) {
                         if (!(end < 65 || start > 90)) {
-                            ranges.add((Math.max(65, start) or 32) to (Math.min(end, 90) or 32))
+                            ranges.add((max(65, start) or 32) to (min(end, 90) or 32))
                         }
                         if (!(end < 97 || start > 122)) {
-                            ranges.add((Math.max(97, start) and 32.inv()) to (Math.min(end, 122) and 32.inv()))
+                            ranges.add((max(97, start) and 32.inv()) to (min(end, 122) and 32.inv()))
                         }
                     }
                 }
@@ -289,7 +292,7 @@ class CombinePrefixPattern {
             var lastRange = 0 to 0
             for (r in ranges) {
                 if (r.first <= lastRange.second + 1) {
-                    lastRange = lastRange.first to Math.max(lastRange.second, r.second)
+                    lastRange = lastRange.first to max(lastRange.second, r.second)
                 } else {
                     // reference of lastRange is added
                     lastRange = r
