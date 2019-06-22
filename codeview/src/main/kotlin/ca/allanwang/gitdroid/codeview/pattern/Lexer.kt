@@ -47,10 +47,12 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
         }
         allRegexes.add("[\\u0000-\\uffff]".toPattern())
         this.tokenizer = allRegexes.combine()
-        println("Tokenizer ${tokenizer}")
         this.shortcuts = shortcuts
 
     }
+
+    internal fun tokens(content: String): Array<String> =
+        tokenizer.match(content, true)
 
     fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
 
@@ -62,11 +64,10 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
             )
         )
         var pos = 0
-        val tokens = tokenizer.match(job.source, true)
+        val tokens = tokens(job.source)
         val styleCache: MutableMap<String, PR> = mutableMapOf()
 
         fun addDecor(pos: Int, style: PR?) {
-            println("Add $pos $style")
             decorations.add(
                 Decoration(
                     job.basePos + pos,
@@ -75,15 +76,11 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
             )
         }
 
-        println("Tokens ${tokens.contentDeepToString()}")
-
         for (token in tokens) {
-            println("t " + token)
             val tokenStart = pos
             pos += token.length
             val cached: PR? = styleCache[token]
             if (cached != null) {
-                println("Cached $cached")
                 addDecor(tokenStart, cached)
                 continue
             }
@@ -99,7 +96,6 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                     match = fallthroughPattern.pattern.match(token, false)
                     if (match.isNotEmpty()) {
                         style = fallthroughPattern.pr
-                        println("Break")
                         break
                     }
                 }

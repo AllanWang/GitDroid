@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.codeview.highlighter
 
 import org.junit.Test
+import java.lang.RuntimeException
 
 class CodeHighlighterTest {
 
@@ -52,6 +53,7 @@ class CodeHighlighterTest {
     fun ansi() {
         with(AnsiHighlightBuilder) {
             println("$BLACK$BOLD Black Bold $RESET")
+            throw RuntimeException("S")
         }
     }
 
