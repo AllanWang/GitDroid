@@ -55,4 +55,4 @@ class OpaqueTheme(theme: CodeTheme) : CodeTheme {
     override val lineNumBg: Int = _lineNumBg
 }
 
-fun CodeTheme.withOpaqueColors(): CodeTheme = OpaqueTheme(this)
+fun CodeTheme.withOpaqueColors(): CodeTheme = if (this is OpaqueTheme) this else OpaqueTheme(this)

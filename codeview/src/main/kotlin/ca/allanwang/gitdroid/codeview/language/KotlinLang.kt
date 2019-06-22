@@ -14,7 +14,7 @@ import java.util.regex.Pattern
 object KotlinLang : CodeLanguage {
     override val id: String = "kotlin"
     override val extension: Pattern = "kt".toPattern()
-    override val patterns: List<CodePattern> = with(CodePatternUtil) {
+    override fun patterns(): List<CodePattern> = with(CodePatternUtil) {
         listOf(
             keywords(
                 "package",

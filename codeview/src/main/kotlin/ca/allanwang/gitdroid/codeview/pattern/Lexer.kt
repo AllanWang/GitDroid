@@ -24,35 +24,37 @@ import java.util.regex.Pattern
  * While the logic is primarily the same, this is a complete rewrite to match some changes in other interfaces.
  * Some functions are further optimized towards Kotlin.
  */
-internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPatterns: List<CodePattern>) {
+class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns: List<CodePattern>) {
 
     private val shortcuts: Map<Char, CodePattern>
     private val tokenizer: Pattern
-
 
     init {
         val shortcuts: MutableMap<Char, CodePattern> = mutableMapOf()
         val regexKeys: MutableSet<String> = mutableSetOf()
         val allRegexes: MutableList<Pattern> = mutableListOf()
-        (shortcutPatterns.asSequence() + fallbackPatterns.asSequence()).forEach { p ->
+        (shortcutPatterns.asSequence() + fallthroughPatterns.asSequence()).forEach { p ->
+            val k = p.pattern.pattern()
+            if (k !in regexKeys) {
+                allRegexes.add(p.pattern)
+            }
             if (p.shortcut == null) {
                 return@forEach
             }
             (p.shortcut.lastIndex downTo 0).forEach {
                 shortcuts[p.shortcut[it]] = p
             }
-            val k = p.pattern.pattern()
-            if (k !in regexKeys) {
-                allRegexes.add(p.pattern)
-            }
         }
-        allRegexes.add("[\u0000-\\uffff]".toPattern())
+        allRegexes.add("[\\u0000-\\uffff]".toPattern())
         this.tokenizer = allRegexes.combine()
+        println("Tokenizer ${tokenizer}")
         this.shortcuts = shortcuts
 
     }
 
-    fun decorate(job: Job): Job {
+    fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
+
+    fun decorate(job: LexerJob): List<Decoration> {
         val decorations: MutableList<Decoration> = mutableListOf(
             Decoration(
                 job.basePos,
@@ -60,12 +62,11 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
             )
         )
         var pos = 0
-        var embedded = false
         val tokens = tokenizer.match(job.source, true)
         val styleCache: MutableMap<String, PR> = mutableMapOf()
-        var match: Array<String>? = null
 
         fun addDecor(pos: Int, style: PR?) {
+            println("Add $pos $style")
             decorations.add(
                 Decoration(
                     job.basePos + pos,
@@ -74,40 +75,46 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
             )
         }
 
-        for (token in tokens) {
-            var style: PR? = styleCache[token]
-            if (style == null) {
-                val shortcutPattern = shortcuts[token[0]]
-                if (shortcutPattern != null) {
-                    match = shortcutPattern.pattern.match(token, false)
-                    style = shortcutPattern.pr
-                } else {
-                    for (fallthroughPattern in fallbackPatterns) {
-                        match = fallthroughPattern.pattern.match(token, false)
-                        if (match.isNotEmpty()) {
-                            style = fallthroughPattern.pr
-                            break
-                        }
-                    }
-                }
-                // Unlike google's variant, we don't have custom keys
-                // All lang- patterns should be labelled source
-                embedded = style == PR.Source
-                if (embedded && match?.get(1) != null) {
-                    embedded = false
-                }
-                if (!embedded) {
-                    styleCache[token] = style ?: PR.Plain
-                }
-            }
+        println("Tokens ${tokens.contentDeepToString()}")
 
+        for (token in tokens) {
+            println("t " + token)
             val tokenStart = pos
             pos += token.length
+            val cached: PR? = styleCache[token]
+            if (cached != null) {
+                println("Cached $cached")
+                addDecor(tokenStart, cached)
+                continue
+            }
+            var style: PR = PR.Plain
+            var match: Array<String>? = null
+
+            val shortcutPattern = shortcuts[token[0]]
+            if (shortcutPattern != null) {
+                match = shortcutPattern.pattern.match(token, false)
+                style = shortcutPattern.pr
+            } else {
+                for (fallthroughPattern in fallthroughPatterns) {
+                    match = fallthroughPattern.pattern.match(token, false)
+                    if (match.isNotEmpty()) {
+                        style = fallthroughPattern.pr
+                        println("Break")
+                        break
+                    }
+                }
+            }
+            // Unlike google's variant, we don't have custom keys
+            // All lang- patterns should be labelled source
+            val embedded = style == PR.Source && match?.getOrNull(1) != null
+            if (!embedded) {
+                styleCache[token] = style
+            }
 
             if (!embedded) {
                 addDecor(tokenStart, style)
             } else {
-                val embeddedSource = match!!.get(1)
+                val embeddedSource = match!![1]
                 var embeddedSourceStart = token.indexOf(embeddedSource)
                 var embeddedSourceEnd = embeddedSourceStart + embeddedSource.length
                 if (match.getOrNull(2) != null) {
@@ -117,37 +124,114 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
                     embeddedSourceEnd = token.length - match[2].length
                     embeddedSourceStart = embeddedSourceEnd - embeddedSource.length
                 }
-                val lang = ""// style.substring(5)
-                val subJobs = listOf(
+                listOf(
                     // Decorate the left of the embedded source
-                    appendDecorations(
-                        job.basePos + tokenStart,
-                        token.substring(0, embeddedSourceStart)
+                    decorate(
+                        LexerJob(
+                            job.basePos + tokenStart,
+                            token.substring(0, embeddedSourceStart)
+                        )
                     ),
                     // Decorate the embedded source
-                    appendDecorations(
-                        job.basePos + tokenStart + embeddedSourceStart,
-                        embeddedSource
+                    decorate(
+                        LexerJob(
+                            job.basePos + tokenStart + embeddedSourceStart,
+                            embeddedSource
+                        )
                     ),
                     // Decorate the right of the embedded section
-                    appendDecorations(
-                        job.basePos + tokenStart + embeddedSourceEnd,
-                        token.substring(embeddedSourceEnd)
+                    decorate(
+                        LexerJob(
+                            job.basePos + tokenStart + embeddedSourceEnd,
+                            token.substring(embeddedSourceEnd)
+                        )
                     )
                 ).forEach {
-                    decorations.addAll(it.decorations)
+                    decorations.addAll(it)
                 }
             }
         }
 
-        return job.copy(decorations = removeDuplicates(
-            decorations,
-            job.source
-        )
-        )
+        return removeDuplicates(decorations, job.source)
     }
 
     companion object {
+
+        internal operator fun invoke(options: LexerOptions): Lexer {
+            val shortcutPatterns: MutableList<CodePattern> = mutableListOf()
+            val fallthroughPatterns: MutableList<CodePattern> = mutableListOf()
+            CodePatternUtil.apply {
+                options.apply {
+                    shortcutPatterns.add(
+                        when {
+                            tripeQuotedStrings -> tripleQuotedStrings()
+                            multiLineStrings -> multiLineStrings()
+                            else -> singleLineStrings()
+                        }
+                    )
+                    if (verbatimStrings) {
+                        fallthroughPatterns.add(
+                            CodePattern(
+                                PR.String,
+                                Pattern.compile("^@\"(?:[^\"]|\"\")*(?:\"|$)")
+                            )
+                        )
+                    }
+                    // TODO hashcomments
+                    // TODO cstyle comments
+                    // TODO regex literals
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Literal,
+                            Pattern.compile("^@[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
+                        )
+                    )
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Literal,
+                            Pattern.compile("^@[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
+                        )
+                    )
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Type,
+                            Pattern.compile("^(?:[@_]?[A-Z]+[a-z][A-Za-z_\$@0-9]*|\\w+_t\\b)")
+                        )
+                    )
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Plain,
+                            Pattern.compile("^[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
+                        )
+                    )
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Plain,
+                            Pattern.compile(
+                                "^(?:"
+                                        // A hex number
+                                        + "0x[a-f0-9]+"
+                                        // or an octal or decimal number,
+                                        + "|(?:\\d(?:_\\d+)*\\d*(?:\\.\\d*)?|\\.\\d\\+)"
+                                        // possibly in scientific notation
+                                        + "(?:e[+\\-]?\\d+)?"
+                                        + ')'
+                                        // with an optional modifier like UL for unsigned long
+                                        + "[a-z]*", Pattern.CASE_INSENSITIVE
+                            ), "0123456789"
+                        )
+                    )
+                    fallthroughPatterns.add(
+                        CodePattern(
+                            PR.Plain,
+                            Pattern.compile("^\\\\[\\s\\S]?")
+                        )
+                    )
+                }
+            }
+            return Lexer(shortcutPatterns, fallthroughPatterns)
+        }
+
         /**
          * Shortens decoration list to remove unnecessary entries.
          * Namely, if multiple decorations reference the same position, we use the last entry.
@@ -171,11 +255,10 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
                 if (d.pos == prevDecor.pos) {
                     iter.previous()
                     iter.remove()
-                    iter.next()
-                    prevDecor = d
                 } else if (d.pr == prevDecor.pr) {
                     iter.remove()
                 }
+                prevDecor = d
             }
 
             // remove last zero length tag
@@ -185,9 +268,5 @@ internal class Lexer(shortcutPatterns: List<CodePattern>, private val fallbackPa
             return results
         }
     }
-
-    internal fun appendDecorations(basePos: Int, sourceCode: String): Job {
-        val job = Job(basePos, sourceCode, emptyList())
-        return decorate(job)
-    }
 }
+

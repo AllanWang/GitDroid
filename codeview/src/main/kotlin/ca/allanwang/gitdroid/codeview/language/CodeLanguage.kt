@@ -6,5 +6,5 @@ import java.util.regex.Pattern
 interface CodeLanguage {
     val id: String
     val extension: Pattern
-    val patterns: List<CodePattern>
+    fun patterns(): List<CodePattern>
 }

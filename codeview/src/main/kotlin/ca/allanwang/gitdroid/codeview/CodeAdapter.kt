@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
-import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.log10
 
@@ -32,15 +32,20 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>(), CodeViewLoader {
     override suspend fun setData(content: String) {
         withContext(Dispatchers.Default) {
             val lines = content.split('\n')
-            coroutineScope {
-                val spans = lines.map { async { CodeHighlighter.highlight(it) } }.awaitAll()
-                val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
-                withContext(Dispatchers.Main) {
-                    this@CodeAdapter.data = data
-                    ems = emsDec(data.size.toFloat())
-                    notifyDataSetChanged()
-                }
+            withContext(Dispatchers.Main) {
+                data = lines.mapIndexed { i, s -> CodeLine(i, s) }
+                notifyDataSetChanged()
             }
+//            coroutineScope {
+//                val spans =
+//                    lines.map { async { CodeHighlighter.highlight(it, Lexer(LexerOptions(KotlinLang))) } }.awaitAll()
+//                val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
+//                withContext(Dispatchers.Main) {
+//                    this@CodeAdapter.data = data
+//                    ems = emsDec(data.size.toFloat())
+//                    notifyDataSetChanged()
+//                }
+//            }
         }
     }
 

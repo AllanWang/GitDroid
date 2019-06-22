@@ -13,15 +13,11 @@ import java.util.regex.Pattern
  */
 object PatternUtil {
 
-    fun matchLiteral(vararg words: String): String = words.joinToString("|") { Regex.escape(it) }
-
     fun singleQuoted(s: String): Pattern = Pattern.compile("$s(?:[^\\\\$s]|\\\\[\\s\\S])*(?:$s|$)")
 
     fun singleLineQuoted(s: String): Pattern = Pattern.compile("$s(?:[^\\\\$s\r\n]|\\\\.)*(?:$s|$)")
 
     fun tripleQuoted(s: String): Pattern = quotedN(s, 3)
-
-    fun verbatimString(): Pattern = Pattern.compile("^@\"(?:[^\"]|\"\")*(?:\"|$)")
 
     /**
      * Matches string that starts and possibly ends (optional end) with [n] instances of [s].
@@ -91,62 +87,11 @@ object CodePatternUtil {
         return CodePattern(PR.String, p, s)
     }
 
-    fun verbatimStrings(): CodePattern {
-        val p = PatternUtil.verbatimString()
-        return CodePattern(PR.String, p)
-    }
-
     fun keywords(vararg key: String, blockFront: Boolean = false): CodePattern {
         val p = PatternUtil.keywords(*key, blockFront = blockFront)
         return CodePattern(PR.Keyword, p)
     }
-
-    fun plain(): CodePattern {
-        return CodePattern(
-            PR.Plain,
-            Pattern.compile("^\\s+"),
-            " \r\n\t${0xA0.toChar()}"
-        )
-    }
-
-    fun literalAt(): CodePattern {
-        return CodePattern(
-            PR.Literal,
-            Pattern.compile("^@[a-z_\$][a-z_\$@0-9]*")
-        )
-    }
-
-    fun literalNum(): CodePattern {
-        val p = Pattern.compile(
-            "^(?:"
-                    // A hex number
-                    + "0x[a-f0-9]+"
-                    // or an octal or decimal number,
-                    + "|(?:\\d(?:_\\d+)*\\d*(?:\\.\\d*)?|\\.\\d\\+)"
-                    // possibly in scientific notation
-                    + "(?:e[+\\-]?\\d+)?"
-                    + ')'
-                    // with an optional modifier like UL for unsigned long
-                    + "[a-z]*", Pattern.CASE_INSENSITIVE
-        )
-        return CodePattern(PR.Plain, p, "0123456789")
-    }
-
-    fun fallback(config: FallbackConfig): List<CodePattern> {
-        val list = mutableListOf<CodePattern>()
-        if (config.regexLiterals) {
-
-        }
-        return listOf(
-            literalAt()
-        )
-    }
-
 }
-
-data class FallbackConfig(
-    val regexLiterals: Boolean
-)
 
 fun Pattern.update(action: PatternUtil.(String) -> String): Pattern =
     PatternUtil.action(pattern()).toPattern(flags())
