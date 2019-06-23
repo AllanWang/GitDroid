@@ -9,7 +9,6 @@ import kotlin.reflect.KProperty
 
 abstract class LoadingActivity<Binding : ViewDataBinding> : BaseActivity() {
 
-
     lateinit var binding: Binding
 
     abstract val layoutRes: Int

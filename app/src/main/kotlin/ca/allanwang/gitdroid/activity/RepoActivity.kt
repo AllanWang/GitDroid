@@ -3,7 +3,6 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.LoadingActivity
 import ca.allanwang.gitdroid.data.GitObjectID
@@ -14,7 +13,6 @@ import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.kau.utils.startActivity
-import com.google.android.material.appbar.AppBarLayout
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
@@ -38,6 +36,10 @@ class RepoActivity : LoadingActivity<ActivityRepoBinding>() {
 
     override fun onCreate2(savedInstanceState: Bundle?) {
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.also {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowHomeEnabled(true)
+        }
 
         binding.repoFiles.root.setCoordinatorLayoutScrollingBehaviour()
 
