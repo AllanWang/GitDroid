@@ -16,7 +16,8 @@ object KotlinLang : CodeLanguage {
     override fun shortcutPatterns(): List<CodePattern> = listOf(
         CodePattern(
             PR.Plain,
-            Pattern.compile("^[\\t\\n\\r \\xA0]+"), "\\t\\n\\r \\ua0"
+            Pattern.compile("^[\\t\\n\\r \\xA0]+"),
+            "\t\n\r \u00A0"
         ),
         CodePattern(
             PR.Punctuation,

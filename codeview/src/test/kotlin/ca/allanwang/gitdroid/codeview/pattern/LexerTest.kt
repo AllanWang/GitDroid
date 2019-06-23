@@ -22,7 +22,11 @@ class LexerTest {
         }
     }
 
-    private fun decorations(file: String, lang: CodeLanguage, listen: Boolean = true): List<Decoration> = runBlocking {
+    private fun decorations(
+        file: String,
+        lang: CodeLanguage,
+        listen: Boolean = System.getenv("TRAVIS") == null
+    ): List<Decoration> = runBlocking {
         withContext(Dispatchers.Default) {
             Lexer(lang, LexerListener.takeIf { listen }).decorate(resource("source/$file"))
         }
