@@ -100,7 +100,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             if (obj.isBinary) {
                 // todo
             } else {
-                loadTextBlob(data.oid)
+                loadTextBlob(data.name, data.oid)
             }
         } else {
             pathCrumbs.addCrumb(PathCrumb(data.name, data.oid))
@@ -129,8 +129,8 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
         }
     }
 
-    private fun loadTextBlob(oid: GitObjectID) {
-        BlobActivity.launch(this, query, oid)
+    private fun loadTextBlob(name: String, oid: GitObjectID) {
+        BlobActivity.launch(this, query, name.substringAfter(".", ""), oid)
     }
 
     private fun loadFolder(oid: GitObjectID) {
@@ -140,6 +140,11 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             val entries: List<TreeEntryItem> = obj.entries?.map { it.fragments.treeEntryItem } ?: emptyList()
             showEntries(entries)
         }
+    }
+
+    override fun finish() {
+        BlobActivity.lexerCache.clear()
+        super.finish()
     }
 
     override fun onBackPressed() {

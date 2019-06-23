@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CodeView">
+        <attr name="codeLineNumTextColor" format="color" />
+        <attr name="codeLineNumBackgroundColor" format="color" />
+        <attr name="codeContentBackgroundColor" format="color" />
+        <attr name="prAttrNameColor" format="color" />
+        <attr name="prAttrValueColor" format="color" />
+        <attr name="prCommentColor" format="color" />
+        <attr name="prDeclarationColor" format="color" />
+        <attr name="prKeywordColor" format="color" />
+        <attr name="prLiteralColor" format="color" />
+        <attr name="prNocodeColor" format="color" />
+        <attr name="prPlainColor" format="color" />
+        <attr name="prPunctuationColor" format="color" />
+        <attr name="prSourceColor" format="color" />
+        <attr name="prStringColor" format="color" />
+        <attr name="prTagColor" format="color" />
+        <attr name="prTypeColor" format="color" />
+    </declare-styleable>
+
+    <attr name="codeViewStyle" format="reference" />
+
+    <!--See https://github.com/google/code-prettify/blob/master/src/prettify.css-->
+    <style name="CodeViewLight">
+        <item name="codeLineNumTextColor">?android:textColorTertiary</item>
+        <item name="codeLineNumBackgroundColor">#bababa</item>
+        <item name="codeContentBackgroundColor">?android:colorBackground</item>
+        <item name="prAttrNameColor">#606</item>
+        <item name="prAttrValueColor">#080</item>
+        <item name="prCommentColor">#800</item>
+        <item name="prDeclarationColor">#606</item>
+        <item name="prKeywordColor">#008</item>
+        <item name="prLiteralColor">#006</item>
+        <item name="prNocodeColor">#000</item>
+        <item name="prPlainColor">#000</item>
+        <item name="prPunctuationColor">#660</item>
+        <item name="prStringColor">#080</item>
+        <item name="prTagColor">#008</item>
+        <item name="prTypeColor">#606</item>
+    </style>
+</resources>

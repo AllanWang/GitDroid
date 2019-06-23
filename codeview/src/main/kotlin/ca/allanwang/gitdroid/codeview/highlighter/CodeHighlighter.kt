@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import ca.allanwang.gitdroid.codeview.pattern.Decoration
+import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -15,27 +16,17 @@ import kotlinx.coroutines.coroutineScope
 object CodeHighlighter {
 
     /**
-     * Default implementation for android spannable strings
-     */
-    suspend fun highlight(
-        text: String,
-        decorations: List<Decoration>,
-        theme: CodeTheme,
-        chunk: Int = 1000
-    ): SpannableString =
-        highlight(text, decorations, SpannableStringHighlightBuilder(theme), chunk)
-
-    /**
      * Base highlighting implementation.
      * Chunks the decorations into segments, and splits the work among coroutines.
      * The result is then combined together
      */
     suspend fun <T : Appendable, R : CharSequence> highlight(
         text: String,
-        decorations: List<Decoration>,
+        lexer: Lexer,
         builder: CodeHighlightBuilder<T, R>,
         chunk: Int = 100
     ): R = coroutineScope {
+        val decorations: List<Decoration> = lexer.decorate(text)
         val results: List<R> = decorations.windowed(chunk, chunk - 1, true).map { decors ->
             async {
                 with(builder) {
@@ -89,6 +80,11 @@ internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :
     override fun build(builder: SpannableStringBuilder): SpannableString = SpannableString(builder)
 }
 
+/**
+ * Builder to create a new char sequence.
+ * Chunks of content will be provided to builders, one for each coroutine.
+ * The builder itself will not switch contexts, but the resulting char sequence will.
+ */
 interface CodeHighlightBuilder<T : Appendable, R : CharSequence> {
 
     fun create(pr: PR, text: String): R

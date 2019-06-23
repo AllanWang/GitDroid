@@ -6,6 +6,7 @@
         <item name="windowNoTitle">true</item>
         <item name="contributionColor">?colorAccent</item>
         <item name="contributionCellBorder">@dimen/contribution_cell_border_default</item>
+        <item name="codeViewStyle">@style/CodeViewLight</item>
     </style>
 
     <style name="Theme.GitDroid" parent="Theme.MaterialComponents">
