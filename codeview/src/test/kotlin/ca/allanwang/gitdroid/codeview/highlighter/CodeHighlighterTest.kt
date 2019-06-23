@@ -112,9 +112,8 @@ class CodeHighlighterTest {
         val (result, resultNoFormat) = runBlocking {
             withContext(Dispatchers.Default) {
                 val lexer = Lexer(lang)
-                val decorations = lexer.decorate(content)
-                CodeHighlighter.highlight(content, decorations, AnsiHighlightBuilder) to
-                        CodeHighlighter.highlight(content, decorations, NoHighlightBuilder)
+                CodeHighlighter.highlight(content, lexer, AnsiHighlightBuilder) to
+                        CodeHighlighter.highlight(content, lexer, NoHighlightBuilder)
             }
         }
         assertEquals(content, resultNoFormat, "Highlighting produces different content")
