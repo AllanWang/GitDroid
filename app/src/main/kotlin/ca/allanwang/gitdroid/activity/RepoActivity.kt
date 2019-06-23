@@ -7,6 +7,7 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.LoadingActivity
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
@@ -15,6 +16,7 @@ import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
 import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,13 +45,10 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             }
         }
         pathCrumbs.callback = { data, info ->
-            if (info?.isLast != true) {
-                if (data == null) {
-                    loadRepo()
-                } else {
-                    loadFolder(data.oid)
-                }
-            }
+            load(data, info, false)
+        }
+        binding.repoRefresh.setOnRefreshListener {
+            load(pathCrumbs.getCurrentCrumb(), null, true)
         }
         loadRepo()
     }
@@ -90,6 +89,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             entries.sortedWith(GitComparators.treeEntryItem()).map { it.vh() }
         }
         withContext(Dispatchers.Main) {
+            binding.repoRefresh.isRefreshing = false
             treeAdapter.data = sorted
         }
     }
@@ -108,10 +108,20 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
         }
     }
 
-    private fun loadRepo() {
+    private fun load(data: PathCrumb?, info: ClickInfo?, forceRefresh: Boolean = false) {
+        if (info?.isLast != true) {
+            if (data == null) {
+                loadRepo(forceRefresh)
+            } else {
+                loadFolder(data.oid, forceRefresh)
+            }
+        }
+    }
+
+    private fun loadRepo(forceRefresh: Boolean = false) {
         treeAdapter.data = emptyList()
         launch {
-            val repo = gdd.getRepo(query).await()
+            val repo = gdd.getRepo(query).await(forceRefresh = forceRefresh)
             val defaultBranch = repo.defaultBranchRef
             if (defaultBranch == null) {
 
@@ -129,14 +139,19 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
         }
     }
 
-    private fun loadTextBlob(name: String, oid: GitObjectID) {
+    private fun loadTextBlob(name: String, oid: GitObjectID, forceRefresh: Boolean = false) {
         BlobActivity.launch(this, query, name.substringAfter(".", ""), oid)
     }
 
-    private fun loadFolder(oid: GitObjectID) {
+    private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
         treeAdapter.data = emptyList()
+        L._d { "Loading folder $oid" }
         launch {
-            val obj = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsTree ?: return@launch
+            val obj = gdd.getFileInfo(query, oid).await(forceRefresh = forceRefresh)
+            if (obj !is ObjectItem.AsTree) {
+                throw CancellationException(("Expected object to be tree, but actually ${obj.__typename}"))
+            }
+
             val entries: List<TreeEntryItem> = obj.entries?.map { it.fragments.treeEntryItem } ?: emptyList()
             showEntries(entries)
         }

@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.data
 
+import ca.allanwang.gitdroid.logger.L
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Input
@@ -109,6 +110,7 @@ interface GitGraphQl {
 
     suspend fun getFileInfo(query: String, oid: GitObjectID): GitCall<ObjectItem> =
         query(ObjectInfoQuery(query, oid)) {
+//            L._d { "$oid ${this.toString().replace(",", "\n\t")}" }
             search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.obj?.fragments?.objectItem
         }
 
