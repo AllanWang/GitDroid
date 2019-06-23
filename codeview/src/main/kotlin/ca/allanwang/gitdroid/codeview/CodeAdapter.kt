@@ -1,40 +1,99 @@
 package ca.allanwang.gitdroid.codeview
 
+import android.content.Context
+import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.view.doOnNextLayout
-import androidx.core.view.doOnPreDraw
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
+import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
+import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
+import ca.allanwang.gitdroid.codeview.highlighter.splitCharSequence
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.pattern.Lexer
+import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
+import ca.allanwang.gitdroid.codeview.utils.CodeViewUtils
+import ca.allanwang.gitdroid.codeview.utils.ceilInt
 import ca.allanwang.gitdroid.logger.L
-import kotlinx.coroutines.*
-import java.nio.channels.FileLock
+import ca.allanwang.kau.utils.dimen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.log10
 
-class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
+class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
+    CodeViewLoader {
 
     private var data: List<CodeLine> = emptyList()
-    private var ems: Int = 0
+    // TODO add default theme
+    internal var theme: CodeTheme? = null
 
-    private fun emsDec(count: Float): Int =
-        log10(count).toInt() + 1
+    @Volatile
+    private var prevLang: CodeLanguage? = null
+    @Volatile
+    private var prevOptions: LexerOptions? = null
+    @Volatile
+    private var prevLexer: Lexer? = null
 
+    private var lineNumWidth: Int = 0
+    private var lineCodeWidth: Int = 0
+    private val lineMargins: Int = (context.dimen(R.dimen.code_line_horizontal_margins) * 2f).ceilInt()
 
-    suspend fun setData(content: String) {
+    private lateinit var textPaint: TextPaint
+    private lateinit var layoutManager: CodeLayoutManager
+
+    fun bind(lineNumTextPaint: TextPaint, codeLinearLayout: CodeLayoutManager) {
+        this.textPaint = lineNumTextPaint
+        this.layoutManager = codeLinearLayout
+    }
+
+    private fun lineNumWidth(count: Float): Int {
+        val digitCount = log10(count).toInt() + 1
+        L.d { "Digit count $digitCount" }
+        return CodeViewUtils.computeWidth(textPaint, "0".repeat(digitCount)).ceilInt()
+    }
+
+    override fun setCodeTheme(theme: CodeTheme) {
+        if (this.theme === theme) {
+            return
+        }
+        this.theme = theme
+        notifyDataSetChanged()
+    }
+
+    override suspend fun setData(content: String, lang: CodeLanguage, options: LexerOptions?, theme: CodeTheme?) {
+        withContext(Dispatchers.Main) {
+            this@CodeAdapter.theme = theme
+            val oldSize = data.size
+            data = emptyList()
+            notifyItemRangeRemoved(0, oldSize)
+        }
         withContext(Dispatchers.Default) {
-            val lines = content.split('\n')
-            coroutineScope {
-                val spans = lines.map { async { Highlighter.highlight(it) } }.awaitAll()
-                val data = spans.mapIndexed { index, spannedString -> CodeLine(index + 1, spannedString) }
-                withContext(Dispatchers.Main) {
-                    this@CodeAdapter.data = data
-                    ems = emsDec(data.size.toFloat())
-                    notifyDataSetChanged()
-                }
+            L._d { "Received data ${content.length}" }
+            var lexer = prevLexer
+            if (lexer == null || prevLang?.id != lang.id || prevOptions != options) {
+                lexer = Lexer(lang, options)
+                prevLexer = lexer
+            }
+            L._d { "Create lexer" }
+            val decorations = lexer.decorate(content)
+            L._d { "Create decorations" }
+            // TODO make default theme based on attributes
+            val spannable = CodeHighlighter.highlight(content, decorations, theme ?: CodeTheme.default())
+            L._d { "Highlight" }
+            val lines = spannable.splitCharSequence('\n')
+            L._d { "Split lines" }
+            val maxWidth = CodeViewUtils.computeMaxWidth(textPaint, lines)
+            L._d { "Max width $maxWidth ${layoutManager.width} $lineMargins" }
+            withContext(Dispatchers.Main) {
+                lineNumWidth = lineNumWidth(lines.size.toFloat()) + lineMargins
+                lineCodeWidth = maxWidth + lineMargins
+                layoutManager.setContentWidth(lineNumWidth + lineCodeWidth)
+                data = lines.mapIndexed { i, s -> CodeLine(i, s) }
+                notifyDataSetChanged()
             }
         }
     }
@@ -62,11 +121,25 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
     override fun onBindViewHolder(holder: CodeViewHolder, position: Int, payloads: MutableList<Any>) {
         val item: CodeLine = data.getOrNull(position) ?: return
         val binding: ViewItemCodeBinding = DataBindingUtil.getBinding(holder.itemView) ?: return
-        binding.codeItemLineNum.text = item.lineNumber?.toString()
-        // Unfortunately this doesn't work during onCreateViewHolder
+
+        // Unfortunately width modification doesn't work during onCreateViewHolder
         // Requesting a layout then causes the width to reset, as it isn't bound
-        binding.codeItemLineNum.setEms(ems)
-        binding.codeItemLine.text = item.code
+        with(binding) {
+            codeItemLineNum.text = item.lineNumber?.toString()
+            codeItemLineNum.width = lineNumWidth
+            codeItemLine.text = item.code
+            codeItemLine.width = lineCodeWidth
+            theme?.also {
+                codeItemLineNum.setTextColor(it.lineNumTextColor)
+                codeItemLineNum.setBackgroundColor(it.lineNumBg)
+                root.setBackgroundColor(it.contentBg)
+            }
+            if (position == 0) {
+                codeItemLine.doOnNextLayout {
+                    L.d { "Measure ${codeItemLine.width} ${codeItemLine.measuredWidth}" }
+                }
+            }
+        }
         holder.itemView.setTag(R.id.code_view_item_data, item)
     }
 
@@ -80,7 +153,6 @@ class CodeAdapter : RecyclerView.Adapter<CodeViewHolder>() {
     }
 
     override fun getItemCount(): Int = data.size
-
 }
 
 data class CodeLine(val lineNumber: Int?, val code: CharSequence)

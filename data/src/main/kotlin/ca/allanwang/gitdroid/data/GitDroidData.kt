@@ -1,34 +1,15 @@
 package ca.allanwang.gitdroid.data
 
 import android.content.Context
-import ca.allanwang.gitdroid.data.GitGraphQl.Companion.apollo
 import ca.allanwang.gitdroid.data.helpers.*
-import ca.allanwang.gitdroid.data.helpers.DateTimeApolloAdapter
-import ca.allanwang.gitdroid.data.helpers.ObjectApolloAdapter
-import ca.allanwang.gitdroid.data.helpers.UriApolloAdapter
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.cache.http.HttpCache
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.sql.ApolloSqlHelper
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
-import com.apollographql.apollo.coroutines.toDeferred
 import github.type.CustomType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.File
@@ -98,37 +79,6 @@ class GitDroidData : KoinComponent, GitGraphQl {
                 if (cacheStore != null) {
                     builder.httpCache(cacheStore)
                 }
-                // I'm not convinced that this does anything useful, given we don't provide keys
-                // for field arguments
-//                if (context != null) {
-//                    val sqlHelper = ApolloSqlHelper.create(context, "apolloDb")
-//                    val sqlCacheFactory = SqlNormalizedCacheFactory(sqlHelper)
-//                    val resolver = object : CacheKeyResolver() {
-//                        override fun fromFieldRecordSet(
-//                            field: ResponseField,
-//                            recordSet: MutableMap<String, Any>
-//                        ): CacheKey {
-//                            val type = recordSet["__typename"] as? String ?: return CacheKey.NO_KEY
-//                            val id = recordSet["id"] as? String ?: return CacheKey.NO_KEY
-//                            return CacheKey.from("$type.$id")
-//                        }
-//
-//                        override fun fromFieldArguments(
-//                            field: ResponseField,
-//                            variables: Operation.Variables
-//                        ): CacheKey {
-//                            return CacheKey.NO_KEY
-//                        }
-//                    }
-//
-//                    builder.normalizedCache(
-//                        LruNormalizedCacheFactory(
-//                            EvictionPolicy.builder()
-//                                .maxSizeBytes(10 * 1024)
-//                                .build()
-//                        ).chain(sqlCacheFactory), resolver
-//                    )
-//                }
 
                 builder.build()
             }

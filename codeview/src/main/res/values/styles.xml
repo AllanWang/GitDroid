@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="CodeViewLine" parent="TextAppearance.AppCompat.Caption">
 
+    <!--Styles for each code line-->
+    <!--Note that all values are shared with width computations-->
+    <style name="CodeViewLine">
+        <item name="android:textSize">@dimen/code_line_text_size</item>
+        <item name="android:lines">1</item>
+        <item name="android:paddingStart">@dimen/code_line_horizontal_margins</item>
+        <item name="android:paddingEnd">@dimen/code_line_horizontal_margins</item>
     </style>
 
 </resources>

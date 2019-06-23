@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 typealias AdapterOnClick = (vhb: VHBindingType, view: View, info: ClickInfo) -> Boolean
 
@@ -40,7 +42,7 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun <T> List<T>.subListSafe(start: Int, end: Int): List<T> =
-        if (start < end) subList(Math.max(start, 0), Math.min(end, size)) else emptyList()
+        if (start < end) subList(max(start, 0), min(end, size)) else emptyList()
 
     fun remove(index: Int, count: Int) {
         if (count <= 0) {
@@ -141,7 +143,6 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return data.getOrNull(position)?.typeId ?: super.getItemViewType(position)
     }
-
 
     companion object {
 

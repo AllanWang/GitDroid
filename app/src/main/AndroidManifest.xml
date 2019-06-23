@@ -41,7 +41,7 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.UserActivity" />
-        <activity android:name=".activity.CodeActivity" />
+        <activity android:name=".activity.BlobActivity" />
         <activity android:name=".activity.RepoActivity" />
     </application>
 

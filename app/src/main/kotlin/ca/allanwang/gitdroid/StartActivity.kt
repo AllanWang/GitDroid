@@ -2,7 +2,7 @@ package ca.allanwang.gitdroid
 
 import android.os.Bundle
 import ca.allanwang.gitdroid.activity.BaseActivity
-import ca.allanwang.gitdroid.activity.CodeActivity
+import ca.allanwang.gitdroid.activity.BlobActivity
 import ca.allanwang.gitdroid.activity.LoginActivity
 import ca.allanwang.kau.utils.startActivity
 
@@ -13,7 +13,7 @@ class StartActivity : BaseActivity() {
         when {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
 //            else -> RepoActivity.launch(this, "AllanWang/KAU")
-            else -> startActivity<CodeActivity>()
+            else -> startActivity<BlobActivity>()
 //            else -> startActivity<MainActivity>()
         }
     }
