@@ -16,7 +16,6 @@ import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.highlighter.splitCharSequence
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
-import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
 import ca.allanwang.gitdroid.codeview.utils.CodeViewUtils
 import ca.allanwang.gitdroid.codeview.utils.ceilInt
 import ca.allanwang.gitdroid.logger.L
@@ -35,8 +34,6 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
 
     @Volatile
     private var prevLang: CodeLanguage? = null
-    @Volatile
-    private var prevOptions: LexerOptions? = null
     @Volatile
     private var prevLexer: Lexer? = null
 
@@ -66,7 +63,7 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
         notifyDataSetChanged()
     }
 
-    override suspend fun setData(content: String, lang: CodeLanguage, options: LexerOptions?, theme: CodeTheme?) {
+    override suspend fun setData(content: String, lang: CodeLanguage, theme: CodeTheme?) {
         withContext(Dispatchers.Main) {
             this@CodeAdapter.theme = theme
             val oldSize = data.size
@@ -76,8 +73,9 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
         withContext(Dispatchers.Default) {
             L._d { "Received data ${content.length}" }
             var lexer = prevLexer
-            if (lexer == null || prevLang?.id != lang.id || prevOptions != options) {
-                lexer = Lexer(lang, options)
+            val prevLang = prevLang
+            if (lexer == null || prevLang == null || prevLang::class == lang::class) {
+                lexer = Lexer(lang)
                 prevLexer = lexer
             }
             L._d { "Create lexer" }
@@ -102,8 +100,10 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CodeViewHolder {
         val binding: ViewItemCodeBinding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.context),
-                R.layout.view_item_code, parent, false)
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.view_item_code, parent, false
+            )
         val holder = CodeViewHolder(binding.root)
         holder.itemView.setOnClickListener {
             val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener

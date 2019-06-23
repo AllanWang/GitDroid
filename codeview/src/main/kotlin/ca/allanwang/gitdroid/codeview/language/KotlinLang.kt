@@ -1,7 +1,7 @@
 package ca.allanwang.gitdroid.codeview.language
 
-import ca.allanwang.gitdroid.codeview.pattern.CodePattern
 import ca.allanwang.gitdroid.codeview.highlighter.PR
+import ca.allanwang.gitdroid.codeview.pattern.CodePattern
 import ca.allanwang.gitdroid.codeview.pattern.CodePatternUtil
 import ca.allanwang.gitdroid.codeview.pattern.PatternUtil
 import java.util.regex.Pattern
@@ -12,9 +12,20 @@ import java.util.regex.Pattern
  * https://github.com/google/code-prettify/blob/master/src/lang-kotlin.js
  */
 object KotlinLang : CodeLanguage {
-    override val id: String = "kotlin"
-    override val extension: Pattern = "kt".toPattern()
-    override fun patterns(): List<CodePattern> = with(CodePatternUtil) {
+    override fun fileExtensions() = setOf("kt")
+    override fun shortcutPatterns(): List<CodePattern> = listOf(
+        CodePattern(
+            PR.Plain,
+            Pattern.compile("^[\\t\\n\\r \\xA0]+"), "\\t\\n\\r \\ua0"
+        ),
+        CodePattern(
+            PR.Punctuation,
+            Pattern.compile("^[.!%&()*+,\\-;<=>?\\[\\\\\\]^{|}:]+"),
+            ".!%&()*+,-;<=>?[\\]^{|}:"
+        )
+    )
+
+    override fun fallthroughPatterns(): List<CodePattern> = with(CodePatternUtil) {
         listOf(
             keywords(
                 "package",

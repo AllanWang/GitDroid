@@ -24,13 +24,24 @@ import java.util.regex.Pattern
  *
  * While the logic is primarily the same, this is a complete rewrite to match some changes in other interfaces.
  * Some functions are further optimized towards Kotlin.
+ *
+ * Lexers are no longer supplied with lists of patterns.
+ * Instead they are supplied with languages, which are essentially pattern factories
  */
-class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns: List<CodePattern>) {
+class Lexer internal constructor(
+    lang: CodeLanguage,
+    private val listener: Listener?
+) {
 
+    constructor(lang: CodeLanguage) : this(lang, null)
+
+    private val fallthroughPatterns: List<CodePattern>
     private val shortcuts: Map<Char, CodePattern>
     private val tokenizer: Pattern
 
     init {
+        val shortcutPatterns = lang.shortcutPatterns()
+        fallthroughPatterns = lang.fallthroughPatterns()
         val shortcuts: MutableMap<Char, CodePattern> = mutableMapOf()
         val regexKeys: MutableSet<String> = mutableSetOf()
         val allRegexes: MutableList<Pattern> = mutableListOf()
@@ -49,6 +60,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
         allRegexes.add(Pattern.compile("[\\u0000-\\uffff]"))
         this.tokenizer = allRegexes.combine()
         this.shortcuts = shortcuts
+        listener?.onInit(this.tokenizer, this.shortcuts)
 
     }
 
@@ -57,20 +69,16 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
 
 
     internal interface Listener {
+        fun onInit(tokenizer: Pattern, shortcuts: Map<Char, CodePattern>)
         fun onNewDecor(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?)
     }
 
-    suspend fun decorate(content: String): List<Decoration> = decorate(content, null)
-
-    internal suspend fun decorate(content: String, listener: Listener?): List<Decoration> =
-        decorate(LexerJob(0, content), listener)
+    suspend fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
 
     /**
      * Main function that extracts decorations recursively.
      */
-    suspend fun decorate(job: LexerJob): List<Decoration> = decorate(job, null)
-
-    internal suspend fun decorate(job: LexerJob, listener: Listener?): List<Decoration> {
+    suspend fun decorate(job: LexerJob): List<Decoration> {
         val decorations: MutableList<Decoration> = mutableListOf(
             Decoration(
                 job.basePos,
@@ -170,83 +178,6 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
     }
 
     companion object {
-
-        internal operator fun invoke(lang: CodeLanguage, options: LexerOptions? = null): Lexer {
-            val shortcutPatterns: MutableList<CodePattern> = mutableListOf()
-            val fallthroughPatterns: MutableList<CodePattern> = mutableListOf()
-            CodePatternUtil.apply {
-                (options ?: LexerOptions()).apply {
-                    shortcutPatterns.add(
-                        when {
-                            tripeQuotedStrings -> tripleQuotedStrings()
-                            multiLineStrings -> multiLineStrings()
-                            else -> singleLineStrings()
-                        }
-                    )
-                    if (verbatimStrings) {
-                        fallthroughPatterns.add(
-                            CodePattern(
-                                PR.String,
-                                Pattern.compile("^@\"(?:[^\"]|\"\")*(?:\"|$)")
-                            )
-                        )
-                    }
-                    // TODO hashcomments
-                    // TODO cstyle comments
-                    // TODO regex literals
-                    fallthroughPatterns.addAll(lang.patterns()) // place where appropriate
-
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Literal,
-                            Pattern.compile("^@[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
-                        )
-                    )
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Literal,
-                            Pattern.compile("^@[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
-                        )
-                    )
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Type,
-                            Pattern.compile("^(?:[@_]?[A-Z]+[a-z][A-Za-z_\$@0-9]*|\\w+_t\\b)")
-                        )
-                    )
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Plain,
-                            Pattern.compile("^[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
-                        )
-                    )
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Literal,
-                            Pattern.compile(
-                                "^(?:"
-                                        // A hex number
-                                        + "0x[a-f0-9]+"
-                                        // or an octal or decimal number,
-                                        + "|(?:\\d(?:_\\d+)*\\d*(?:\\.\\d*)?|\\.\\d\\+)"
-                                        // possibly in scientific notation
-                                        + "(?:e[+\\-]?\\d+)?"
-                                        + ')'
-                                        // with an optional modifier like UL for unsigned long
-                                        + "[a-z]*", Pattern.CASE_INSENSITIVE
-                            ), "0123456789"
-                        )
-                    )
-                    fallthroughPatterns.add(
-                        CodePattern(
-                            PR.Plain,
-                            Pattern.compile("^\\\\[\\s\\S]?")
-                        )
-                    )
-                }
-            }
-            return Lexer(shortcutPatterns, fallthroughPatterns)
-        }
 
         /**
          * Shortens decoration list to remove unnecessary entries.

@@ -9,10 +9,3 @@ data class CodePattern(val pr: PR, val pattern: Pattern, val shortcut: String? =
 data class Decoration(val pos: Int, val pr: PR)
 
 data class LexerJob(val basePos: Int, val source: String)
-
-data class LexerOptions(
-    val regexLiterals: Boolean = true,
-    val tripeQuotedStrings: Boolean = false,
-    val multiLineStrings: Boolean = false,
-    val verbatimStrings: Boolean = false
-)

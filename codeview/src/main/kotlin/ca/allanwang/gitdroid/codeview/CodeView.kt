@@ -10,11 +10,9 @@ import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
-import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
 import ca.allanwang.gitdroid.codeview.recycler.CodeAdapter
 import ca.allanwang.gitdroid.codeview.recycler.CodeItemDecorator
 import ca.allanwang.gitdroid.codeview.recycler.CodeLayoutManager
-import ca.allanwang.kau.utils.dimenPixelSize
 
 
 class CodeView @JvmOverloads constructor(
@@ -52,6 +50,6 @@ class CodeView @JvmOverloads constructor(
 }
 
 interface CodeViewLoader {
-    suspend fun setData(content: String, lang: CodeLanguage, options: LexerOptions? = null, theme: CodeTheme? = null)
+    suspend fun setData(content: String, lang: CodeLanguage, theme: CodeTheme? = null)
     fun setCodeTheme(theme: CodeTheme)
 }

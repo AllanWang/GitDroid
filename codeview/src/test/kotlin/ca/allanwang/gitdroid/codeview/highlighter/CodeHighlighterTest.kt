@@ -3,13 +3,10 @@ package ca.allanwang.gitdroid.codeview.highlighter
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.language.KotlinLang
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
-import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
 import ca.allanwang.gitdroid.codeview.pattern.resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.fusesource.jansi.Ansi.ansi
-import org.fusesource.jansi.AnsiConsole
 import org.junit.Test
 
 class CodeHighlighterTest {
@@ -73,11 +70,11 @@ class CodeHighlighterTest {
         highlight("Test.kt", KotlinLang)
     }
 
-    fun highlight(path: String, lang: CodeLanguage, options: LexerOptions? = null) {
+    fun highlight(path: String, lang: CodeLanguage) {
         val content = resource("source/$path")
         val result = runBlocking {
             withContext(Dispatchers.Default) {
-                val lexer = Lexer(lang, options)
+                val lexer = Lexer(lang)
                 val decorations = lexer.decorate(content)
                 CodeHighlighter.highlight(content, decorations, AnsiHighlightBuilder)
             }
