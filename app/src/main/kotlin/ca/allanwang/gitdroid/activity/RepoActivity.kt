@@ -104,12 +104,12 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             }
         } else {
             pathCrumbs.addCrumb(PathCrumb(data.name, data.oid))
-            treeAdapter.data = emptyList()
             loadFolder(data.oid)
         }
     }
 
     private fun loadRepo() {
+        treeAdapter.data = emptyList()
         launch {
             val repo = gdd.getRepo(query).await()
             val defaultBranch = repo.defaultBranchRef
@@ -134,6 +134,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadFolder(oid: GitObjectID) {
+        treeAdapter.data = emptyList()
         launch {
             val obj = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsTree ?: return@launch
             val entries: List<TreeEntryItem> = obj.entries?.map { it.fragments.treeEntryItem } ?: emptyList()

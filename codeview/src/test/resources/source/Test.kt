@@ -31,5 +31,9 @@ class Test {
         }
     }
 
+    open fun getTask(isTrue: Boolean): String {
+        TODO("todo")
+    }
+
 
 }

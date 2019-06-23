@@ -30,7 +30,7 @@ object PatternUtil {
     }
 
     fun keywords(vararg key: String, blockFront: Boolean = false): Pattern =
-        "^${if (blockFront) "\\b" else ""}(?:${key.joinToString("|")})\\b".toPattern()
+        Pattern.compile("^${if (blockFront) "\\b" else ""}(?:${key.joinToString("|")})\\b")
 
     fun String.wrap(prefix: String = "", suffix: String = ""): String {
         val hasPrefix = prefix.isEmpty() || startsWith(prefix)

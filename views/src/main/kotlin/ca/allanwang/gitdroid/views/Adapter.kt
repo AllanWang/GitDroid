@@ -63,6 +63,7 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private fun update(oldData: List<VHBindingType>, data: List<VHBindingType>) {
         when {
+            oldData === data -> return
             oldData.isEmpty() -> notifyItemRangeInserted(0, data.size)
             data.isEmpty() -> notifyItemRangeRemoved(0, oldData.size)
             else -> {

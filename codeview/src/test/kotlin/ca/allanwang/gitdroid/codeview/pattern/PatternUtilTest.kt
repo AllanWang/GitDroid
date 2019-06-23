@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class PatternUtilTest {
 
     fun test(pattern: PatternUtil.() -> Pattern, action: TestContext.() -> Unit) {
-        val p = PatternUtil.pattern().update { it.fullMatch() }
+        val p = PatternUtil.pattern()
         TestContext.from(p).apply(action)
     }
 
@@ -27,7 +27,21 @@ class PatternUtilTest {
             }
         }
 
-        fun doNotMatch(vararg input: String, isGlobal: Boolean = false) {
+        fun find(input: String, vararg results: String) {
+            val m = p.matcher(input)
+            assertTrue(m.find(), "$p - could not find $input")
+            val actual = (1..m.groupCount()).map { m.group(it) }
+            assertEquals(results.toList(), actual, "$p - Find mismatch for $input")
+        }
+
+        fun doNotFind(vararg input: String) {
+            input.forEach {
+                val m = p.matcher(it)
+                assertFalse(m.find(), "$p - unexpected find on $it")
+            }
+        }
+
+        fun doNotMatch(vararg input: String) {
             input.forEach {
                 assertFalse(p.matcher(it).matches(), "$p - Unexpected match on $it")
             }
@@ -84,6 +98,16 @@ class PatternUtilTest {
         testCodePattern({ singleLineStrings() }) {
             singleQuoteTest("'")
             singleQuoteTest("\"")
+        }
+    }
+
+    @Test
+    fun keywords() {
+        test({ keywords("hello", "world", blockFront = true) }) {
+            match("hello", "world")
+            doNotMatch("ahello", "helloa", "hllo", "helloworld")
+            find("hello a")
+            doNotFind("ahello", "helloA", "helloworld")
         }
     }
 

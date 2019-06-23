@@ -11,9 +11,15 @@ import kotlin.test.fail
 
 class LexerTest {
 
-    private fun decorations(file: String, lang: CodeLanguage): List<Decoration> = runBlocking {
+    private object LexerListener : Lexer.Listener {
+        override fun onNewDecor(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?) {
+            println("New decor $pos - $token - ${pattern?.pr} -- ${pattern?.pattern}")
+        }
+    }
+
+    private fun decorations(file: String, lang: CodeLanguage, listen: Boolean = true): List<Decoration> = runBlocking {
         withContext(Dispatchers.Default) {
-            Lexer(lang).decorate(resource("source/$file"))
+            Lexer(lang).decorate(resource("source/$file"), LexerListener.takeIf { listen })
         }
     }
 

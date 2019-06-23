@@ -46,7 +46,7 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                 shortcuts[p.shortcut[it]] = p
             }
         }
-        allRegexes.add("[\\u0000-\\uffff]".toPattern())
+        allRegexes.add(Pattern.compile("[\\u0000-\\uffff]"))
         this.tokenizer = allRegexes.combine()
         this.shortcuts = shortcuts
 
@@ -55,12 +55,22 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
     internal fun tokens(content: String): Array<String> =
         tokenizer.match(content, true).filterNotNull().toTypedArray()
 
-    suspend fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
+
+    internal interface Listener {
+        fun onNewDecor(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?)
+    }
+
+    suspend fun decorate(content: String): List<Decoration> = decorate(content, null)
+
+    internal suspend fun decorate(content: String, listener: Listener?): List<Decoration> =
+        decorate(LexerJob(0, content), listener)
 
     /**
      * Main function that extracts decorations recursively.
      */
-    suspend fun decorate(job: LexerJob): List<Decoration> {
+    suspend fun decorate(job: LexerJob): List<Decoration> = decorate(job, null)
+
+    internal suspend fun decorate(job: LexerJob, listener: Listener?): List<Decoration> {
         val decorations: MutableList<Decoration> = mutableListOf(
             Decoration(
                 job.basePos,
@@ -88,28 +98,31 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
                 addDecor(tokenStart, cached)
                 continue
             }
-            var style: PR = PR.Plain
             var match: Array<String?>? = null
+            var pattern: CodePattern? = null
 
             val shortcutPattern = shortcuts[token[0]]
             if (shortcutPattern != null) {
                 match = shortcutPattern.pattern.match(token, false)
-                style = shortcutPattern.pr
+                pattern = shortcutPattern
             } else {
                 for (fallthroughPattern in fallthroughPatterns) {
                     match = fallthroughPattern.pattern.match(token, false)
                     if (match.isNotEmpty()) {
-                        style = fallthroughPattern.pr
+                        pattern = fallthroughPattern
                         break
                     }
                 }
             }
+
+            listener?.onNewDecor(token, tokenStart, pattern, match)
+
+            val style = pattern?.pr ?: PR.Plain
             // Unlike google's variant, we don't have custom keys
             // All lang- patterns should be labelled source
             val embedded = style == PR.Source && match?.getOrNull(1) != null
             if (!embedded) {
                 styleCache[token] = style
-                println("Add $token $pos $style")
                 addDecor(tokenStart, style)
             } else {
                 // TODO add embedded source
@@ -274,4 +287,3 @@ class Lexer(shortcutPatterns: List<CodePattern>, private val fallthroughPatterns
         }
     }
 }
-
