@@ -21,7 +21,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-fun List<Pattern>.combine(): Pattern = CombinePrefixPattern().combinePrefixPattern(this)
+fun List<Pattern>.combine(): Pattern = if (size == 1) first() else CombinePrefixPattern().combinePrefixPattern(this)
 
 /**
  * This is similar to the combinePrefixPattern.js in JavaScript Prettify.

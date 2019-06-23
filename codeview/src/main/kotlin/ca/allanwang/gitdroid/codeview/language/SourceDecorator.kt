@@ -154,12 +154,7 @@ abstract class SourceDecoratorLang : CodeLanguage {
                         Pattern.compile("^(?:[@_]?[A-Z]+[a-z][A-Za-z_\$@0-9]*|\\w+_t\\b)")
                     )
                 )
-                fallthroughPatterns.add(
-                    CodePattern(
-                        PR.Plain,
-                        Pattern.compile("^[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE)
-                    )
-                )
+                fallthroughPatterns.add(varName())
                 fallthroughPatterns.add(
                     CodePattern(
                         PR.Literal,

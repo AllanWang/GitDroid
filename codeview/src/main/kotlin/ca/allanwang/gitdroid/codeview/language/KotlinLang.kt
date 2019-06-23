@@ -12,7 +12,7 @@ import java.util.regex.Pattern
  * https://github.com/google/code-prettify/blob/master/src/lang-kotlin.js
  */
 object KotlinLang : CodeLanguage {
-    override fun fileExtensions() = setOf("kt")
+    override fun fileExtensions() = setOf("kt", "kotlin")
     override fun shortcutPatterns(): List<CodePattern> = listOf(
         CodePattern(
             PR.Plain,
@@ -80,16 +80,8 @@ object KotlinLang : CodeLanguage {
                 PR.Type,
                 Pattern.compile("^(\\b[A-Z]+[a-z][a-zA-Z0-9_\$@]*|`.*`)")
             ),
-            // double slash comments
-            CodePattern(
-                PR.Comment,
-                Pattern.compile("^//.*")
-            ),
-            // slash star comments and documentation
-            CodePattern(
-                PR.Comment,
-                Pattern.compile("^/\\*[\\s\\S]*?(?:\\*/|\$)")
-            ),
+            doubleSlashComment(),
+            slashStarCommentAndDoc(),
             // char
             CodePattern(
                 PR.String,
@@ -114,7 +106,8 @@ object KotlinLang : CodeLanguage {
             CodePattern(
                 PR.Literal,
                 Pattern.compile("^[a-zA-Z0-9_]+@")
-            )
+            ),
+            varName()
         )
     }
 }

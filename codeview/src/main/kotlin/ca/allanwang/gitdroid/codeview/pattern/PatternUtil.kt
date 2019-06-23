@@ -32,6 +32,7 @@ object PatternUtil {
     fun keywords(vararg key: String, blockFront: Boolean = false): Pattern =
         Pattern.compile("^${if (blockFront) "\\b" else ""}(?:${key.joinToString("|")})\\b")
 
+
     fun String.wrap(prefix: String = "", suffix: String = ""): String {
         val hasPrefix = prefix.isEmpty() || startsWith(prefix)
         val hasSuffix = suffix.isEmpty() || endsWith(suffix)
@@ -91,6 +92,23 @@ object CodePatternUtil {
         val p = PatternUtil.keywords(*key, blockFront = blockFront)
         return CodePattern(PR.Keyword, p)
     }
+
+    /**
+     * Typical variable name, like abc123, hello_world
+     */
+    fun varName(): CodePattern =
+        CodePattern(PR.Plain, Pattern.compile("^[a-z_\$][a-z_\$@0-9]*", Pattern.CASE_INSENSITIVE))
+
+    /**
+     * Eg // hello
+     */
+    fun doubleSlashComment(): CodePattern =
+        CodePattern(PR.Comment, Pattern.compile("^//.*"))
+
+    /**
+     * Eg /* hello */
+     */
+    fun slashStarCommentAndDoc(): CodePattern = CodePattern(PR.Comment, Pattern.compile("^/\\*[\\s\\S]*?(?:\\*/|\$)"))
 }
 
 fun Pattern.update(action: PatternUtil.(String) -> String): Pattern =
