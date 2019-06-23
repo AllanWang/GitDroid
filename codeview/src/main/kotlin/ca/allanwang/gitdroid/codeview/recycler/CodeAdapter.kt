@@ -14,7 +14,7 @@ import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.highlighter.splitCharSequence
-import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import ca.allanwang.gitdroid.codeview.utils.CodeViewUtils
 import ca.allanwang.gitdroid.codeview.utils.ceilInt

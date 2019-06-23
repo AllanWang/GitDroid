@@ -1,7 +1,7 @@
 package ca.allanwang.gitdroid.codeview.highlighter
 
-import ca.allanwang.gitdroid.codeview.language.CodeLanguage
-import ca.allanwang.gitdroid.codeview.language.KotlinLang
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.impl.KotlinLang
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import ca.allanwang.gitdroid.codeview.pattern.resource
 import kotlinx.coroutines.Dispatchers

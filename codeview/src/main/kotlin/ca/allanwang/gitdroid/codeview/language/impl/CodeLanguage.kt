@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.codeview.language
+package ca.allanwang.gitdroid.codeview.language.impl
 
 import ca.allanwang.gitdroid.codeview.pattern.CodePattern
 

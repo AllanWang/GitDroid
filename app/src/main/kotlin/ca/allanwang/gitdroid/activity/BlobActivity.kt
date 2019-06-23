@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.LoadingActivity
-import ca.allanwang.gitdroid.codeview.language.KotlinLang
+import ca.allanwang.gitdroid.codeview.language.impl.KotlinLang
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.databinding.ActivityBlobBinding
 import ca.allanwang.kau.utils.startActivity

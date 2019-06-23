@@ -1,7 +1,6 @@
 package ca.allanwang.gitdroid.codeview.pattern
 
 import ca.allanwang.gitdroid.codeview.highlighter.PR
-import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import java.util.regex.Pattern
 
 data class CodePattern(val pr: PR, val pattern: Pattern, val shortcut: String? = null)

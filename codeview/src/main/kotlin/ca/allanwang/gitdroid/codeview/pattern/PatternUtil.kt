@@ -103,7 +103,7 @@ object CodePatternUtil {
      * Eg // hello
      */
     fun doubleSlashComment(): CodePattern =
-        CodePattern(PR.Comment, Pattern.compile("^//.*"))
+        CodePattern(PR.Comment, Pattern.compile("^//[^\r\n]*"))
 
     /**
      * Eg /* hello */

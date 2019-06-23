@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
-import ca.allanwang.gitdroid.codeview.language.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
 import ca.allanwang.gitdroid.codeview.recycler.CodeAdapter
 import ca.allanwang.gitdroid.codeview.recycler.CodeItemDecorator
 import ca.allanwang.gitdroid.codeview.recycler.CodeLayoutManager

@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.codeview.language
 
 import ca.allanwang.gitdroid.codeview.highlighter.PR
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.CodePattern
 import ca.allanwang.gitdroid.codeview.pattern.CodePatternUtil
 import java.util.regex.Pattern
@@ -107,8 +108,8 @@ abstract class SourceDecoratorLang : CodeLanguage {
                             )
                         )
                     }
-                    fallthroughPatterns.add(CodePattern(PR.Comment, Pattern.compile("^//[^\r\n]*")))
-                    fallthroughPatterns.add(CodePattern(PR.Comment, Pattern.compile("^/\\*[\\s\\S]*?(?:\\*\\/|$)")))
+                    fallthroughPatterns.add(doubleSlashComment())
+                    fallthroughPatterns.add(slashStarCommentAndDoc())
                 }
                 if (regexLiterals != SourceDecoratorOptions.FLAG_DISABLED) {
                     val regexExcl = if (regexLiterals == SourceDecoratorOptions.FLAG_MULTILINE) "" else "\n\r"

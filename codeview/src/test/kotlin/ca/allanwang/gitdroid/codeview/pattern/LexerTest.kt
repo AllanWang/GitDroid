@@ -1,7 +1,7 @@
 package ca.allanwang.gitdroid.codeview.pattern
 
-import ca.allanwang.gitdroid.codeview.language.CodeLanguage
-import ca.allanwang.gitdroid.codeview.language.KotlinLang
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.impl.KotlinLang
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext

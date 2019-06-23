@@ -1,11 +1,11 @@
-package ca.allanwang.gitdroid.codeview.language
+package ca.allanwang.gitdroid.codeview.language.impl
 
 import ca.allanwang.gitdroid.codeview.highlighter.PR
+import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.CodePattern
 import ca.allanwang.gitdroid.codeview.pattern.CodePatternUtil
 import ca.allanwang.gitdroid.codeview.pattern.PatternUtil
 import java.util.regex.Pattern
-
 
 /**
  * See
