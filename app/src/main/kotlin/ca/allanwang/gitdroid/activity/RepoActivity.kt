@@ -3,6 +3,7 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.activity.base.LoadingActivity
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.views.*
@@ -18,7 +19,8 @@ import kotlinx.coroutines.withContext
 
 class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
-    override val layoutRes: Int = R.layout.view_repo_files
+    override val layoutRes: Int
+        get() = R.layout.view_repo_files
 
     val query by stringExtra(ARG_QUERY)
 
@@ -61,15 +63,16 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
     }
 
     private fun onClick(data: TreeEntryItem) {
-        pathCrumbs.addCrumb(PathCrumb(data.name, data.oid))
-        treeAdapter.data = emptyList()
-        if (data is TreeEntryItem.AsBlob) {
-            if (data.isBinary) {
+        val obj = data.obj
+        if (obj is TreeEntryItem.AsBlob) {
+            if (obj.isBinary) {
                 // todo
             } else {
                 loadTextBlob(data.oid)
             }
         } else {
+            pathCrumbs.addCrumb(PathCrumb(data.name, data.oid))
+            treeAdapter.data = emptyList()
             loadFolder(data.oid)
         }
     }
@@ -95,10 +98,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadTextBlob(oid: GitObjectID) {
-        launch {
-            val obj = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsBlob ?: return@launch
-
-        }
+        BlobActivity.launch(this, query, oid)
     }
 
     private fun loadFolder(oid: GitObjectID) {
@@ -117,7 +117,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
     }
 
     companion object {
-        private const val ARG_QUERY = "arg_query"
+        private const val ARG_QUERY = "arg_repo_query"
 
         fun launch(context: Context, nameWithOwner: String) {
             context.startActivity<RepoActivity>(intentBuilder = {

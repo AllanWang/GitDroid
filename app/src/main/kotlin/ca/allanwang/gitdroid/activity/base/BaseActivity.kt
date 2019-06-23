@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.activity
+package ca.allanwang.gitdroid.activity.base
 
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.activity.LoginActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L

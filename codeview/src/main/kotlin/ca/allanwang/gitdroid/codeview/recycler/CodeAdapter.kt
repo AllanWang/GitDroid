@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.codeview
+package ca.allanwang.gitdroid.codeview.recycler
 
 import android.content.Context
 import android.text.TextPaint
@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.core.view.doOnNextLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.codeview.CodeViewLoader
+import ca.allanwang.gitdroid.codeview.R
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
@@ -100,11 +102,13 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>(),
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CodeViewHolder {
         val binding: ViewItemCodeBinding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.view_item_code, parent, false)
+            DataBindingUtil.inflate(LayoutInflater.from(parent.context),
+                R.layout.view_item_code, parent, false)
         val holder = CodeViewHolder(binding.root)
         holder.itemView.setOnClickListener {
             val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
-            val data = it.getTag(R.id.code_view_item_data) as? CodeLine ?: return@setOnClickListener
+            val data = it.getTag(R.id.code_view_item_data) as? CodeLine
+                ?: return@setOnClickListener
             onClick(it, data, pos)
         }
         return holder

@@ -11,13 +11,19 @@ import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.LexerOptions
+import ca.allanwang.gitdroid.codeview.recycler.CodeAdapter
+import ca.allanwang.gitdroid.codeview.recycler.CodeItemDecorator
+import ca.allanwang.gitdroid.codeview.recycler.CodeLayoutManager
+import ca.allanwang.kau.utils.dimenPixelSize
 
 
 class CodeView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    private val codeAdapter: CodeAdapter = CodeAdapter(context)
+    private val codeAdapter: CodeAdapter = CodeAdapter(
+        context
+    )
 ) : FrameLayout(context, attrs, defStyleAttr), CodeViewLoader by codeAdapter {
 
 
@@ -38,7 +44,9 @@ class CodeView @JvmOverloads constructor(
         binding.codeViewRecycler.apply {
             layoutManager = codeLayoutManager
             adapter = codeAdapter
+            addItemDecoration(CodeItemDecorator(context))
         }
+
     }
 
 }

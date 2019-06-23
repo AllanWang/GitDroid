@@ -13,6 +13,7 @@ import androidx.transition.*
 import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
 import androidx.transition.TransitionSet.ORDERING_TOGETHER
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.data.gitAuthRest
 import ca.allanwang.gitdroid.ktx.browser.launchUrl

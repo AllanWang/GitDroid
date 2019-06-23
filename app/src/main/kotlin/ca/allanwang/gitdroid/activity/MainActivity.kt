@@ -5,8 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.views.bindMainView
 import ca.allanwang.kau.utils.snackbar

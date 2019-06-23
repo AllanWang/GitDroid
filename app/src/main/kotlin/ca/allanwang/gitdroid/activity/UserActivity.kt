@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity
 
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
+import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.databinding.ActivityUserBinding
 import ca.allanwang.gitdroid.views.Adapter
 import ca.allanwang.gitdroid.views.vhFull

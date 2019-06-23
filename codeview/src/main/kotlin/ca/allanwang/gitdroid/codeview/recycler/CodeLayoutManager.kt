@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.codeview
+package ca.allanwang.gitdroid.codeview.recycler
 
 import android.content.Context
 import android.view.View

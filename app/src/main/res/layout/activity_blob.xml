@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<ca.allanwang.kau.ui.widgets.ElasticDragDismissFrameLayout-->
+    <!--android:id="@+id/blob_draggable"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--app:dragDismissDistance="@dimen/kau_drag_dismiss_distance_large"-->
+    <!--app:dragDismissScale="0.95">-->
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/blob_coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:colorBackground"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/blob_appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/blob_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ca.allanwang.gitdroid.codeview.CodeView
+            android:id="@+id/blob_codeview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!--</ca.allanwang.kau.ui.widgets.ElasticDragDismissFrameLayout>-->
+</layout>

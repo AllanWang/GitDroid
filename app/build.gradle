@@ -26,6 +26,8 @@ dependencies {
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:core:${KAU}"
     //noinspection GradleDependency
+    implementation "ca.allanwang.kau:core-ui:${KAU}"
+    //noinspection GradleDependency
     implementation "ca.allanwang.kau:adapter:${KAU}"
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation "androidx.browser:browser:${Versions.browser}"

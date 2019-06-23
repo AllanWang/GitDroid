@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.activity
+package ca.allanwang.gitdroid.activity.base
 
 import android.content.Intent
 import android.os.Bundle

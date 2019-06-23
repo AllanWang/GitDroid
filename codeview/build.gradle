@@ -5,6 +5,9 @@ android {
 }
 
 dependencies {
+
+    //noinspection GradleDependency
+    implementation "ca.allanwang.kau:adapter:${KAU}"
     implementation kau.Dependencies.appcompat
     implementation kau.Dependencies.recyclerView
     implementation kau.Dependencies.coroutines

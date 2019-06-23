@@ -3,7 +3,7 @@ package ca.allanwang.gitdroid.views
 import android.view.ViewGroup
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.activity.BaseActivity
+import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.databinding.ViewMainBinding
