@@ -4,17 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.LoadingActivity
-import ca.allanwang.gitdroid.codeview.highlighter.CodeHighlighter
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
-import ca.allanwang.gitdroid.codeview.language.impl.KotlinLang
 import ca.allanwang.gitdroid.codeview.pattern.LexerCache
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.databinding.ActivityBlobBinding
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.ObjectItem
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BlobActivity : LoadingActivity<ActivityBlobBinding>() {
 
@@ -31,9 +27,7 @@ class BlobActivity : LoadingActivity<ActivityBlobBinding>() {
         launch {
             val blob: ObjectItem.AsBlob? = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"
-            withContext(Dispatchers.Default) {
-                binding.blobCodeview.setData(content, lexerCache.getLexer(content, extension))
-            }
+            binding.blobCodeview.setData(content, lexerCache.getLexer(content, extension))
         }
     }
 

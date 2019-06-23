@@ -65,7 +65,11 @@ fun CharSequence.splitCharSequence(char: Char): List<CharSequence> {
     return splits
 }
 
-internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :
+/**
+ * Builder specific for Android
+ * Generates a spannable string
+ */
+class SpannableStringHighlightBuilder(val theme: CodeTheme) :
     CodeHighlightBuilder<SpannableStringBuilder, SpannableString> {
 
     override fun create(pr: PR, text: String): SpannableString {
