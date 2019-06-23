@@ -1,6 +1,6 @@
 package ca.allanwang.gitdroid.codeview.highlighter
 
-import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.language.impl.KotlinLang
 import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import ca.allanwang.gitdroid.codeview.pattern.resource
@@ -79,6 +79,9 @@ class CodeHighlighterTest {
 
     }
 
+    /**
+     * Builds the same string as provided
+     */
     object NoHighlightBuilder : CodeHighlightBuilder<StringBuilder, String> {
 
         override fun create(pr: PR, text: String): String = text

@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import ca.allanwang.gitdroid.codeview.pattern.Decoration
+import ca.allanwang.gitdroid.codeview.pattern.Lexer
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -13,17 +14,6 @@ import kotlinx.coroutines.coroutineScope
  * Based around https://github.com/google/code-prettify/blob/master/src/prettify.js
  */
 object CodeHighlighter {
-
-    /**
-     * Default implementation for android spannable strings
-     */
-    suspend fun highlight(
-        text: String,
-        decorations: List<Decoration>,
-        theme: CodeTheme,
-        chunk: Int = 1000
-    ): SpannableString =
-        highlight(text, decorations, SpannableStringHighlightBuilder(theme), chunk)
 
     /**
      * Base highlighting implementation.
@@ -74,7 +64,11 @@ fun CharSequence.splitCharSequence(char: Char): List<CharSequence> {
     return splits
 }
 
-internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :
+/**
+ * Builder specific for Android
+ * Generates a spannable string
+ */
+class SpannableStringHighlightBuilder(val theme: CodeTheme) :
     CodeHighlightBuilder<SpannableStringBuilder, SpannableString> {
 
     override fun create(pr: PR, text: String): SpannableString {
@@ -89,6 +83,11 @@ internal class SpannableStringHighlightBuilder(val theme: CodeTheme) :
     override fun build(builder: SpannableStringBuilder): SpannableString = SpannableString(builder)
 }
 
+/**
+ * Builder to create a new char sequence.
+ * Chunks of content will be provided to builders, one for each coroutine.
+ * The builder itself will not switch contexts, but the resulting char sequence will.
+ */
 interface CodeHighlightBuilder<T : Appendable, R : CharSequence> {
 
     fun create(pr: PR, text: String): R

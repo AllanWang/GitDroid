@@ -14,7 +14,7 @@
 package ca.allanwang.gitdroid.codeview.pattern
 
 import ca.allanwang.gitdroid.codeview.highlighter.PR
-import ca.allanwang.gitdroid.codeview.language.impl.CodeLanguage
+import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import java.util.regex.Pattern
 
 /**
@@ -28,12 +28,10 @@ import java.util.regex.Pattern
  * Lexers are no longer supplied with lists of patterns.
  * Instead they are supplied with languages, which are essentially pattern factories
  */
-class Lexer internal constructor(
+class Lexer private constructor(
     lang: CodeLanguage,
     private val listener: Listener?
 ) {
-
-    constructor(lang: CodeLanguage) : this(lang, null)
 
     private val fallthroughPatterns: List<CodePattern>
     private val shortcuts: Map<Char, CodePattern>
@@ -180,6 +178,12 @@ class Lexer internal constructor(
     }
 
     companion object {
+
+        operator fun invoke(lang: CodeLanguage): Lexer = invoke(lang, null)
+
+        internal operator fun invoke(lang: CodeLanguage, listener: Listener?): Lexer {
+            return Lexer(lang, listener)
+        }
 
         /**
          * Shortens decoration list to remove unnecessary entries.

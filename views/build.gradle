@@ -6,6 +6,7 @@ android {
 
 dependencies {
     implementation project(":data")
+    implementation project(":codeview")
     implementation project(":ktx")
     implementation "androidx.core:core-ktx:${Versions.ktx}"
     implementation kau.Dependencies.glide
