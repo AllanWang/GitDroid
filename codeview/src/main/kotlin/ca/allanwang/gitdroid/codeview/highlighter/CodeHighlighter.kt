@@ -22,11 +22,10 @@ object CodeHighlighter {
      */
     suspend fun <T : Appendable, R : CharSequence> highlight(
         text: String,
-        lexer: Lexer,
+        decorations: List<Decoration>,
         builder: CodeHighlightBuilder<T, R>,
         chunk: Int = 100
     ): R = coroutineScope {
-        val decorations: List<Decoration> = lexer.decorate(text)
         val results: List<R> = decorations.windowed(chunk, chunk - 1, true).map { decors ->
             async {
                 with(builder) {

@@ -82,7 +82,8 @@ class CodeView @JvmOverloads constructor(
         }
         withContext(coroutineContext) {
             val trueTheme = theme ?: defaultTheme
-            val result = CodeHighlighter.highlight(content, lexer, SpannableStringHighlightBuilder(trueTheme))
+            val decorations = lexer.decorate(content)
+            val result = CodeHighlighter.highlight(content, decorations, SpannableStringHighlightBuilder(trueTheme))
             val lines = result.splitCharSequence('\n').mapIndexed { i, line -> CodeLine(i + 1, line) }
             val data = CodeViewData(lines, lines.size)
             codeAdapter.setData(data, trueTheme)
