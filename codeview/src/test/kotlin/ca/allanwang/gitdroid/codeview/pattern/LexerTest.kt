@@ -20,6 +20,10 @@ class LexerTest {
         override fun onNewDecor(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?) {
             println("New decor $pos - $token - ${pattern?.pr} -- ${pattern?.pattern}")
         }
+
+        override fun onEmbedded(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?) {
+            println("New embed $pos - $token - ${pattern?.pr} -- ${pattern?.pattern}")
+        }
     }
 
     private fun decorations(
@@ -34,7 +38,9 @@ class LexerTest {
 
     @Test
     fun kotlin() {
-        println(decorations("Test.kt", KotlinLang))
+        decorations("Test.kt", KotlinLang).forEach {
+            println(it)
+        }
     }
 
 }

@@ -9,12 +9,17 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.fusesource.jansi.Ansi
 import org.junit.Test
+import kotlin.test.assertEquals
 
 private fun Ansi.italic() = a(Ansi.Attribute.ITALIC)
 private fun Ansi.underline() = a(Ansi.Attribute.UNDERLINE)
 // Ansi.ansi() from library checks for enabled flag; we won't
 private fun ansi(): Ansi = Ansi()
 
+/**
+ * Outputs ascii colored text.
+ * Note that we do not use AnsiConsole since it doesn't seem to work on OSX and on Travis CI
+ */
 class CodeHighlighterTest {
 
     class AnsiAppendable : Appendable {
@@ -74,6 +79,16 @@ class CodeHighlighterTest {
 
     }
 
+    object NoHighlightBuilder : CodeHighlightBuilder<StringBuilder, String> {
+
+        override fun create(pr: PR, text: String): String = text
+
+        override fun createBuilder(): StringBuilder = StringBuilder()
+
+        override fun build(builder: StringBuilder): String = builder.toString()
+
+    }
+
     @Test
     fun ansiPreview() {
         println(
@@ -91,13 +106,15 @@ class CodeHighlighterTest {
 
     fun highlight(path: String, lang: CodeLanguage) {
         val content = resource("source/$path")
-        val result = runBlocking {
+        val (result, resultNoFormat) = runBlocking {
             withContext(Dispatchers.Default) {
                 val lexer = Lexer(lang)
                 val decorations = lexer.decorate(content)
-                CodeHighlighter.highlight(content, decorations, CodeHighlighterTest.AnsiHighlightBuilder)
+                CodeHighlighter.highlight(content, decorations, AnsiHighlightBuilder) to
+                        CodeHighlighter.highlight(content, decorations, NoHighlightBuilder)
             }
         }
+        assertEquals(content, resultNoFormat, "Highlighting produces different content")
         println(result)
     }
 

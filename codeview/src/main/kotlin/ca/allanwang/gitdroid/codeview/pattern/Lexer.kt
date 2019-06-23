@@ -71,6 +71,7 @@ class Lexer internal constructor(
     internal interface Listener {
         fun onInit(tokenizer: Pattern, shortcuts: Map<Char, CodePattern>)
         fun onNewDecor(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?)
+        fun onEmbedded(token: String, pos: Int, pattern: CodePattern?, match: Array<String?>?)
     }
 
     suspend fun decorate(content: String): List<Decoration> = decorate(LexerJob(0, content))
@@ -133,6 +134,7 @@ class Lexer internal constructor(
                 styleCache[token] = style
                 addDecor(tokenStart, style)
             } else {
+                listener?.onEmbedded(token, pos, pattern, match)
                 // TODO add embedded source
                 val embeddedSource = match?.getOrNull(1) ?: continue
                 var embeddedSourceStart = token.indexOf(embeddedSource)

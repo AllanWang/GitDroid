@@ -36,7 +36,7 @@ object CodeHighlighter {
         builder: CodeHighlightBuilder<T, R>,
         chunk: Int = 100
     ): R = coroutineScope {
-        val results: List<R> = decorations.chunked(chunk).map { decors ->
+        val results: List<R> = decorations.windowed(chunk, chunk - 1, true).map { decors ->
             async {
                 with(builder) {
                     val b = createBuilder()
@@ -45,9 +45,6 @@ object CodeHighlighter {
                         val charseq = create(decors[i].pr, segment)
                         b.append(charseq)
                     }
-                    val lastSegment = text.substring(decors.last().pos)
-                    val lastCharSeq = create(decors.last().pr, lastSegment)
-                    b.append(lastCharSeq)
                     build(b)
                 }
             }
