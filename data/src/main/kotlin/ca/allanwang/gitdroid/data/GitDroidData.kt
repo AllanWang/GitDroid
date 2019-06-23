@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import github.type.CustomType
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -66,11 +67,17 @@ class GitDroidData : KoinComponent, GitGraphQl {
 
                 val okHttpClient = OkHttpClient.Builder()
                     .addNetworkInterceptor(AuthInterceptor("bearer", tokenSupplier))
-                    .build()
+
+//                if (BuildConfig.DEBUG) {
+//                    val logger = HttpLoggingInterceptor().apply {
+//                        level = HttpLoggingInterceptor.Level.BODY
+//                    }
+//                    okHttpClient.addInterceptor(logger)
+//                }
 
                 val builder = ApolloClient.builder()
                     .serverUrl(GRAPHQL_URL)
-                    .okHttpClient(okHttpClient)
+                    .okHttpClient(okHttpClient.build())
                     .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
                     .addCustomTypeAdapter(CustomType.DATETIME, DateTimeApolloAdapter)
                     .addCustomTypeAdapter(CustomType.GITOBJECTID, GitObjectIDApolloAdapter)

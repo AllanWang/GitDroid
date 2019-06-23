@@ -81,6 +81,8 @@ class PathCrumbsView @JvmOverloads constructor(
 
     fun getCrumbs(): List<PathCrumb> = adapter.data.mapNotNull { (it as? PathCrumbVhBinding)?.data }
 
+    fun getCurrentCrumb(): PathCrumb? = (adapter.data.last() as? PathCrumbVhBinding)?.data
+
     fun onBackPressed(): Boolean {
         val data = adapter.data
         if (data.size <= 1) {

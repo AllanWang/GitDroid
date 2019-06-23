@@ -52,4 +52,6 @@ class SwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs: Attr
         }
     }
 
+    interface OnRefreshListener : SwipeRefreshLayout.OnRefreshListener
+
 }
