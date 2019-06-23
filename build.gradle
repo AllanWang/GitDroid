@@ -126,6 +126,10 @@ subprojects {
         }
     }
 
+    androidExtensions {
+        experimental = true
+    }
+
     repositories {
         google()
         jcenter()

@@ -71,6 +71,16 @@ class PathCrumbsView @JvmOverloads constructor(
         }
     }
 
+    fun setCrumbs(crumbs: List<PathCrumb>) {
+        val data = listOf(PathCrumbHomeVhBinding) + crumbs.map { it.vh() }
+        adapter.data = data
+        postDelayed(100) {
+            smoothScrollToPosition(adapter.data.lastIndex)
+        }
+    }
+
+    fun getCrumbs(): List<PathCrumb> = adapter.data.mapNotNull { (it as? PathCrumbVhBinding)?.data }
+
     fun onBackPressed(): Boolean {
         val data = adapter.data
         if (data.size <= 1) {

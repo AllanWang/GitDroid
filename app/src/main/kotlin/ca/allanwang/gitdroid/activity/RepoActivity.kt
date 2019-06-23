@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.LoadingActivity
 import ca.allanwang.gitdroid.data.GitObjectID
@@ -13,6 +14,7 @@ import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
+import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,7 +26,7 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     val query by stringExtra(ARG_QUERY)
 
-    val pathCrumbs: PathCrumbsView
+    private val pathCrumbs: PathCrumbsView
         get() = binding.repoPathCrumbs
 
     lateinit var treeAdapter: Adapter
@@ -33,7 +35,6 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
         treeAdapter = Adapter.bind(binding.repoRecycler).apply {
             onClick = { vhb, _, _ ->
                 if (vhb is TreeEntryVhBinding) {
-                    treeAdapter.data = emptyList()
                     onClick(vhb.data)
                     true
                 } else {
@@ -51,6 +52,37 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
             }
         }
         loadRepo()
+    }
+
+    @Parcelize
+    private data class InstanceState(val crumbs: List<PathCrumb>) : Parcelable
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (!restoreFolder(savedInstanceState)) {
+            loadRepo()
+        }
+    }
+
+    private fun restoreFolder(savedInstanceState: Bundle): Boolean {
+        if (pathCrumbs.getCrumbs().isNotEmpty()) {
+            return false
+        }
+        val state: InstanceState = savedInstanceState.getParcelable(SAVED_STATE) ?: return false
+        val crumbs = state.crumbs
+        if (crumbs.isEmpty()) {
+            return false
+        }
+        pathCrumbs.setCrumbs(state.crumbs)
+        loadFolder(state.crumbs.last().oid)
+        return true
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val crumbs = pathCrumbs.getCrumbs()
+        val state = InstanceState(crumbs)
+        outState.putParcelable(SAVED_STATE, state)
     }
 
     private suspend fun showEntries(entries: List<TreeEntryItem>) {
@@ -118,6 +150,8 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     companion object {
         private const val ARG_QUERY = "arg_repo_query"
+
+        private const val SAVED_STATE = "repo_saved_state"
 
         fun launch(context: Context, nameWithOwner: String) {
             context.startActivity<RepoActivity>(intentBuilder = {

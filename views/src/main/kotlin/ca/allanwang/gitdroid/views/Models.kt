@@ -1,10 +1,12 @@
 package ca.allanwang.gitdroid.views
 
+import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
 import ca.allanwang.gitdroid.data.GitObjectID
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
+import kotlinx.android.parcel.Parcelize
 import java.net.URI
 import java.util.*
 
@@ -55,4 +57,5 @@ data class GitIssueOrPr(
 
 data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)
 
-data class PathCrumb(val segment: String, val oid: GitObjectID)
+@Parcelize
+data class PathCrumb(val segment: String, val oid: GitObjectID): Parcelable
