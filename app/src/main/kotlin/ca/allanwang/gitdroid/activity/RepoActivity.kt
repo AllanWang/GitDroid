@@ -59,15 +59,15 @@ class RepoActivity : LoadingActivity<ViewRepoFilesBinding>() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        if (pathCrumbs.getCrumbs().isNotEmpty()) {
+            return
+        }
         if (!restoreFolder(savedInstanceState)) {
             loadRepo()
         }
     }
 
     private fun restoreFolder(savedInstanceState: Bundle): Boolean {
-        if (pathCrumbs.getCrumbs().isNotEmpty()) {
-            return false
-        }
         val state: InstanceState = savedInstanceState.getParcelable(SAVED_STATE) ?: return false
         val crumbs = state.crumbs
         if (crumbs.isEmpty()) {
