@@ -19,14 +19,15 @@
         android:paddingTop="@dimen/kau_padding_small"
         android:paddingEnd="@dimen/kau_activity_horizontal_margin"
         android:paddingBottom="@dimen/kau_padding_small"
-        tools:style="@style/Theme.GitDroid">
+        tools:context=".activity.MainActivity">
 
         <TextView
             android:id="@+id/repo_name"
-            style="@style/TextAppearance.AppCompat.Body1"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{model.name}"
+            android:textColor="?android:textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,6 +41,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{model.description}"
+            android:textColor="?android:textColorSecondary"
             app:goneFlag="@{model.description}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
