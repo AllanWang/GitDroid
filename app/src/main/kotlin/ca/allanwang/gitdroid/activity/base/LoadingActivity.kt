@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity.base
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.logger.L
@@ -62,4 +63,11 @@ abstract class LoadingActivity<Binding : ViewDataBinding> : BaseActivity() {
 
     abstract fun onCreate2(savedInstanceState: Bundle?)
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
 }

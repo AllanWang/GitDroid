@@ -18,30 +18,42 @@ class BlobActivity : LoadingActivity<ActivityBlobBinding>() {
         get() = R.layout.activity_blob
 
     val query by stringExtra(ARG_QUERY)
-    val extension by stringExtra(ARG_EXTENSION)
+    private val fileName by stringExtra(ARG_FILENAME)
     private val _oidString by stringExtra(ARG_OID)
     val oid: GitObjectID
         get() = GitObjectID(_oidString)
 
     override fun onCreate2(savedInstanceState: Bundle?) {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.also {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.title = fileName
+        }
         launch {
             val blob: ObjectItem.AsBlob? = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"
-            binding.blobCodeview.setData(content, lexerCache.getLexer(content, extension))
+            binding.codeview.setData(
+                content,
+                lexerCache.getLexer(
+                    content,
+                    fileName.substringAfterLast(".", "")
+                )
+            )
         }
     }
 
     companion object {
         private const val ARG_QUERY = "arg_blob_query"
         private const val ARG_OID = "arg_blob_oid"
-        private const val ARG_EXTENSION = "arg_blob_extension"
+        private const val ARG_FILENAME = "arg_blob_file_name"
 
         val lexerCache: LexerCache = LexerCache(CodeLanguage.all())
 
-        fun launch(context: Context, query: String, extension: String, oid: GitObjectID) {
+        fun launch(context: Context, query: String, fileName: String, oid: GitObjectID) {
             context.startActivity<BlobActivity>(intentBuilder = {
                 putExtra(ARG_QUERY, query)
-                putExtra(ARG_EXTENSION, extension)
+                putExtra(ARG_FILENAME, fileName)
                 putExtra(ARG_OID, oid.oid)
             })
         }

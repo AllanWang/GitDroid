@@ -149,7 +149,7 @@ class RepoActivity : LoadingActivity<ActivityRepoBinding>() {
     }
 
     private fun loadTextBlob(name: String, oid: GitObjectID, forceRefresh: Boolean = false) {
-        BlobActivity.launch(this, query, name.substringAfter(".", ""), oid)
+        BlobActivity.launch(this, query, name, oid)
     }
 
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
