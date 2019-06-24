@@ -11,13 +11,12 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.views.BR
 import com.bumptech.glide.Glide
-import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import com.mikepenz.fastadapter.listeners.ClickEventHook
 
-typealias VHBindingType = BindingItem<*>
+typealias GenericBindingItem = BindingItem<*>
 
-abstract class BindingItem<VH : RecyclerView.ViewHolder>(open val data: Any?) : AbstractItem<VH>() {
+abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : AbstractItem<BindingItem.ViewHolder>() {
 
     override val type: Int
         get() = layoutRes
@@ -27,29 +26,26 @@ abstract class BindingItem<VH : RecyclerView.ViewHolder>(open val data: Any?) : 
         return binding.root
     }
 
-
-}
-
-abstract class BindingViewHolder<Item : BindingItem<*>, Binding : ViewDataBinding>(itemView: View) :
-    FastAdapter.ViewHolder<Item>(itemView) {
-
-    val binding = DataBindingUtil.getBinding<Binding>(itemView)!!
-
-    final override fun bindView(item: Item, payloads: MutableList<Any>) {
-        binding.bindView(item, payloads)
-        binding.executePendingBindings()
+    final override fun bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        super.bindView(holder, payloads)
+        val binding = DataBindingUtil.getBinding<Binding>(holder.itemView) ?: return
+        binding.bindView(holder, payloads)
     }
 
-    open fun Binding.bindView(item: Item, payloads: MutableList<Any>) {
-        setVariable(BR.model, item.data)
+    open fun Binding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setVariable(BR.model, data)
     }
 
-    final override fun unbindView(item: Item) {
-        binding.unbindView(item)
+    final override fun unbindView(holder: ViewHolder) {
+        super.unbindView(holder)
+        val binding = DataBindingUtil.getBinding<Binding>(holder.itemView) ?: return
+        binding.unbindView(holder)
         binding.unbind()
     }
 
-    open fun Binding.unbindView(item: Item) {}
+    open fun Binding.unbindView(holder: ViewHolder) {}
+
+    final override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
 
     companion object {
         @JvmStatic
@@ -71,5 +67,26 @@ abstract class BindingViewHolder<Item : BindingItem<*>, Binding : ViewDataBindin
             textView.forEach { it.text = null }
         }
     }
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+}
+
+
+abstract class BindingClickEventHook<Binding : ViewDataBinding, Item : BindingItem<Binding>> : ClickEventHook<Item>() {
+
+    final override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
+        val binding = DataBindingUtil.getBinding<Binding>(viewHolder.itemView) ?: return super.onBind(viewHolder)
+        return binding.onBind(viewHolder)
+    }
+
+    open fun Binding.onBind(viewHolder: RecyclerView.ViewHolder): View? = super.onBind(viewHolder)
+
+    final override fun onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? {
+        val binding = DataBindingUtil.getBinding<Binding>(viewHolder.itemView) ?: return super.onBindMany(viewHolder)
+        return binding.onBindMany(viewHolder)
+    }
+
+    open fun Binding.onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? = super.onBindMany(viewHolder)
 
 }

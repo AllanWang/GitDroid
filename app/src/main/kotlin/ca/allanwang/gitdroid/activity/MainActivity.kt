@@ -15,7 +15,7 @@ import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
-import ca.allanwang.gitdroid.views.item.VHBindingType
+import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
@@ -27,7 +27,7 @@ import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CancellationException
 
-typealias GitCallVhList = GitCall<List<VHBindingType>>
+typealias GitCallVhList = GitCall<List<GenericBindingItem>>
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -65,7 +65,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_bottom_prs to ::loadPullRequests
         )
 
-        val cache = mutableMapOf<Int, List<VHBindingType>>()
+        val cache = mutableMapOf<Int, List<GenericBindingItem>>()
 
         var lastClearTime: Long = -1
 

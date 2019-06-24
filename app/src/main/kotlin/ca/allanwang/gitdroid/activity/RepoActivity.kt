@@ -14,7 +14,7 @@ import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
-import ca.allanwang.gitdroid.views.item.VHBindingType
+import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
@@ -95,7 +95,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private suspend fun showEntries(entries: List<TreeEntryItem>) {
-        val sorted: List<VHBindingType> = withContext(Dispatchers.Default) {
+        val sorted: List<GenericBindingItem> = withContext(Dispatchers.Default) {
             entries.sortedWith(GitComparators.treeEntryItem()).map { it.vh() }
         }
         withContext(Dispatchers.Main) {

@@ -1,14 +1,14 @@
 package ca.allanwang.gitdroid.views
 
-import ca.allanwang.gitdroid.views.item.VHBindingType
+import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.IAdapter
 import com.mikepenz.fastadapter.IItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 
-class FastBindingAdapter private constructor(private val adapter: ItemAdapter<VHBindingType>) :
-    FastAdapter<VHBindingType>(),
-    IItemAdapter<VHBindingType, VHBindingType> by adapter {
+class FastBindingAdapter private constructor(private val adapter: ItemAdapter<GenericBindingItem>) :
+    FastAdapter<GenericBindingItem>(),
+    IItemAdapter<GenericBindingItem, GenericBindingItem> by adapter {
 
     constructor() : this(ItemAdapter())
 
@@ -23,7 +23,7 @@ class FastBindingAdapter private constructor(private val adapter: ItemAdapter<VH
         return this
     }
 
-    override fun <A : IAdapter<VHBindingType>> addAdapter(index: Int, adapter: A): FastAdapter<VHBindingType> {
+    override fun <A : IAdapter<GenericBindingItem>> addAdapter(index: Int, adapter: A): FastAdapter<GenericBindingItem> {
         throw IllegalArgumentException("FastBindingAdapter only allows one adapter")
     }
 }

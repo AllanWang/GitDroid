@@ -9,14 +9,14 @@ import github.fragment.ShortRepoRowItem
 import github.fragment.TreeEntryItem
 import java.util.*
 
-fun ShortIssueRowItem.vh(): VHBindingType = IssueVhBinding(this)
-fun ShortPullRequestRowItem.vh(): VHBindingType =
+fun ShortIssueRowItem.vh(): GenericBindingItem = IssueVhBinding(this)
+fun ShortPullRequestRowItem.vh(): GenericBindingItem =
     PullRequestVhBinding(this)
-fun ShortRepoRowItem.vh(): VHBindingType = RepoVhBinding(this)
-fun SlimEntry.vh(): VHBindingType =
+fun ShortRepoRowItem.vh(): GenericBindingItem = RepoVhBinding(this)
+fun SlimEntry.vh(): GenericBindingItem =
     SlimEntryVhBinding(this)
 
-fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
+fun GetProfileQuery.User.vhFull(context: Context): List<GenericBindingItem> {
     val dateFormat = Locale.getDefault().bestDateFormat("yyyyMMMdd")
     val slimModels = listOf(
         SlimEntry(
@@ -40,7 +40,7 @@ fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
             context.quantityN(R.plurals.gists_n, gists.totalCount)
         )
     )
-    return mutableListOf<VHBindingType>().apply {
+    return mutableListOf<GenericBindingItem>().apply {
         add(vhHeader())
         addAll(slimModels.map { it.vh() })
         add(vhContribution())
@@ -48,21 +48,21 @@ fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
     }
 }
 
-fun GetProfileQuery.PinnedItems.vhList(): List<VHBindingType> = pinnedItems?.mapNotNull { item ->
+fun GetProfileQuery.PinnedItems.vhList(): List<GenericBindingItem> = pinnedItems?.mapNotNull { item ->
     when (item) {
         is GetProfileQuery.AsPinnableItem -> item.fragments.shortRepoRowItem?.vh()
         else -> throw RuntimeException("Invalid pinned item type ${item.__typename} ${item::class.java.simpleName}")
     }
 } ?: emptyList()
 
-fun GetProfileQuery.User.vhHeader(): VHBindingType =
+fun GetProfileQuery.User.vhHeader(): GenericBindingItem =
     UserHeaderVhBinding(this)
 
 
-fun GetProfileQuery.User.vhContribution(): VHBindingType =
+fun GetProfileQuery.User.vhContribution(): GenericBindingItem =
     UserContributionVhBinding(this)
 
-fun PathCrumb.vh(): VHBindingType =
+fun PathCrumb.vh(): GenericBindingItem =
     PathCrumbVhBinding(this)
 
-fun TreeEntryItem.vh(): VHBindingType = TreeEntryVhBinding(this)
+fun TreeEntryItem.vh(): GenericBindingItem = TreeEntryVhBinding(this)
