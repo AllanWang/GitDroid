@@ -1,6 +1,5 @@
 package ca.allanwang.gitdroid.data
 
-import ca.allanwang.gitdroid.logger.L
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.Input
@@ -18,8 +17,17 @@ import java.util.concurrent.TimeUnit
 
 private const val GET_COUNT = 30
 
-interface GitCall<T : Any> {
-    suspend fun call(forceRefresh: Boolean = false): Response<T?>
+interface GitCall<T> {
+    suspend fun call(forceRefresh: Boolean = false): Response<T>
+}
+
+fun <T, R> GitCall<T>.fmap(action: (T) -> R?): GitCall<R> = object : GitCall<R> {
+    override suspend fun call(forceRefresh: Boolean): Response<R> = this@fmap.call(forceRefresh).fmap(action)
+}
+
+fun <T, R : Any> GitCall<List<T>>.lmap(action: (T) -> R?): GitCall<List<R>> = object : GitCall<List<R>> {
+    override suspend fun call(forceRefresh: Boolean): Response<List<R>> =
+        this@lmap.call(forceRefresh).fmap { list -> list.mapNotNull(action) }
 }
 
 interface GitGraphQl {
@@ -45,7 +53,7 @@ interface GitGraphQl {
     ): GitCall<T> {
         val q = apollo.query(query)
         return object : GitCall<T> {
-            override suspend fun call(forceRefresh: Boolean): Response<T?> = withContext(Dispatchers.IO) {
+            override suspend fun call(forceRefresh: Boolean): Response<T> = withContext(Dispatchers.IO) {
                 q.policy(forceRefresh).toDeferred().await()
             }
         }
@@ -58,8 +66,8 @@ interface GitGraphQl {
     ): GitCall<R> {
         val q = apollo.query(query)
         return object : GitCall<R> {
-            override suspend fun call(forceRefresh: Boolean): Response<R?> = withContext(Dispatchers.IO) {
-                q.policy(forceRefresh).toDeferred().await().map(mapper)
+            override suspend fun call(forceRefresh: Boolean): Response<R> = withContext(Dispatchers.IO) {
+                q.policy(forceRefresh).toDeferred().await().fmap(mapper)
             }
         }
     }
@@ -110,7 +118,7 @@ interface GitGraphQl {
 
     suspend fun getFileInfo(query: String, oid: GitObjectID): GitCall<ObjectItem> =
         query(ObjectInfoQuery(query, oid)) {
-//            L._d { "$oid ${this.toString().replace(",", "\n\t")}" }
+            //            L._d { "$oid ${this.toString().replace(",", "\n\t")}" }
             search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.obj?.fragments?.objectItem
         }
 
@@ -133,8 +141,8 @@ interface GitGraphQl {
 /**
  * Converts a response's data from one form to another
  */
-fun <T, U> Response<T>.map(action: (T) -> U): Response<U> =
-    Response.builder<U>(operation())
+fun <T, R> Response<T>.fmap(action: (T) -> R?): Response<R> =
+    Response.builder<R>(operation())
         .data(data()?.let { action(it) })
         .errors(errors())
         .dependentKeys(dependentKeys())

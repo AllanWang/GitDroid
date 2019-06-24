@@ -11,6 +11,7 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
+import ca.allanwang.gitdroid.data.lmap
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.databinding.ViewMainBinding
 import ca.allanwang.gitdroid.logger.L
@@ -24,6 +25,9 @@ import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
+import github.fragment.ShortIssueRowItem
+import github.fragment.ShortPullRequestRowItem
+import github.fragment.ShortRepoRowItem
 import github.sql.GitUser
 import kotlinx.coroutines.CancellationException
 
@@ -53,14 +57,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
 
     private fun loaders(): List<MainPanelLoader> = listOf(
-        mainPanelLoader(R.id.nav_bottom_issues, { it.vh() }) {
-            getIssues(it.login, count = 5)
+        mainPanelLoader(R.id.nav_bottom_issues) {
+            getIssues(it.login, count = 5).lmap(ShortIssueRowItem::vh)
         },
-        mainPanelLoader(R.id.nav_bottom_prs, { it.vh() }) {
-            getPullRequests(it.login, count = 5)
+        mainPanelLoader(R.id.nav_bottom_prs) {
+            getPullRequests(it.login, count = 5).lmap(ShortPullRequestRowItem::vh)
         },
-        mainPanelLoader(R.id.nav_bottom_repos, { it.vh() }) {
-            getRepos(it.login, count = 5)
+        mainPanelLoader(R.id.nav_bottom_repos) {
+            getRepos(it.login, count = 5).lmap(ShortRepoRowItem::vh)
         })
 
 
@@ -68,22 +72,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val id: Int
 
-        suspend fun BaseActivity.loadData(): List<VHBindingType>
+        suspend fun BaseActivity.loadData(): GitCall<List<VHBindingType>>
 
     }
 
-    fun <T> mainPanelLoader(
+    fun mainPanelLoader(
         id: Int,
-        vhBinding: (T) -> VHBindingType,
-        loader: suspend GitDroidData.(me: GitUser) -> GitCall<List<T>>
+        loader: suspend GitDroidData.(me: GitUser) -> GitCall<List<VHBindingType>>
     ): MainPanelLoader {
         return object : MainPanelLoader {
             override val id: Int = id
 
-            override suspend fun BaseActivity.loadData(): List<VHBindingType> {
-                val result: List<T> = gdd.loader(me()).await()
-                return result.map { vhBinding(it) }
-            }
+            override suspend fun BaseActivity.loadData(): GitCall<List<VHBindingType>> = gdd.loader(me())
         }
     }
 
@@ -93,6 +93,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val loaders = loaders().map { it.id to it }.toMap()
 
         val cache = mutableMapOf<Int, List<VHBindingType>>()
+
+        var lastClearTime: Long = -1
+
+        val changeThreshold = 700L
 
         val pending = mutableSetOf<Int>()
 
@@ -111,14 +115,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             true
         }
 
-        val samePanelAnimator = KauAnimator(
+        val fadeAnimator = KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
             removeAnimator = FadeScaleAnimatorRemove()
         ).apply {
             addDuration = 500L
             interpolator = FastOutSlowInInterpolator()
         }
-        val switchPanelAnimator =
+        val fancyAnimator =
             KauAnimator(addAnimator = FadeScaleAnimatorAdd(), removeAnimator = FadeScaleAnimatorRemove())
 
         recycler.setHasFixedSize(false)
@@ -136,7 +140,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             val tag = loader::class.java.simpleName
             val samePanel = currentId == id
-            val newItemAnimator = if (samePanel) samePanelAnimator else switchPanelAnimator
+            val newItemAnimator = when {
+                samePanel -> fadeAnimator
+                System.currentTimeMillis() - lastClearTime < changeThreshold -> fadeAnimator
+                else -> fancyAnimator
+            }
             // Setting animator cancels some animations, which we don't necessarily need
             if (recycler.itemAnimator !== newItemAnimator) {
                 recycler.itemAnimator = newItemAnimator
@@ -149,6 +157,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             } else {
                 if (id in pending) {
                     adapter.data = emptyList()
+                    lastClearTime = System.currentTimeMillis()
                     return
                 }
                 val prev = cache[id]
@@ -159,15 +168,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             pending.add(id)
             L._d { "Launch new load for $tag" }
+            refresh.isRefreshing = true
+            adapter.data = emptyList()
+            lastClearTime = System.currentTimeMillis()
             launchMain {
-                refresh.isRefreshing = true
-                adapter.data = emptyList()
-                with(loader) {
-                    val data = loadData()
-                    cache[id] = data
-                    if (currentId == id) {
-                        adapter.data = data
-                    }
+                val data = with(loader) { loadData() }.await(forceRefresh = samePanel)
+                cache[id] = data
+                if (currentId == id) {
+                    adapter.data = data
                 }
             }.invokeOnCompletion {
                 if (it is CancellationException || this@MainActivity.isDestroyed) {
