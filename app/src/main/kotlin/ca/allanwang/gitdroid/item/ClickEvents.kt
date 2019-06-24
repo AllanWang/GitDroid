@@ -11,7 +11,7 @@ import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import com.mikepenz.fastadapter.FastAdapter
 
 fun SlimEntryVhBinding.Companion.clickHook() =
-    object : BindingClickEventHook<ViewSlimEntryBinding, SlimEntryVhBinding>() {
+    object : BindingClickEventHook<ViewSlimEntryBinding, SlimEntryVhBinding>(SlimEntryVhBinding) {
 
         override fun ViewSlimEntryBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
 
@@ -27,7 +27,7 @@ fun SlimEntryVhBinding.Companion.clickHook() =
     }
 
 fun RepoVhBinding.Companion.clickHook() =
-    object : BindingClickEventHook<ViewRepoBinding, RepoVhBinding>() {
+    object : BindingClickEventHook<ViewRepoBinding, RepoVhBinding>(RepoVhBinding) {
 
         override fun ViewRepoBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
 

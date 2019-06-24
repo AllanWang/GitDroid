@@ -16,13 +16,17 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 
 typealias GenericBindingItem = BindingItem<*>
 
-abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : AbstractItem<BindingItem.ViewHolder>() {
+abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : AbstractItem<BindingItem.ViewHolder>(),
+    BindingLayout<Binding> {
 
     override val type: Int
         get() = layoutRes
 
     override fun createView(ctx: Context, parent: ViewGroup?): View {
-        val binding: ViewDataBinding = DataBindingUtil.inflate(LayoutInflater.from(ctx), layoutRes, parent, false)
+        val binding: ViewDataBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(ctx),
+            layoutRes, parent, false
+        )
         return binding.root
     }
 
@@ -45,7 +49,7 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
 
     open fun Binding.unbindView(holder: ViewHolder) {}
 
-    final override fun getViewHolder(v: View): ViewHolder = ViewHolder(v)
+    final override fun getViewHolder(v: View): ViewHolder = ViewHolder(v, layoutRes)
 
     companion object {
         @JvmStatic
@@ -68,24 +72,33 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(itemView: View, internal val layoutRes: Int) : RecyclerView.ViewHolder(itemView)
 
 }
 
+interface BindingLayout<Binding : ViewDataBinding> {
+    val layoutRes: Int
+}
 
-abstract class BindingClickEventHook<Binding : ViewDataBinding, Item : BindingItem<Binding>> : ClickEventHook<Item>() {
 
-    final override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
-        val binding = DataBindingUtil.getBinding<Binding>(viewHolder.itemView) ?: return super.onBind(viewHolder)
-        return binding.onBind(viewHolder)
+abstract class BindingClickEventHook<Binding : ViewDataBinding, Item : BindingItem<Binding>>(val identifier: BindingLayout<Binding>) :
+    ClickEventHook<Item>() {
+
+    private fun RecyclerView.ViewHolder.binding(): Binding? {
+        val holder = this as? BindingItem.ViewHolder ?: return null
+        if (holder.layoutRes != identifier.layoutRes) {
+            return null
+        }
+        return DataBindingUtil.getBinding(itemView)
     }
+
+    final override fun onBind(viewHolder: RecyclerView.ViewHolder): View? =
+        viewHolder.binding()?.onBind(viewHolder) ?: super.onBind(viewHolder)
 
     open fun Binding.onBind(viewHolder: RecyclerView.ViewHolder): View? = super.onBind(viewHolder)
 
-    final override fun onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? {
-        val binding = DataBindingUtil.getBinding<Binding>(viewHolder.itemView) ?: return super.onBindMany(viewHolder)
-        return binding.onBindMany(viewHolder)
-    }
+    final override fun onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? =
+        viewHolder.binding()?.onBindMany(viewHolder) ?: super.onBindMany(viewHolder)
 
     open fun Binding.onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? = super.onBindMany(viewHolder)
 
