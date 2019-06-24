@@ -10,12 +10,9 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
-import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.data.lmap
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
-import ca.allanwang.gitdroid.databinding.ViewMainBinding
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
@@ -25,11 +22,9 @@ import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
-import github.fragment.ShortIssueRowItem
-import github.fragment.ShortPullRequestRowItem
-import github.fragment.ShortRepoRowItem
-import github.sql.GitUser
 import kotlinx.coroutines.CancellationException
+
+typealias GitCallVhList = GitCall<List<VHBindingType>>
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -39,7 +34,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onCreate(savedInstanceState)
         bindings = bindContentView(R.layout.activity_main)
         bindings.bind()
-        bindings.contentContainer.bind()
+        bindings.bindContent()
     }
 
     private fun ActivityMainBinding.bind() {
@@ -55,54 +50,27 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setNavigationItemSelectedListener(this@MainActivity)
     }
 
+    private suspend fun loadRepos(): GitCallVhList = gdd.getUserRepos(me().login).lmap { it.vh() }
+    private suspend fun loadIssues(): GitCallVhList = gdd.getIssues(me().login).lmap { it.vh() }
+    private suspend fun loadPullRequests(): GitCallVhList = gdd.getPullRequests(me().login).lmap { it.vh() }
 
-    private fun loaders(): List<MainPanelLoader> = listOf(
-        mainPanelLoader(R.id.nav_bottom_issues) {
-            getIssues(it.login, count = 5).lmap(ShortIssueRowItem::vh)
-        },
-        mainPanelLoader(R.id.nav_bottom_prs) {
-            getPullRequests(it.login, count = 5).lmap(ShortPullRequestRowItem::vh)
-        },
-        mainPanelLoader(R.id.nav_bottom_repos) {
-            getRepos(it.login, count = 5).lmap(ShortRepoRowItem::vh)
-        })
+    private fun ActivityMainBinding.bindContent() {
 
-
-    interface MainPanelLoader {
-
-        val id: Int
-
-        suspend fun BaseActivity.loadData(): GitCall<List<VHBindingType>>
-
-    }
-
-    fun mainPanelLoader(
-        id: Int,
-        loader: suspend GitDroidData.(me: GitUser) -> GitCall<List<VHBindingType>>
-    ): MainPanelLoader {
-        return object : MainPanelLoader {
-            override val id: Int = id
-
-            override suspend fun BaseActivity.loadData(): GitCall<List<VHBindingType>> = gdd.loader(me())
-        }
-    }
-
-    private fun ViewMainBinding.bind() {
-        root.setCoordinatorLayoutScrollingBehaviour()
-
-        val loaders = loaders().map { it.id to it }.toMap()
+        val loaders: Map<Int, suspend () -> GitCallVhList> = mapOf(
+            R.id.nav_bottom_repos to ::loadRepos,
+            R.id.nav_bottom_issues to ::loadIssues,
+            R.id.nav_bottom_prs to ::loadPullRequests
+        )
 
         val cache = mutableMapOf<Int, List<VHBindingType>>()
 
         var lastClearTime: Long = -1
 
-        val changeThreshold = 300L
+        val changeThreshold = 100L
 
         val pending = mutableSetOf<Int>()
 
-        // TODO set default
-        var currentId: Int = R.id.nav_bottom_issues
-        bottomNavigation.selectedItemId = currentId
+        var currentId: Int = bottomNavigation.menu.getItem(0).itemId
 
         val adapter = Adapter.bind(recycler)
 
@@ -172,7 +140,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             adapter.data = emptyList()
             lastClearTime = System.currentTimeMillis()
             launchMain {
-                val data = with(loader) { loadData() }.await(forceRefresh = samePanel)
+                val data = loader().await(forceRefresh = samePanel)
                 cache[id] = data
                 if (currentId == id) {
                     adapter.data = data

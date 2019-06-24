@@ -1,0 +1,19 @@
+query me {
+    viewer {
+        login
+        avatarUrl
+        email
+        id
+        name
+    }
+}
+
+query searchUserRepos($login: String!, $count: Int, $cursor: String) {
+    user(login: $login) {
+        repositories(first: $count, after: $cursor, orderBy: {direction: DESC, field: UPDATED_AT}) {
+            nodes {
+                ... ShortRepoRowItem
+            }
+        }
+    }
+}

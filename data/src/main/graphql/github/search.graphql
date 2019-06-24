@@ -1,13 +1,3 @@
-query me {
-    viewer {
-        login
-        avatarUrl
-        email
-        id
-        name
-    }
-}
-
 query searchRepos($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: REPOSITORY, first: $count, after: $cursor) {
         pageInfo {

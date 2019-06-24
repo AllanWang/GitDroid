@@ -72,9 +72,9 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun me(forceRefresh: Boolean = false): GitCall<MeQuery.Data> = query(MeQuery())
+    suspend fun me(): GitCall<MeQuery.Data> = query(MeQuery())
 
-    suspend fun getProfile(login: String, forceRefresh: Boolean = false): GitCall<GetProfileQuery.User> =
+    suspend fun getProfile(login: String): GitCall<GetProfileQuery.User> =
         query(GetProfileQuery(login)) {
             user
         }
@@ -82,8 +82,7 @@ interface GitGraphQl {
     suspend fun getIssues(
         login: String,
         count: Int = GET_COUNT,
-        cursor: String? = null,
-        forceRefresh: Boolean = false
+        cursor: String? = null
     ): GitCall<List<ShortIssueRowItem>> =
         query(
             SearchIssuesQuery(
@@ -94,16 +93,31 @@ interface GitGraphQl {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem }
         }
 
-    suspend fun getRepos(
+    suspend fun getUserRepos(
         login: String,
         count: Int = GET_COUNT,
-        cursor: String? = null,
-        forceRefresh: Boolean = false
+        cursor: String? = null
+    ): GitCall<List<ShortRepoRowItem>> =
+        query(
+            SearchUserReposQuery(
+                login,
+                Input.optional(count),
+                Input.optional(cursor)
+            )
+        ) {
+            user?.repositories?.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
+        }
+
+    suspend fun getRepos(
+        query: String,
+        count: Int = GET_COUNT,
+        cursor: String? = null
     ): GitCall<List<ShortRepoRowItem>> =
         query(
             SearchReposQuery(
-                login,
-                Input.optional(count), Input.optional(cursor)
+                query,
+                Input.optional(count),
+                Input.optional(cursor)
             )
         ) {
             search.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
@@ -125,8 +139,7 @@ interface GitGraphQl {
     suspend fun getPullRequests(
         login: String,
         count: Int = GET_COUNT,
-        cursor: String? = null,
-        forceRefresh: Boolean = false
+        cursor: String? = null
     ): GitCall<List<ShortPullRequestRowItem>> =
         query(
             SearchPullRequestsQuery(

@@ -19,9 +19,30 @@
                 android:id="@+id/view_toolbar"
                 layout="@layout/view_toolbar" />
 
-            <include
-                android:id="@+id/content_container"
-                layout="@layout/view_main" />
+            <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
+                android:id="@+id/refresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:context=".activity.MainActivity" />
+
+            </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+                app:menu="@menu/main_bottom_nav" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

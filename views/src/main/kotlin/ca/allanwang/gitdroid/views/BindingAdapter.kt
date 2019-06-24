@@ -29,7 +29,8 @@ fun View.goneFlag(value: Any?) {
 }
 
 @BindingAdapter("languageColor")
-fun TextView.languageColor(color: String) {
+fun TextView.languageColor(color: String?) {
+    color ?: return
     val c = ColorStateList.valueOf(Color.parseColor(color))
     compoundDrawableTintList = c
     setTextColor(c)
