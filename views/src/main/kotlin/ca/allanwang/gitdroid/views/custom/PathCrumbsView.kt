@@ -18,7 +18,7 @@ import ca.allanwang.kau.utils.withAlpha
  *  [info] is nonnull if the callback comes from a click event in the adapter.
  *  It is null otherwise, such as on back press
  */
-typealias PathCrumbsCallback = (data: PathCrumb?, info: ClickInfo?) -> Unit
+typealias PathCrumbsCallback = (data: PathCrumb?, position: Int, adapter: Adapter) -> Unit
 
 
 class PathCrumbsView @JvmOverloads constructor(
@@ -29,7 +29,7 @@ class PathCrumbsView @JvmOverloads constructor(
 
     var callback: PathCrumbsCallback? = null
 
-    override fun setAdapter(adapter: Adapter<*>?) {
+    override fun setAdapter(adapter: RecyclerView.Adapter<*>?) {
         throw RuntimeException("Do not set adapter; it is handled internally")
     }
 
@@ -37,19 +37,23 @@ class PathCrumbsView @JvmOverloads constructor(
         clipToPadding = false
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         super.setAdapter(adapter)
-        adapter.onClick = { vhb, _, info ->
-            when (vhb) {
-                is PathCrumbHomeVhBinding -> {
-                    callback?.invoke(null, null)
-                    adapter.remove(1, info.totalCount - 1)
-                    true
+        adapter.onClick = { vhb, _, position, adapter ->
+            if (position == adapter.itemCount - 1) {
+                false
+            } else {
+                when (vhb) {
+                    is PathCrumbHomeVhBinding -> {
+                        callback?.invoke(null, position, adapter)
+                        adapter.remove(1, adapter.itemCount - 1)
+                        true
+                    }
+                    is PathCrumbVhBinding -> {
+                        callback?.invoke(vhb.data, position, adapter)
+                        adapter.remove(position + 1, adapter.itemCount - position)
+                        true
+                    }
+                    else -> false
                 }
-                is PathCrumbVhBinding -> {
-                    callback?.invoke(vhb.data, info)
-                    adapter.remove(info.position + 1, info.totalCount - info.position)
-                    true
-                }
-                else -> false
             }
         }
         adapter.data = listOf(PathCrumbHomeVhBinding)
@@ -88,7 +92,7 @@ class PathCrumbsView @JvmOverloads constructor(
         if (data.size <= 1) {
             return false
         }
-        callback?.invoke((data[data.lastIndex - 1] as PathCrumbVhBinding).data, null)
+        callback?.invoke((data[data.lastIndex - 1] as PathCrumbVhBinding).data, data.lastIndex - 1, adapter)
         adapter.remove(adapter.data.lastIndex, 1)
         return true
     }

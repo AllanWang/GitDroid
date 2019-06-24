@@ -6,12 +6,13 @@ import android.view.ViewGroup
 import androidx.core.util.containsKey
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.logger.L
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-typealias AdapterOnClick = (vhb: VHBindingType, view: View, info: ClickInfo) -> Boolean
+typealias AdapterOnClick = (vhb: VHBindingType, view: View, position: Int, adapter: Adapter) -> Boolean
 
 class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -68,23 +69,22 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             data.isEmpty() -> notifyItemRangeRemoved(0, oldData.size)
             else -> {
                 // TODO use better scope
-                job = GlobalScope.launch {
-                    val result: DiffUtil.DiffResult = withContext(Dispatchers.Default) {
-                        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
-                            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                                oldData[oldItemPosition].isItemSame(data[newItemPosition])
+                job = GlobalScope.launch(Dispatchers.Default) {
+                    val result: DiffUtil.DiffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                            oldData[oldItemPosition].isItemSame(data[newItemPosition])
 
-                            override fun getOldListSize(): Int = oldData.size
+                        override fun getOldListSize(): Int = oldData.size
 
-                            override fun getNewListSize(): Int = data.size
+                        override fun getNewListSize(): Int = data.size
 
-                            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                                oldData[oldItemPosition].isContentSame(data[newItemPosition])
+                        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                            oldData[oldItemPosition].isContentSame(data[newItemPosition])
 
-                            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
-                                oldData[oldItemPosition].changePayload(data[newItemPosition])
-                        }, true)
-                    }
+                        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
+                            oldData[oldItemPosition].changePayload(data[newItemPosition])
+                    }, true)
+
                     withContext(Dispatchers.Main) {
                         result.dispatchUpdatesTo(this@Adapter)
                     }
@@ -104,22 +104,23 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        L.d { "Create vh" }
         val view = typeCache[viewType].onCreate(parent)
         val holder = ViewHolder(view)
         holder.itemView.setTag(R.id.git_view_adapter, this)
         holder.itemView.setOnClickListener {
             val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
             val vhb = it.getTag(R.id.git_view_item) as? VHBindingType ?: return@setOnClickListener
-            val info = ClickInfo(position = pos, totalCount = data.size)
-            if (onClick?.invoke(vhb, it, info) == true) {
+            if (onClick?.invoke(vhb, it,pos, this ) == true) {
                 return@setOnClickListener
             }
-            vhb.onClick(it, info)
+            vhb.onClick(it, pos, this)
         }
         return holder
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        L.d { "Bind vh" }
         val item: VHBindingType = data.getOrNull(position) ?: return
         val info = BindInfo(position = position, totalCount = data.size)
         holder.itemView.setTag(R.id.git_view_adapter, this)

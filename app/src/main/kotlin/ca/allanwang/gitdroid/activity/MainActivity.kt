@@ -74,7 +74,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val adapter = Adapter.bind(recycler)
 
-        adapter.onClick = { vhb: VHBindingType, view: View, info: ClickInfo ->
+        adapter.onClick = { vhb: VHBindingType, view: View, position: Int, adapter: Adapter ->
             when (vhb) {
                 is RepoVhBinding -> {
                     RepoActivity.launch(this@MainActivity, vhb.data.nameWithOwner)

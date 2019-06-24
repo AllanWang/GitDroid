@@ -76,11 +76,11 @@ abstract class ViewHolderBinding<T : ViewDataBinding>(
         binding.unbind()
     }
 
-    open fun onClick(view: View, info: ClickInfo) {}
+    open fun onClick(view: View, position: Int, adapter: Adapter) {}
 
     open fun isItemSame(vh: VHBindingType): Boolean = typeId == vh.typeId
-    open fun isContentSame(vh: VHBindingType): Boolean = typeId == vh.typeId && data == vh.data
-    open fun changePayload(vh: VHBindingType): Any? = vh.data
+    open fun isContentSame(vh: VHBindingType): Boolean = data == vh.data
+    open fun changePayload(vh: VHBindingType): Any? = null
 
 }
 
@@ -103,10 +103,6 @@ open class BlankViewHolderBinding<T : ViewDataBinding>(
 }
 
 data class BindInfo(val position: Int, val totalCount: Int) {
-    val isLast: Boolean get() = position == totalCount - 1
-}
-
-data class ClickInfo(val position: Int, val totalCount: Int) {
     val isLast: Boolean get() = position == totalCount - 1
 }
 
@@ -137,8 +133,8 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
 class SlimEntryVhBinding(override val data: SlimEntry) :
     ViewHolderBinding<ViewSlimEntryBinding>(data, R.layout.view_slim_entry) {
 
-    override fun onClick(view: View, info: ClickInfo) {
-        super.onClick(view, info)
+    override fun onClick(view: View, position: Int, adapter: Adapter) {
+        super.onClick(view, position, adapter)
         data.onClick?.invoke(view)
     }
 

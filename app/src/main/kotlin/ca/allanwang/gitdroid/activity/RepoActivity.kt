@@ -40,7 +40,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         binding.root.setCoordinatorLayoutScrollingBehaviour()
 
         treeAdapter = Adapter.bind(binding.repoRecycler).apply {
-            onClick = { vhb, _, _ ->
+            onClick = { vhb, _, _, _ ->
                 if (vhb is TreeEntryVhBinding) {
                     onClick(vhb.data)
                     true
@@ -49,11 +49,11 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
                 }
             }
         }
-        pathCrumbs.callback = { data, info ->
-            load(data, info, false)
+        pathCrumbs.callback = { data, _, _ ->
+            load(data, false)
         }
         binding.repoRefresh.setOnRefreshListener {
-            load(pathCrumbs.getCurrentCrumb(), null, true)
+            load(pathCrumbs.getCurrentCrumb(), true)
         }
         loadRepo()
     }
@@ -113,13 +113,11 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         }
     }
 
-    private fun load(data: PathCrumb?, info: ClickInfo?, forceRefresh: Boolean = false) {
-        if (info?.isLast != true) {
-            if (data == null) {
-                loadRepo(forceRefresh)
-            } else {
-                loadFolder(data.oid, forceRefresh)
-            }
+    private fun load(data: PathCrumb?, forceRefresh: Boolean = false) {
+        if (data == null) {
+            loadRepo(forceRefresh)
+        } else {
+            loadFolder(data.oid, forceRefresh)
         }
     }
 
