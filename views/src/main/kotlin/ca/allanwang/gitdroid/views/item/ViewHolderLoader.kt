@@ -1,6 +1,7 @@
-package ca.allanwang.gitdroid.views
+package ca.allanwang.gitdroid.views.item
 
 import android.content.Context
+import ca.allanwang.gitdroid.views.*
 import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
@@ -9,9 +10,11 @@ import github.fragment.TreeEntryItem
 import java.util.*
 
 fun ShortIssueRowItem.vh(): VHBindingType = IssueVhBinding(this)
-fun ShortPullRequestRowItem.vh(): VHBindingType = PullRequestVhBinding(this)
+fun ShortPullRequestRowItem.vh(): VHBindingType =
+    PullRequestVhBinding(this)
 fun ShortRepoRowItem.vh(): VHBindingType = RepoVhBinding(this)
-fun SlimEntry.vh(): VHBindingType = SlimEntryVhBinding(this)
+fun SlimEntry.vh(): VHBindingType =
+    SlimEntryVhBinding(this)
 
 fun GetProfileQuery.User.vhFull(context: Context): List<VHBindingType> {
     val dateFormat = Locale.getDefault().bestDateFormat("yyyyMMMdd")
@@ -52,11 +55,14 @@ fun GetProfileQuery.PinnedItems.vhList(): List<VHBindingType> = pinnedItems?.map
     }
 } ?: emptyList()
 
-fun GetProfileQuery.User.vhHeader(): VHBindingType = UserHeaderVhBinding(this)
+fun GetProfileQuery.User.vhHeader(): VHBindingType =
+    UserHeaderVhBinding(this)
 
 
-fun GetProfileQuery.User.vhContribution(): VHBindingType = UserContributionVhBinding(this)
+fun GetProfileQuery.User.vhContribution(): VHBindingType =
+    UserContributionVhBinding(this)
 
-fun PathCrumb.vh(): VHBindingType = PathCrumbVhBinding(this)
+fun PathCrumb.vh(): VHBindingType =
+    PathCrumbVhBinding(this)
 
 fun TreeEntryItem.vh(): VHBindingType = TreeEntryVhBinding(this)

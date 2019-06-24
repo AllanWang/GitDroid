@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.views.BR
 import com.bumptech.glide.Glide
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.GenericItem
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 
 typealias VHBindingType = BindingItem<*>
@@ -33,7 +33,7 @@ abstract class BindingItem<VH : RecyclerView.ViewHolder>(open val data: Any?) : 
 abstract class BindingViewHolder<Item : BindingItem<*>, Binding : ViewDataBinding>(itemView: View) :
     FastAdapter.ViewHolder<Item>(itemView) {
 
-    val binding =  DataBindingUtil.getBinding<Binding>(itemView)!!
+    val binding = DataBindingUtil.getBinding<Binding>(itemView)!!
 
     final override fun bindView(item: Item, payloads: MutableList<Any>) {
         binding.bindView(item, payloads)

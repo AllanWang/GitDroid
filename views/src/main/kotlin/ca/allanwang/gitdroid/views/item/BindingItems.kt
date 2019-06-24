@@ -4,11 +4,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.GitIssueOrPr
+import ca.allanwang.gitdroid.views.PathCrumb
+import ca.allanwang.gitdroid.views.R
+import ca.allanwang.gitdroid.views.SlimEntry
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
-import com.mikepenz.fastadapter.listeners.ClickEventHook
 import github.GetProfileQuery
 import github.fragment.ShortIssueRowItem
 import github.fragment.ShortPullRequestRowItem
@@ -61,6 +62,8 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
             unbind(repoName, repoDesc, repoStars, repoForks, repoIssues, repoPrs, repoLanguage, repoDate)
         }
     }
+
+    companion object
 }
 
 class SlimEntryVhBinding(override val data: SlimEntry) :
@@ -79,21 +82,7 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
         }
     }
 
-    companion object {
-        fun clickHook(): ClickEventHook<SlimEntryVhBinding> = object : ClickEventHook<SlimEntryVhBinding>() {
-            override fun onBind(viewHolder: RecyclerView.ViewHolder): View? = (viewHolder as? ViewHolder)?.binding?.root
-
-            override fun onClick(
-                v: View,
-                position: Int,
-                fastAdapter: FastAdapter<SlimEntryVhBinding>,
-                item: SlimEntryVhBinding
-            ) {
-                item.data.onClick?.invoke(v)
-            }
-
-        }
-    }
+    companion object
 }
 
 class UserHeaderVhBinding(override val data: GetProfileQuery.User) :

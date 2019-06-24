@@ -9,9 +9,13 @@ import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
+import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
+import ca.allanwang.gitdroid.views.item.VHBindingType
+import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
@@ -32,24 +36,25 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     private val pathCrumbs: PathCrumbsView
         get() = binding.repoPathCrumbs
 
-    lateinit var treeAdapter: Adapter
+    private val treeAdapter: FastBindingAdapter = FastBindingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding.root.setCoordinatorLayoutScrollingBehaviour()
 
-        treeAdapter = Adapter.bind(binding.repoRecycler).apply {
-            onClick = { vhb, _, _, _ ->
-                if (vhb is TreeEntryVhBinding) {
-                    onClick(vhb.data)
-                    true
-                } else {
-                    false
-                }
+        treeAdapter.onClickListener = { v, adapter, item, position ->
+            if (item is TreeEntryVhBinding) {
+                onClick(item.data)
+                true
+            } else {
+                false
             }
         }
-        pathCrumbs.callback = { data, _, _ ->
+
+        binding.repoRecycler.adapter = treeAdapter
+
+        pathCrumbs.callback = { data ->
             load(data, false)
         }
         binding.repoRefresh.setOnRefreshListener {
@@ -95,7 +100,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         }
         withContext(Dispatchers.Main) {
             binding.repoRefresh.isRefreshing = false
-            treeAdapter.data = sorted
+            treeAdapter.add(sorted)
         }
     }
 
@@ -122,7 +127,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadRepo(forceRefresh: Boolean = false) {
-        treeAdapter.data = emptyList()
+        treeAdapter.clear()
         launch {
             val repo = gdd.getRepo(query).await(forceRefresh = forceRefresh)
             val defaultBranch = repo.defaultBranchRef
@@ -147,7 +152,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
-        treeAdapter.data = emptyList()
+        treeAdapter.clear()
         L._d { "Loading folder $oid" }
         launch {
             val obj = gdd.getFileInfo(query, oid).await(forceRefresh = forceRefresh)

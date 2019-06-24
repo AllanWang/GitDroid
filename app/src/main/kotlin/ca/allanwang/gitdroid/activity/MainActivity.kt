@@ -3,7 +3,6 @@ package ca.allanwang.gitdroid.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -12,8 +11,12 @@ import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.lmap
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
+import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.item.RepoVhBinding
+import ca.allanwang.gitdroid.views.item.VHBindingType
+import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
 import ca.allanwang.kau.animators.KauAnimator
@@ -72,16 +75,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         var currentId: Int = bottomNavigation.menu.getItem(0).itemId
 
-        val adapter = Adapter.bind(recycler)
+        val fastAdapter = FastBindingAdapter()
 
-        adapter.onClick = { vhb: VHBindingType, view: View, position: Int, adapter: Adapter ->
-            when (vhb) {
-                is RepoVhBinding -> {
-                    RepoActivity.launch(this@MainActivity, vhb.data.nameWithOwner)
-                }
-            }
-            true
-        }
+        fastAdapter.addEventHook(RepoVhBinding.clickHook())
+
+        recycler.adapter = fastAdapter
 
         val fadeAnimator = KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
@@ -124,26 +122,26 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             } else {
                 if (id in pending) {
-                    adapter.data = emptyList()
+                    fastAdapter.clear()
                     lastClearTime = System.currentTimeMillis()
                     return
                 }
                 val prev = cache[id]
                 if (prev != null && !forceRefresh) {
-                    adapter.data = prev
+                    fastAdapter.add(prev)
                     return
                 }
             }
             pending.add(id)
             L._d { "Launch new load for $tag" }
             refresh.isRefreshing = true
-            adapter.data = emptyList()
+            fastAdapter.clear()
             lastClearTime = System.currentTimeMillis()
             launchMain {
                 val data = loader().await(forceRefresh = samePanel)
                 cache[id] = data
                 if (currentId == id) {
-                    adapter.data = data
+                    fastAdapter.add(data)
                 }
             }.invokeOnCompletion {
                 if (it is CancellationException || this@MainActivity.isDestroyed) {
