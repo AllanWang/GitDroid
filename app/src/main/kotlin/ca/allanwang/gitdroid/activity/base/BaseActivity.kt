@@ -28,8 +28,8 @@ abstract class BaseActivity : KauBaseActivity() {
     val db: Database by inject()
     val gdd: GitDroidData by inject()
 
-    fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int) =
-        DataBindingUtil.setContentView<T>(this, layoutRes)
+    fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
+        DataBindingUtil.setContentView(this, layoutRes)
 
     /**
      * Returns current user based on token

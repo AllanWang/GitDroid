@@ -14,6 +14,10 @@ android {
         buildConfigField "String", "GITHUB_CLIENT_SECRET", "\"${privProps.getProperty('GITHUB_CLIENT_SECRET', 'NA')}\""
         buildConfigField "String", "GITHUB_CLIENT_REDIRECT", "\"${privProps.getProperty('GITHUB_CLIENT_REDIRECT', 'NA')}\""
     }
+
+    sourceSets {
+        main.java.srcDirs += 'build/generated/source/apollo/classes'
+    }
 }
 
 apollo {

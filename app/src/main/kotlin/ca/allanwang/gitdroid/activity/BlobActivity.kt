@@ -3,19 +3,19 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.activity.base.LoadingActivity
+import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.LexerCache
 import ca.allanwang.gitdroid.data.GitObjectID
-import ca.allanwang.gitdroid.databinding.ActivityBlobBinding
+import ca.allanwang.gitdroid.databinding.ViewBlobBinding
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.ObjectItem
 import kotlinx.coroutines.launch
 
-class BlobActivity : LoadingActivity<ActivityBlobBinding>() {
+class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
 
     override val layoutRes: Int
-        get() = R.layout.activity_blob
+        get() = R.layout.view_blob
 
     val query by stringExtra(ARG_QUERY)
     private val fileName by stringExtra(ARG_FILENAME)
@@ -23,13 +23,9 @@ class BlobActivity : LoadingActivity<ActivityBlobBinding>() {
     val oid: GitObjectID
         get() = GitObjectID(_oidString)
 
-    override fun onCreate2(savedInstanceState: Bundle?) {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.also {
-            it.setDisplayShowHomeEnabled(true)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.title = fileName
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.title = fileName
         launch {
             val blob: ObjectItem.AsBlob? = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"

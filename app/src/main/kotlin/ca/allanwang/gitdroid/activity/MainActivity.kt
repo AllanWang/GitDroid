@@ -43,9 +43,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun ActivityMainBinding.bind() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(viewToolbar.toolbar)
         val toggle = ActionBarDrawerToggle(
-            this@MainActivity, drawerLayout, toolbar,
+            this@MainActivity, drawerLayout, viewToolbar.toolbar,
             R.string.navigation_drawer_open,
             R.string.navigation_drawer_close
         )
@@ -96,7 +96,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         var lastClearTime: Long = -1
 
-        val changeThreshold = 700L
+        val changeThreshold = 300L
 
         val pending = mutableSetOf<Int>()
 

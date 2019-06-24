@@ -4,14 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.activity.base.LoadingActivity
+import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
-import ca.allanwang.gitdroid.databinding.ActivityRepoBinding
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
+import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
@@ -22,28 +22,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RepoActivity : LoadingActivity<ActivityRepoBinding>() {
+class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     override val layoutRes: Int
-        get() = R.layout.activity_repo
+        get() = R.layout.view_repo_files
 
     val query by stringExtra(ARG_QUERY)
 
     private val pathCrumbs: PathCrumbsView
-        get() = binding.repoFiles.repoPathCrumbs
+        get() = binding.repoPathCrumbs
 
     lateinit var treeAdapter: Adapter
 
-    override fun onCreate2(savedInstanceState: Bundle?) {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.also {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowHomeEnabled(true)
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        binding.repoFiles.root.setCoordinatorLayoutScrollingBehaviour()
+        binding.root.setCoordinatorLayoutScrollingBehaviour()
 
-        treeAdapter = Adapter.bind(binding.repoFiles.repoRecycler).apply {
+        treeAdapter = Adapter.bind(binding.repoRecycler).apply {
             onClick = { vhb, _, _ ->
                 if (vhb is TreeEntryVhBinding) {
                     onClick(vhb.data)
@@ -56,7 +52,7 @@ class RepoActivity : LoadingActivity<ActivityRepoBinding>() {
         pathCrumbs.callback = { data, info ->
             load(data, info, false)
         }
-        binding.repoFiles.repoRefresh.setOnRefreshListener {
+        binding.repoRefresh.setOnRefreshListener {
             load(pathCrumbs.getCurrentCrumb(), null, true)
         }
         loadRepo()
@@ -98,7 +94,7 @@ class RepoActivity : LoadingActivity<ActivityRepoBinding>() {
             entries.sortedWith(GitComparators.treeEntryItem()).map { it.vh() }
         }
         withContext(Dispatchers.Main) {
-            binding.repoFiles.repoRefresh.isRefreshing = false
+            binding.repoRefresh.isRefreshing = false
             treeAdapter.data = sorted
         }
     }
