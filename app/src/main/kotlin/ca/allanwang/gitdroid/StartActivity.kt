@@ -1,9 +1,9 @@
 package ca.allanwang.gitdroid
 
 import android.os.Bundle
-import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.activity.LoginActivity
-import ca.allanwang.gitdroid.activity.RepoActivity
+import ca.allanwang.gitdroid.activity.MainActivity
+import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.kau.utils.startActivity
 
 class StartActivity : BaseActivity() {
@@ -12,9 +12,9 @@ class StartActivity : BaseActivity() {
 
         when {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
-            else -> RepoActivity.launch(this, "AllanWang/KAU")
+//            else -> RepoActivity.launch(this, "AllanWang/KAU")
 //            else -> startActivity<BlobActivity>()
-//            else -> startActivity<MainActivity>()
+            else -> startActivity<MainActivity>()
         }
     }
 }
