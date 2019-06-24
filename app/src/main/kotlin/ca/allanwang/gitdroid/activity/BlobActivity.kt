@@ -25,7 +25,10 @@ class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.title = fileName
+        supportActionBar?.also {
+            it.title = fileName
+        }
+
         launch {
             val blob: ObjectItem.AsBlob? = gdd.getFileInfo(query, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"
