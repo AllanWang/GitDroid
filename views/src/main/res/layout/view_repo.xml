@@ -119,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/repo_language"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
-            app:relativeDateText="@{model.updatedAt}"
+            app:relativeDateText="@{model.pushedAt}"
             app:textStartPadding="4dp"
             tools:text="@tools:sample/date/mmddyy" />
 

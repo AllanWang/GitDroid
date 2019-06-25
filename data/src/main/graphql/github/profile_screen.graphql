@@ -35,7 +35,7 @@ query getProfile($login: String!) {
         following(last: 0) {
             totalCount
         }
-        repositories(first: 6, orderBy: {direction: DESC, field: UPDATED_AT}) {
+        repositories(first: 6, orderBy: {direction: DESC, field: PUSHED_AT}) {
             totalCount
             nodes {
                 ... ShortRepoRowItem
