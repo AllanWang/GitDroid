@@ -5,8 +5,11 @@ import android.os.Bundle
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
+import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.item.RepoVhBinding
+import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.startActivity
@@ -24,6 +27,10 @@ class UserActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         super.onCreate(savedInstanceState)
         supportActionBar?.also {
             it.title = login
+        }
+        fastAdapter.also {
+            it.addEventHook(SlimEntryVhBinding.clickHook())
+            it.addEventHook(RepoVhBinding.clickHook())
         }
         binding.recycler.also {
             it.adapter = fastAdapter
