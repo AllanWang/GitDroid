@@ -4,13 +4,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.activity.IssueCommentActivity
 import ca.allanwang.gitdroid.activity.RepoActivity
+import ca.allanwang.gitdroid.activity.UserActivity
+import ca.allanwang.gitdroid.views.databinding.ViewIssueCommentBinding
 import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
 import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
 import ca.allanwang.gitdroid.views.databinding.ViewSlimEntryBinding
-import ca.allanwang.gitdroid.views.item.BindingClickEventHook
-import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
-import ca.allanwang.gitdroid.views.item.RepoVhBinding
-import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
+import ca.allanwang.gitdroid.views.item.*
 import ca.allanwang.gitdroid.views.nameAndOwner
 import com.mikepenz.fastadapter.FastAdapter
 
@@ -19,7 +18,7 @@ fun SlimEntryVhBinding.Companion.clickHook() =
 
         override fun ViewSlimEntryBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
 
-        override fun onClick(
+        override fun ViewSlimEntryBinding.onClick(
             v: View,
             position: Int,
             fastAdapter: FastAdapter<SlimEntryVhBinding>,
@@ -33,7 +32,7 @@ fun SlimEntryVhBinding.Companion.clickHook() =
 fun IssuePrVhBinding.Companion.clickHook() =
     object : BindingClickEventHook<ViewIssueOrPrItemBinding, IssuePrVhBinding>(IssuePrVhBinding) {
         override fun ViewIssueOrPrItemBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
-        override fun onClick(
+        override fun ViewIssueOrPrItemBinding.onClick(
             v: View,
             position: Int,
             fastAdapter: FastAdapter<IssuePrVhBinding>,
@@ -48,7 +47,34 @@ fun RepoVhBinding.Companion.clickHook() =
 
         override fun ViewRepoBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
 
-        override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<RepoVhBinding>, item: RepoVhBinding) {
+        override fun ViewRepoBinding.onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<RepoVhBinding>,
+            item: RepoVhBinding
+        ) {
             RepoActivity.launch(v.context, item.data.nameAndOwner())
         }
+    }
+
+fun IssueCommentVhBinding.Companion.clickHook() =
+    object : BindingClickEventHook<ViewIssueCommentBinding, IssueCommentVhBinding>(IssueCommentVhBinding) {
+        override fun ViewIssueCommentBinding.onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? {
+            return listOf(avatar, reaction, more)
+        }
+
+        override fun ViewIssueCommentBinding.onClick(
+            v: View,
+            position: Int,
+            fastAdapter: FastAdapter<IssueCommentVhBinding>,
+            item: IssueCommentVhBinding
+        ) {
+            when (v) {
+                avatar -> {
+                    val login = item.data.fragments.shortComment?.author?.fragments?.shortActor?.login ?: return
+                    UserActivity.launch(v.context, login)
+                }
+            }
+        }
+
     }

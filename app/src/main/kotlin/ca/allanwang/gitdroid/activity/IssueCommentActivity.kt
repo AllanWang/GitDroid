@@ -6,10 +6,12 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.databinding.HeaderIssueCommentBinding
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
+import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.GitNameAndOwner
+import ca.allanwang.gitdroid.views.item.IssueCommentVhBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
@@ -34,6 +36,9 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         binding.recycler.also {
             it.adapter = fastAdapter
         }
+        fastAdapter.also {
+            it.addEventHook(IssueCommentVhBinding.clickHook())
+        }
         supportActionBar?.also {
             it.title = getString(R.string.issue_n, issueNumber)
             it.subtitle = repo.nameWithOwner
@@ -50,6 +55,7 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
 
     private fun loadIssue() {
         L.d { "Load issue" }
+        binding.refresh.isRefreshing = true
         launch {
             val issue = gdd.getIssue(repo.owner, repo.name, issueNumber).await()
             val vhs = issue.comments.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()

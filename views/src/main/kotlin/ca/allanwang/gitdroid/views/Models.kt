@@ -4,10 +4,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
 import ca.allanwang.gitdroid.data.GitObjectID
-import github.fragment.RepoNameAndOwner
-import github.fragment.ShortIssueRowItem
-import github.fragment.ShortPullRequestRowItem
-import github.fragment.ShortRepoRowItem
+import github.fragment.*
 import kotlinx.android.parcel.Parcelize
 import java.net.URI
 import java.util.*
