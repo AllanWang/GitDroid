@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="issue_n">Issue #%d</string>
+
+    <string name="author_member">Member</string>
+    <string name="author_owner">Owner</string>
+    <string name="author_collaborator">Collaborator</string>
+    <string name="author_contributor">Contributor</string>
 </resources>

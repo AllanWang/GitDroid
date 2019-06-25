@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.databinding.HeaderIssueCommentBinding
@@ -15,6 +16,8 @@ import ca.allanwang.gitdroid.views.item.IssueCommentVhBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
+import ca.allanwang.kau.utils.string
+import ca.allanwang.kau.utils.withSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
 class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
@@ -72,11 +75,15 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
 
     companion object {
 
-        fun launch(context: Context, repo: GitNameAndOwner, name: String, issueNumber: Int) {
+        fun launch(context: Context, repo: GitNameAndOwner, name: String, issueNumber: Int, view: View? = null) {
             context.startActivity<IssueCommentActivity>(intentBuilder = {
                 putExtra(Args.repo, repo)
                 putExtra(Args.name, name)
                 putExtra(Args.issueNumber, issueNumber)
+            }, bundleBuilder = {
+                if (view != null) {
+                    withSceneTransitionAnimation(context, mapOf(view to context.string(R.string.transition_recycler)))
+                }
             })
         }
     }

@@ -16,8 +16,8 @@ class StartActivity : BaseActivity() {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
 //            else -> RepoActivity.launch(this, "AllanWang/KAU")
 //            else -> startActivity<BlobActivity>()
-//            else -> IssueCommentActivity.launch(this, GitNameAndOwner("KEEP", "Kotlin"), "Sample", 155)
-            else -> startActivity<MainActivity>()
+            else -> IssueCommentActivity.launch(this, GitNameAndOwner("KEEP", "Kotlin"), "Sample", 155)
+//            else -> startActivity<MainActivity>()
         }
     }
 }

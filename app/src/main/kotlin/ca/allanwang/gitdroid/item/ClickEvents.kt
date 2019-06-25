@@ -38,7 +38,7 @@ fun IssuePrVhBinding.Companion.clickHook() =
             fastAdapter: FastAdapter<IssuePrVhBinding>,
             item: IssuePrVhBinding
         ) {
-            IssueCommentActivity.launch(v.context, item.data.nameAndOwner, item.data.title, item.data.number)
+            IssueCommentActivity.launch(v.context, item.data.nameAndOwner, item.data.title, item.data.number, root)
         }
     }
 
