@@ -14,8 +14,8 @@ import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.FastBindingAdapter
-import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
+import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
 import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
@@ -69,7 +69,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         var lastClearTime: Long = -1
 
-        val changeThreshold = 100L
+        val changeThreshold = 300L
 
         val pending = mutableSetOf<Int>()
 
@@ -81,17 +81,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         recycler.adapter = fastAdapter
 
-        val fadeAnimator = KauAnimator(
+        val fancyAnimator = KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
             removeAnimator = FadeScaleAnimatorRemove()
         ).apply {
             addDuration = 500L
             interpolator = FastOutSlowInInterpolator()
         }
-        val fancyAnimator =
+        val fadeAnimator =
             KauAnimator(addAnimator = FadeScaleAnimatorAdd(), removeAnimator = FadeScaleAnimatorRemove())
 
         recycler.setHasFixedSize(false)
+
+        fun clear() {
+            fastAdapter.clear()
+            lastClearTime = System.currentTimeMillis()
+        }
 
         /**
          * Submit a launch request on the main thread
@@ -104,17 +109,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 L.fail { "Missing loader for main view" }
                 return
             }
-            val tag = loader::class.java.simpleName
             val samePanel = currentId == id
-            val newItemAnimator = when {
-                samePanel -> fadeAnimator
-                System.currentTimeMillis() - lastClearTime < changeThreshold -> fadeAnimator
-                else -> fancyAnimator
-            }
-            // Setting animator cancels some animations, which we don't necessarily need
-            if (recycler.itemAnimator !== newItemAnimator) {
-                recycler.itemAnimator = newItemAnimator
-            }
             currentId = id
             if (samePanel) {
                 if (!forceRefresh || id in pending) {
@@ -122,25 +117,34 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             } else {
                 if (id in pending) {
-                    fastAdapter.clear()
-                    lastClearTime = System.currentTimeMillis()
+                    clear()
                     return
                 }
                 val prev = cache[id]
                 if (prev != null && !forceRefresh) {
+                    recycler.itemAnimator = fadeAnimator
+                    clear()
                     fastAdapter.add(prev)
                     return
                 }
             }
             pending.add(id)
-            L._d { "Launch new load for $tag" }
             refresh.isRefreshing = true
-            fastAdapter.clear()
-            lastClearTime = System.currentTimeMillis()
+            if (fastAdapter.itemCount > 0) {
+                clear()
+            }
             launchMain {
-                val data = loader().await(forceRefresh = samePanel)
+                val data = loader().await(forceRefresh = samePanel || forceRefresh)
                 cache[id] = data
                 if (currentId == id) {
+                    val newItemAnimator =
+                        if (System.currentTimeMillis() - lastClearTime > changeThreshold) fancyAnimator
+                        else fadeAnimator
+                    // Setting animator cancels some animations, which we don't necessarily need
+                    if (recycler.itemAnimator !== newItemAnimator) {
+                        recycler.itemAnimator = newItemAnimator
+                    }
+
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {
