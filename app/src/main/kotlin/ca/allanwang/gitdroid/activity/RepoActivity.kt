@@ -3,6 +3,8 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.Menu
+import android.view.MenuItem
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitObjectID
@@ -17,6 +19,7 @@ import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
+import ca.allanwang.kau.utils.toast
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
@@ -163,6 +166,19 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
             val entries: List<TreeEntryItem> = obj.entries?.map { it.fragments.treeEntryItem } ?: emptyList()
             showEntries(entries)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        inflateMenu(R.menu.menu_repo, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_branch -> toast("Branch")
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
     override fun finish() {

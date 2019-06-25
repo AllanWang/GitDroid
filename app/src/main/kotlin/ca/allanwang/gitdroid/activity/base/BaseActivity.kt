@@ -1,8 +1,13 @@
 package ca.allanwang.gitdroid.activity.base
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
+import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.BuildConfig
@@ -90,6 +95,12 @@ abstract class BaseActivity : KauBaseActivity() {
         val binding: T = DataBindingUtil.inflate(layoutInflater, layoutRes, parent, attachToParent)
         binding.action()
         return binding
+    }
+
+    fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {
+        val tintList = ColorStateList.valueOf(Color.WHITE)
+        menuInflater.inflate(menuRes, menu)
+        menu.forEach { it.iconTintList = tintList }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
