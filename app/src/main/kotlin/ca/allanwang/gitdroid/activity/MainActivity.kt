@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
@@ -17,10 +18,7 @@ import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
-import ca.allanwang.kau.animators.FadeScaleAnimatorAdd
-import ca.allanwang.kau.animators.FadeScaleAnimatorRemove
-import ca.allanwang.kau.animators.KauAnimator
-import ca.allanwang.kau.animators.SlideAnimatorAdd
+import ca.allanwang.kau.animators.*
 import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
@@ -83,15 +81,33 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val fancyAnimator = KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
-            removeAnimator = FadeScaleAnimatorRemove()
+            removeAnimator = FadeScaleAnimatorRemove(),
+            changeAnimator = NoAnimatorChange()
         ).apply {
             addDuration = 500L
             interpolator = FastOutSlowInInterpolator()
         }
         val fadeAnimator =
-            KauAnimator(addAnimator = FadeScaleAnimatorAdd(), removeAnimator = FadeScaleAnimatorRemove())
+            KauAnimator(
+                addAnimator = FadeScaleAnimatorAdd(),
+                removeAnimator = FadeScaleAnimatorRemove(),
+                changeAnimator = NoAnimatorChange()
+            )
+        val noAnimator =
+            KauAnimator(
+                addAnimator = NoAnimatorAdd(),
+                removeAnimator = NoAnimatorRemove(),
+                changeAnimator = NoAnimatorChange()
+            )
 
         recycler.setHasFixedSize(false)
+
+        fun setAnimator(animator: RecyclerView.ItemAnimator) {
+            // Setting animator cancels some animations, which we don't necessarily need
+            if (recycler.itemAnimator !== animator) {
+                recycler.itemAnimator = animator
+            }
+        }
 
         fun clear() {
             fastAdapter.clear()
@@ -122,7 +138,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
                 val prev = cache[id]
                 if (prev != null && !forceRefresh) {
-                    recycler.itemAnimator = fadeAnimator
+                    setAnimator(noAnimator)
                     clear()
                     fastAdapter.add(prev)
                     return
@@ -140,11 +156,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     val newItemAnimator =
                         if (System.currentTimeMillis() - lastClearTime > changeThreshold) fancyAnimator
                         else fadeAnimator
-                    // Setting animator cancels some animations, which we don't necessarily need
-                    if (recycler.itemAnimator !== newItemAnimator) {
-                        recycler.itemAnimator = newItemAnimator
-                    }
-
+                    setAnimator(newItemAnimator)
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {
