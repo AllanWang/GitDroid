@@ -3,10 +3,8 @@ package ca.allanwang.gitdroid.views.item
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.views.GitIssueOrPr
-import ca.allanwang.gitdroid.views.PathCrumb
-import ca.allanwang.gitdroid.views.R
-import ca.allanwang.gitdroid.views.SlimEntry
+import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
@@ -40,6 +38,18 @@ class PullRequestVhBinding(data: ShortPullRequestRowItem) :
 
 class RepoVhBinding(override val data: ShortRepoRowItem) :
     BindingItem<ViewRepoBinding>(data), BindingLayout<ViewRepoBinding> by Companion {
+
+//    override fun ViewRepoBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+//        repoName.text = data.name
+//        repoDesc.text = data.description
+//        repoDesc.goneFlag(data.description)
+//        repoStars.compactNumberText(data.stargazers.totalCount)
+//        repoForks.compactNumberText(data.forks.totalCount)
+//        repoPrs.compactNumberText(data.pullRequests.totalCount)
+//        repoLanguage.text = data.primaryLanguage?.name
+//        repoLanguage.languageColor(data.primaryLanguage?.color)
+//        repoDate.relativeDateText(data.pushedAt)
+//    }
 
     override fun ViewRepoBinding.unbindView(holder: ViewHolder) {
         unbind(repoName, repoDesc, repoStars, repoForks, repoIssues, repoPrs, repoLanguage, repoDate)

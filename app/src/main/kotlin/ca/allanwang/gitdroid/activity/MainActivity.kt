@@ -52,6 +52,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private suspend fun loadRepos(): GitCallVhList = gdd.getUserRepos(me().login).lmap { it.vh() }
+
     private suspend fun loadIssues(): GitCallVhList = gdd.getIssues(me().login).lmap { it.vh() }
     private suspend fun loadPullRequests(): GitCallVhList = gdd.getPullRequests(me().login).lmap { it.vh() }
 
@@ -77,7 +78,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         fastAdapter.addEventHook(RepoVhBinding.clickHook())
 
-        recycler.adapter = fastAdapter
+        recycler.apply {
+            adapter = fastAdapter
+            recycledViewPool.setMaxRecycledViews(RepoVhBinding.layoutRes, 20)
+        }
 
         val fancyAnimator = KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),

@@ -10,10 +10,10 @@ import androidx.databinding.BindingAdapter
 import ca.allanwang.kau.utils.gone
 import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.round
+import ca.allanwang.kau.utils.visible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
-import github.fragment.TreeEntryItem
 import java.net.URI
 import java.util.*
 
@@ -24,7 +24,7 @@ fun View.goneFlag(value: Any?) {
         is String -> goneIf(value.isBlank())
         is Boolean -> goneIf(value)
         is Number -> goneIf(value == 0)
-        // Else keep as is
+        else -> visible()
     }
 }
 
@@ -43,7 +43,11 @@ private fun glideModel(model: Any?): Any? = when {
 }
 
 @BindingAdapter("relativeDateText")
-fun TextView.relativeDateText(date: Date) {
+fun TextView.relativeDateText(date: Date?) {
+    if (date == null) {
+        text = null
+        return
+    }
     text = DateUtils.getRelativeTimeSpanString(
         date.time,
         System.currentTimeMillis(),

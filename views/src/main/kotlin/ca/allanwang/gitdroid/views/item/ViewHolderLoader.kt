@@ -12,6 +12,7 @@ import java.util.*
 fun ShortIssueRowItem.vh(): GenericBindingItem = IssueVhBinding(this)
 fun ShortPullRequestRowItem.vh(): GenericBindingItem =
     PullRequestVhBinding(this)
+
 fun ShortRepoRowItem.vh(): GenericBindingItem = RepoVhBinding(this)
 fun SlimEntry.vh(): GenericBindingItem =
     SlimEntryVhBinding(this)

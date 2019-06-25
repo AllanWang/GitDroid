@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.BR
 import com.bumptech.glide.Glide
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -23,10 +24,14 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
         get() = layoutRes
 
     override fun createView(ctx: Context, parent: ViewGroup?): View {
+        val start = System.nanoTime()
         val binding: ViewDataBinding = DataBindingUtil.inflate(
             LayoutInflater.from(ctx),
-            layoutRes, parent, false
+            layoutRes, parent,
+            false,
+            null
         )
+        L.d { "Create view ${(System.nanoTime() - start) / 1000000}" }
         return binding.root
     }
 
@@ -34,6 +39,7 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
         super.bindView(holder, payloads)
         val binding = DataBindingUtil.getBinding<Binding>(holder.itemView) ?: return
         binding.bindView(holder, payloads)
+        binding.executePendingBindings()
     }
 
     open fun Binding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
@@ -50,6 +56,11 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
     open fun Binding.unbindView(holder: ViewHolder) {}
 
     final override fun getViewHolder(v: View): ViewHolder = ViewHolder(v, layoutRes)
+
+    override fun failedToRecycle(holder: ViewHolder): Boolean {
+        L.e { "Failed to recycle" }
+        return super.failedToRecycle(holder)
+    }
 
     companion object {
         @JvmStatic
