@@ -41,7 +41,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fastAdapter.onClickListener = { v, adapter, item, position ->
+        fastAdapter.onClickListener = { _, _, item, _ ->
             if (item is TreeEntryVhBinding) {
                 onClick(item.data)
                 true
@@ -125,6 +125,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadRepo(forceRefresh: Boolean = false) {
+        binding.repoRefresh.isRefreshing = false
         fastAdapter.clear()
         launch {
             val repo = gdd.getRepo(repo.owner, repo.name).await(forceRefresh = forceRefresh)
@@ -150,6 +151,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
+        binding.repoRefresh.isRefreshing = false
         fastAdapter.clear()
         L._d { "Loading folder $oid" }
         launch {
