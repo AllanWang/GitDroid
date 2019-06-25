@@ -10,7 +10,7 @@ query me {
 
 query searchUserRepos($login: String!, $count: Int, $cursor: String) {
     user(login: $login) {
-        repositories(first: $count, after: $cursor, orderBy: {direction: DESC, field: UPDATED_AT}) {
+        repositories(first: $count, after: $cursor, orderBy: {direction: DESC, field: PUSHED_AT}) {
             nodes {
                 ... ShortRepoRowItem
             }
