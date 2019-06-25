@@ -8,13 +8,12 @@ import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
-import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
+import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.FullRepo
@@ -31,19 +30,18 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     override val layoutRes: Int
         get() = R.layout.view_repo_files
 
-    val query by stringExtra(ARG_QUERY)
+    val login by stringExtra { login }
+    val repo by stringExtra { repo }
 
     private val pathCrumbs: PathCrumbsView
         get() = binding.repoPathCrumbs
 
-    private val treeAdapter: FastBindingAdapter = FastBindingAdapter()
+    private val fastAdapter: FastBindingAdapter = FastBindingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding.root.setCoordinatorLayoutScrollingBehaviour()
-
-        treeAdapter.onClickListener = { v, adapter, item, position ->
+        fastAdapter.onClickListener = { v, adapter, item, position ->
             if (item is TreeEntryVhBinding) {
                 onClick(item.data)
                 true
@@ -52,7 +50,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
             }
         }
 
-        binding.repoRecycler.adapter = treeAdapter
+        binding.repoRecycler.adapter = fastAdapter
 
         pathCrumbs.callback = { data ->
             load(data, false)
@@ -100,7 +98,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         }
         withContext(Dispatchers.Main) {
             binding.repoRefresh.isRefreshing = false
-            treeAdapter.add(sorted)
+            fastAdapter.add(sorted)
         }
     }
 
@@ -127,9 +125,9 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadRepo(forceRefresh: Boolean = false) {
-        treeAdapter.clear()
+        fastAdapter.clear()
         launch {
-            val repo = gdd.getRepo(query).await(forceRefresh = forceRefresh)
+            val repo = gdd.getRepo(login, repo).await(forceRefresh = forceRefresh)
             val defaultBranch = repo.defaultBranchRef
             if (defaultBranch == null) {
 
@@ -148,14 +146,14 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadTextBlob(name: String, oid: GitObjectID, forceRefresh: Boolean = false) {
-        BlobActivity.launch(this, query, name, oid)
+        BlobActivity.launch(this, login, repo, name, oid)
     }
 
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
-        treeAdapter.clear()
+        fastAdapter.clear()
         L._d { "Loading folder $oid" }
         launch {
-            val obj = gdd.getFileInfo(query, oid).await(forceRefresh = forceRefresh)
+            val obj = gdd.getObject(login, repo, oid).await(forceRefresh = forceRefresh)
             if (obj !is ObjectItem.AsTree) {
                 throw CancellationException(("Expected object to be tree, but actually ${obj.__typename}"))
             }
@@ -178,13 +176,12 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     companion object {
-        private const val ARG_QUERY = "arg_repo_query"
-
         private const val SAVED_STATE = "repo_saved_state"
 
-        fun launch(context: Context, nameWithOwner: String) {
+        fun launch(context: Context, login: String, repo: String) {
             context.startActivity<RepoActivity>(intentBuilder = {
-                putExtra(ARG_QUERY, nameWithOwner)
+                putExtra(Args.login, login)
+                putExtra(Args.repo, repo)
             })
         }
     }

@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -55,9 +56,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private suspend fun loadRepos(): GitCallVhList = gdd.getUserRepos(me().login).lmap { it.vh() }
 
-    private suspend fun loadIssues(): GitCallVhList = gdd.getIssues(me().login).lmap { it.vh() }
+    private suspend fun loadIssues(): GitCallVhList = gdd.getUserIssues(me().login).lmap { it.vh() }
     private suspend fun loadPullRequests(): GitCallVhList = gdd.getPullRequests(me().login).lmap { it.vh() }
 
+    @SuppressLint("PrivateResource")
     private fun ActivityMainBinding.bindContent() {
 
         val loaders: Map<Int, suspend () -> GitCallVhList> = mapOf(

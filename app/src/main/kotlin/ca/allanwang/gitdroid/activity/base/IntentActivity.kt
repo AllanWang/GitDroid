@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity.base
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import ca.allanwang.gitdroid.logger.L
 import kotlin.reflect.KProperty
 
@@ -14,16 +15,19 @@ abstract class IntentActivity : BaseActivity() {
         super.setIntent(newIntent)
     }
 
-    protected fun stringExtra(key: String) = intentDelegate(key) { getStringExtra(key)!! }
-    protected fun intExtra(key: String) = intentDelegate(key) { getIntExtra(key, 0) }
+    protected fun <T : Parcelable> parcelableExtra(key: Args.() -> String) =
+        intentDelegate(Args.key()) { getParcelableExtra<T>(it)!! }
 
-    private fun <T> intentDelegate(key: String, getter: Intent.() -> T): IntentDelegate<T> {
+    protected fun stringExtra(key: Args.() -> String) = intentDelegate(Args.key()) { getStringExtra(it)!! }
+    protected fun intExtra(key: Args.() -> String) = intentDelegate(Args.key()) { getIntExtra(it, 0) }
+
+    private fun <T> intentDelegate(key: String, getter: Intent.(key: String) -> T): IntentDelegate<T> {
         requiredExtras.add(key)
-        return IntentDelegate(getter)
+        return IntentDelegate(key, getter)
     }
 
-    protected inner class IntentDelegate<T>(val getter: Intent.() -> T) {
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): T = intent!!.getter()
+    protected inner class IntentDelegate<T>(val key: String, val getter: Intent.(key: String) -> T) {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T = intent!!.getter(key)
     }
 
     private fun verifyExtras(intent: Intent?) {
@@ -47,6 +51,16 @@ abstract class IntentActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         verifyExtras(intent)
+    }
+
+    object Args {
+        private const val TAG = "gitdroid_arg"
+
+        const val login = "$TAG-login"
+        const val repo = "$TAG-repo"
+        const val fileName = "$TAG-filename"
+        const val issueNumber = "$TAG-issue-number"
+        const val oid = "$TAG-oid"
     }
 
 }

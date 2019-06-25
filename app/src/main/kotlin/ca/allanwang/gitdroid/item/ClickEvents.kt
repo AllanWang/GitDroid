@@ -32,6 +32,6 @@ fun RepoVhBinding.Companion.clickHook() =
         override fun ViewRepoBinding.onBind(viewHolder: RecyclerView.ViewHolder): View? = root
 
         override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<RepoVhBinding>, item: RepoVhBinding) {
-            RepoActivity.launch(v.context, item.data.nameWithOwner)
+            RepoActivity.launch(v.context, item.data.owner.login, item.data.name)
         }
     }

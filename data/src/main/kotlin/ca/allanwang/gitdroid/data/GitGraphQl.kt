@@ -79,7 +79,7 @@ interface GitGraphQl {
             user
         }
 
-    suspend fun getIssues(
+    suspend fun getUserIssues(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -91,6 +91,11 @@ interface GitGraphQl {
             )
         ) {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem }
+        }
+
+    suspend fun getIssue(login: String, repo: String, issueNumber: Int): GitCall<FullIssue> =
+        query(GetIssueQuery(login, repo, issueNumber)) {
+            repository?.issue?.fragments?.fullIssue
         }
 
     suspend fun getUserRepos(
@@ -123,17 +128,16 @@ interface GitGraphQl {
             search.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
         }
 
-    suspend fun getRepo(
-        query: String
-    ): GitCall<FullRepo> =
-        query(RepoInfoQuery(query)) {
-            search.nodes?.firstOrNull()?.fragments?.fullRepo
+
+    suspend fun getRepo(login: String, repo: String): GitCall<FullRepo> =
+        query(GetRepoQuery(login, repo)) {
+            repository?.fragments?.fullRepo
         }
 
-    suspend fun getFileInfo(query: String, oid: GitObjectID): GitCall<ObjectItem> =
-        query(ObjectInfoQuery(query, oid)) {
-            //            L._d { "$oid ${this.toString().replace(",", "\n\t")}" }
-            search.nodes?.firstOrNull()?.let { it as? ObjectInfoQuery.AsRepository }?.obj?.fragments?.objectItem
+
+    suspend fun getObject(login: String, repo: String, oid: GitObjectID): GitCall<ObjectItem> =
+        query(GetObjectQuery(login, repo, oid)) {
+            repository?.obj?.fragments?.objectItem
         }
 
     suspend fun getPullRequests(

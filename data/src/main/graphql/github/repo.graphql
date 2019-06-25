@@ -1,0 +1,13 @@
+query getRepo($login: String!, $repo: String!) {
+    repository(owner: $login, name: $repo) {
+        ...FullRepo
+    }
+}
+
+query getObject($login: String!, $repo: String!, $oid: GitObjectID!) {
+    repository(owner: $login, name: $repo) {
+        obj: object(oid: $oid) {
+            ...ObjectItem
+        }
+    }
+}

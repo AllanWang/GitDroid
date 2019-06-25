@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.activity.base
 
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -89,6 +90,14 @@ abstract class BaseActivity : KauBaseActivity() {
         val binding: T = DataBindingUtil.inflate(layoutInflater, layoutRes, parent, attachToParent)
         binding.action()
         return binding
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
 }

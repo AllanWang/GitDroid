@@ -48,6 +48,9 @@ fragment ShortRepoRowItem on Repository {
     id
     databaseId
     name
+    owner {
+        login
+    }
     nameWithOwner
     description
     isFork

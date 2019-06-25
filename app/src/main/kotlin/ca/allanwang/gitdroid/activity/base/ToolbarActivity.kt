@@ -27,11 +27,4 @@ abstract class ToolbarActivity<Binding : ViewDataBinding> : IntentActivity() {
         binding = bindView(toolbarBinding.contentContainer, layoutRes, true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> onBackPressed()
-            else -> return super.onOptionsItemSelected(item)
-        }
-        return true
-    }
 }
