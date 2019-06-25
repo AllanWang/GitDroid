@@ -25,4 +25,6 @@ object Versions {
     const val moshi = "1.8.0"
     // https://github.com/square/sqldelight/releases
     const val sqlDelight = "1.1.3"
+    // https://github.com/mikepenz/FastAdapter/releases
+    const val fastAdapter = "4.0.1"
 }
