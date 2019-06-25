@@ -194,10 +194,7 @@ fragment FullIssue on Issue {
     authorAssociation
     comments(first: 20) {
         nodes {
-            ...ShortComment
-            ...ShortReaction
-            viewerCanUpdate
-            viewerCanDelete
+            ...ShortIssueComment
         }
     }
     participants(first: 10) {
@@ -210,14 +207,21 @@ fragment FullIssue on Issue {
             ... Labels
         }
     }
-#    assignees(first: 30) {
-#        nodes {
-#            ... ShortUserRowItem
-#        }
-#    }
-#    milestone {
-#        ...MilestoneFragment
-#    }
+    #    assignees(first: 30) {
+    #        nodes {
+    #            ... ShortUserRowItem
+    #        }
+    #    }
+    #    milestone {
+    #        ...MilestoneFragment
+    #    }
+}
+
+fragment ShortIssueComment on IssueComment {
+    ...ShortComment
+    ...ShortReaction
+    viewerCanUpdate
+    viewerCanDelete
 }
 
 fragment ShortComment on Comment {
@@ -228,7 +232,7 @@ fragment ShortComment on Comment {
     bodyText
     createdAt
     includesCreatedEdit
-
+    updatedAt
 }
 
 fragment ShortReaction on Reactable {

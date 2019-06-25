@@ -3,10 +3,7 @@ package ca.allanwang.gitdroid.views.item
 import android.content.Context
 import ca.allanwang.gitdroid.views.*
 import github.GetProfileQuery
-import github.fragment.ShortIssueRowItem
-import github.fragment.ShortPullRequestRowItem
-import github.fragment.ShortRepoRowItem
-import github.fragment.TreeEntryItem
+import github.fragment.*
 import java.util.*
 
 fun ShortIssueRowItem.vh(): GenericBindingItem = IssueVhBinding(this)
@@ -67,3 +64,5 @@ fun PathCrumb.vh(): GenericBindingItem =
     PathCrumbVhBinding(this)
 
 fun TreeEntryItem.vh(): GenericBindingItem = TreeEntryVhBinding(this)
+
+fun ShortIssueComment.vh(): GenericBindingItem = IssueCommentVhBinding(this)

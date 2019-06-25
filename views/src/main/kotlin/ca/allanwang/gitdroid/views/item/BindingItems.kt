@@ -3,15 +3,14 @@ package ca.allanwang.gitdroid.views.item
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.GitIssueOrPr
+import ca.allanwang.gitdroid.views.PathCrumb
+import ca.allanwang.gitdroid.views.R
+import ca.allanwang.gitdroid.views.SlimEntry
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
-import github.fragment.ShortIssueRowItem
-import github.fragment.ShortPullRequestRowItem
-import github.fragment.ShortRepoRowItem
-import github.fragment.TreeEntryItem
+import github.fragment.*
 
 open class BlankViewHolderBinding(override val layoutRes: Int) : BindingItem<ViewDataBinding>(Unit)
 
@@ -153,6 +152,22 @@ class TreeEntryVhBinding(override val data: TreeEntryItem) :
                 text = blob.byteSize.toString()
             }
         }
+
+    }
+}
+
+class IssueCommentVhBinding(override val data: ShortIssueComment) :
+    BindingItem<ViewIssueCommentBinding>(data), BindingLayout<ViewIssueCommentBinding> by Companion {
+
+    override fun ViewIssueCommentBinding.unbindView(holder: ViewHolder) {
+        unbind(avatar)
+        unbind(login, date, content, label)
+    }
+
+    companion object : BindingLayout<ViewIssueCommentBinding> {
+
+        override val layoutRes: Int
+            get() = R.layout.view_issue_comment
 
     }
 }
