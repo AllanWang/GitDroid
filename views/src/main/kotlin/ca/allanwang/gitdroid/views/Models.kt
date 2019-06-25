@@ -4,12 +4,21 @@ import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
 import ca.allanwang.gitdroid.data.GitObjectID
-import github.fragment.ShortIssueRowItem
-import github.fragment.ShortPullRequestRowItem
+import github.fragment.*
 import kotlinx.android.parcel.Parcelize
 import java.net.URI
 import java.util.*
 
+@Parcelize
+data class GitNameAndOwner(val name: String, val owner: String) : Parcelable {
+    val nameWithOwner: String
+        get() = "$owner/$name"
+}
+
+fun ShortIssueRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
+fun ShortPullRequestRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
+fun ShortRepoRowItem.nameAndOwner(): GitNameAndOwner = fragments.repoNameAndOwner.nameAndOwner()
+fun RepoNameAndOwner.nameAndOwner(): GitNameAndOwner = GitNameAndOwner(name = name, owner = owner.login)
 
 data class GitIssueOrPr(
     val id: String,
@@ -20,42 +29,44 @@ data class GitIssueOrPr(
     val createdAt: Date,
     val number: Int,
     val title: String,
-    val nameWithOwner: String,
+    val nameAndOwner: GitNameAndOwner,
     val commentCount: Int,
     val locked: Boolean
 ) {
-    companion object {
-        fun fromIssue(issue: ShortIssueRowItem) = GitIssueOrPr(
-            id = issue.id,
-            databaseId = issue.databaseId,
-            url = issue.url,
-            avatarUrl = issue.author?.fragments?.shortActor?.avatarUrl,
-            login = issue.author?.fragments?.shortActor?.login,
-            createdAt = issue.createdAt,
-            number = issue.number,
-            title = issue.title,
-            nameWithOwner = issue.repository.nameWithOwner,
-            commentCount = issue.comments.totalCount,
-            locked = issue.isLocked
-        )
+    val nameWithOwner: String
+        get() = nameAndOwner.nameWithOwner
 
-        fun fromPullRequest(pr: ShortPullRequestRowItem) = GitIssueOrPr(
-            id = pr.id,
-            databaseId = pr.databaseId,
-            url = pr.url,
-            avatarUrl = pr.author?.fragments?.shortActor?.avatarUrl,
-            login = pr.author?.fragments?.shortActor?.login,
-            createdAt = pr.createdAt,
-            number = pr.number,
-            title = pr.title,
-            nameWithOwner = pr.repository.nameWithOwner,
-            commentCount = pr.comments.totalCount,
-            locked = pr.isLocked
-        )
-    }
 }
+
+fun ShortIssueRowItem.issueOrPr(): GitIssueOrPr = GitIssueOrPr(
+    id = id,
+    databaseId = databaseId,
+    url = url,
+    avatarUrl = author?.fragments?.shortActor?.avatarUrl,
+    login = author?.fragments?.shortActor?.login,
+    createdAt = createdAt,
+    number = number,
+    title = title,
+    nameAndOwner = nameAndOwner(),
+    commentCount = comments.totalCount,
+    locked = isLocked
+)
+
+fun ShortPullRequestRowItem.issueOrPr(): GitIssueOrPr = GitIssueOrPr(
+    id = id,
+    databaseId = databaseId,
+    url = url,
+    avatarUrl = author?.fragments?.shortActor?.avatarUrl,
+    login = author?.fragments?.shortActor?.login,
+    createdAt = createdAt,
+    number = number,
+    title = title,
+    nameAndOwner = nameAndOwner(),
+    commentCount = comments.totalCount,
+    locked = isLocked
+)
 
 data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)
 
 @Parcelize
-data class PathCrumb(val segment: String, val oid: GitObjectID): Parcelable
+data class PathCrumb(val segment: String, val oid: GitObjectID) : Parcelable

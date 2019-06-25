@@ -67,12 +67,4 @@ class GitDroidDataTest : KoinTest {
         val oauth = gdd.oauthUrl()
         assertNotNull(oauth)
     }
-
-    @Test
-    fun fileObj() {
-        runBlocking {
-            val r = gdd.getFileInfo("AllanWang/KAU", GitObjectID("edc76f350f346c3723f694674efb7f9609dd1eb9")).validate()
-            println(r)
-        }
-    }
 }

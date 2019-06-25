@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.BR
 import com.bumptech.glide.Glide
+import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 
@@ -113,4 +114,10 @@ abstract class BindingClickEventHook<Binding : ViewDataBinding, Item : BindingIt
 
     open fun Binding.onBindMany(viewHolder: RecyclerView.ViewHolder): List<View>? = super.onBindMany(viewHolder)
 
+    final override fun onClick(v: View, position: Int, fastAdapter: FastAdapter<Item>, item: Item) {
+        val binding: Binding = DataBindingUtil.findBinding(v) ?: return
+        binding.onClick(v, position, fastAdapter, item)
+    }
+
+    abstract fun Binding.onClick(v: View, position: Int, fastAdapter: FastAdapter<Item>, item: Item)
 }

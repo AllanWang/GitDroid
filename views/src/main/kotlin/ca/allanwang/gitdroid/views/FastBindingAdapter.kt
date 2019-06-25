@@ -12,6 +12,8 @@ class FastBindingAdapter private constructor(private val adapter: ItemAdapter<Ge
 
     constructor() : this(ItemAdapter())
 
+    var lastClearTime: Long = -1
+
     init {
         super.addAdapter(0, adapter)
     }
@@ -19,6 +21,7 @@ class FastBindingAdapter private constructor(private val adapter: ItemAdapter<Ge
     override fun clear(): FastBindingAdapter {
         if (itemCount != 0) {
             adapter.clear()
+            lastClearTime = System.currentTimeMillis()
         }
         return this
     }

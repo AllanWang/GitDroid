@@ -1,2 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="ca.allanwang.gitdroid.views"/>
+    package="ca.allanwang.gitdroid.views">
+
+    <application android:supportsRtl="true" />
+</manifest>

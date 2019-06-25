@@ -7,15 +7,11 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import ca.allanwang.kau.utils.gone
-import ca.allanwang.kau.utils.goneIf
-import ca.allanwang.kau.utils.round
-import ca.allanwang.kau.utils.visible
+import ca.allanwang.kau.utils.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
-import github.fragment.FullIssue
-import github.fragment.ShortActor
+import github.type.CommentAuthorAssociation
 import java.net.URI
 import java.util.*
 
@@ -110,4 +106,17 @@ fun TextView.compactNumberText(count: Int) {
 @BindingAdapter("memberSinceText")
 fun TextView.memberSinceText(date: Date) {
     context.getString(R.string.member_since_s, date.toString())
+}
+
+@BindingAdapter("authorAssociation")
+fun TextView.authorAssociation(association: CommentAuthorAssociation?) {
+    val textRes = when (association) {
+        CommentAuthorAssociation.OWNER -> R.string.author_owner
+        CommentAuthorAssociation.COLLABORATOR -> R.string.author_collaborator
+        CommentAuthorAssociation.CONTRIBUTOR -> R.string.author_contributor
+        else -> -1
+    }
+    text = if (textRes != -1) context.string(textRes) else null
+    goneIf(textRes == -1)
+
 }

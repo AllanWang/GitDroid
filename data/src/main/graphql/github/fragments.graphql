@@ -44,10 +44,17 @@ fragment FullRepo on Repository {
     }
 }
 
+fragment RepoNameAndOwner on Repository {
+    name
+    owner {
+        login
+    }
+}
+
 fragment ShortRepoRowItem on Repository {
+    ...RepoNameAndOwner
     id
     databaseId
-    name
     nameWithOwner
     description
     isFork
@@ -101,7 +108,7 @@ fragment ShortIssueRowItem on Issue {
     }
     title
     repository {
-        nameWithOwner
+        ...RepoNameAndOwner
     }
     comments(first: 1) {
         totalCount
@@ -120,7 +127,7 @@ fragment ShortPullRequestRowItem on PullRequest {
     }
     title
     repository {
-        nameWithOwner
+        ...RepoNameAndOwner
     }
     comments(first: 1) {
         totalCount
@@ -194,10 +201,7 @@ fragment FullIssue on Issue {
     authorAssociation
     comments(first: 20) {
         nodes {
-            ...ShortComment
-            ...ShortReaction
-            viewerCanUpdate
-            viewerCanDelete
+            ...ShortIssueComment
         }
     }
     participants(first: 10) {
@@ -210,14 +214,21 @@ fragment FullIssue on Issue {
             ... Labels
         }
     }
-#    assignees(first: 30) {
-#        nodes {
-#            ... ShortUserRowItem
-#        }
-#    }
-#    milestone {
-#        ...MilestoneFragment
-#    }
+    #    assignees(first: 30) {
+    #        nodes {
+    #            ... ShortUserRowItem
+    #        }
+    #    }
+    #    milestone {
+    #        ...MilestoneFragment
+    #    }
+}
+
+fragment ShortIssueComment on IssueComment {
+    ...ShortComment
+    ...ShortReaction
+    viewerCanUpdate
+    viewerCanDelete
 }
 
 fragment ShortComment on Comment {
@@ -228,7 +239,7 @@ fragment ShortComment on Comment {
     bodyText
     createdAt
     includesCreatedEdit
-
+    updatedAt
 }
 
 fragment ShortReaction on Reactable {

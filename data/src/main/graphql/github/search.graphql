@@ -46,14 +46,6 @@ query searchIssues($query: String!, $count: Int, $cursor: String) {
     }
 }
 
-query searchIssue($query: String!) {
-    search(query: $query, type: ISSUE, first: 1) {
-        nodes {
-            ...FullIssue
-        }
-    }
-}
-
 query searchPullRequests($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: ISSUE, first: $count, after: $cursor) {
         pageInfo {

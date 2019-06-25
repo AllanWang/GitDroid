@@ -19,11 +19,9 @@ query getPullRequests($login: String!, $count: Int!)  {
 }
 
 query getIssue($login: String!, $repo: String!, $number: Int!) {
-    repositoryOwner(login: $login) {
-        repository(name: $repo) {
-            issue(number: $number) {
-                ... FullIssue
-            }
+    repository(owner: $login, name: $repo) {
+        issue(number: $number) {
+            ... FullIssue
         }
     }
 }

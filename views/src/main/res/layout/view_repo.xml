@@ -26,7 +26,7 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{model.name}"
+            android:text="@{model.fragments.repoNameAndOwner.name}"
             android:textColor="?android:textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -99,6 +99,7 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_language"
             style="@style/RepoChips"
+            android:ellipsize="end"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{model.primaryLanguage.name}"
@@ -108,7 +109,7 @@
             app:layout_constraintStart_toEndOf="@id/repo_prs"
             app:layout_constraintTop_toBottomOf="@id/repo_desc"
             app:layout_constraintWidth_percent="0.25"
-            tools:text="JavaScript" />
+            tools:text="Jupyter Notebook" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_date"

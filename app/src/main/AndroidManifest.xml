@@ -46,6 +46,7 @@
             android:name=".activity.BlobActivity"
             android:theme="@style/Theme.GitDroid.Light" />
         <activity android:name=".activity.RepoActivity" />
+        <activity android:name=".activity.IssueCommentActivity" />
     </application>
 
 </manifest>
