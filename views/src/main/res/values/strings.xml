@@ -21,4 +21,5 @@
         <item quantity="other">%d gists</item>
     </plurals>
     <string name="member_since_s">Member since %s</string>
+    <string name="no_comments">No comments</string>
 </resources>

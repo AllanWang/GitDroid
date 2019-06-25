@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.views.item
 
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.views.*
@@ -165,6 +166,25 @@ class IssueCommentVhBinding(override val data: ShortIssueComment) :
 
         override val layoutRes: Int
             get() = R.layout.view_issue_comment
+
+    }
+}
+
+class PlaceholderVhBinding(@StringRes override val data: Int) :
+    BindingItem<ViewPlaceholderBinding>(data), BindingLayout<ViewPlaceholderBinding> by Companion {
+
+    override fun ViewPlaceholderBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        placeholderText.setText(data)
+    }
+
+    override fun ViewPlaceholderBinding.unbindView(holder: ViewHolder) {
+        unbind(placeholderText)
+    }
+
+    companion object : BindingLayout<ViewPlaceholderBinding> {
+
+        override val layoutRes: Int
+            get() = R.layout.view_placeholder
 
     }
 }

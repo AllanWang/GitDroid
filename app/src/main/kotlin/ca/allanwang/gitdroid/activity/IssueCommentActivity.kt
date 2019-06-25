@@ -10,6 +10,7 @@ import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.GitNameAndOwner
+import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
 import kotlinx.coroutines.launch
@@ -52,9 +53,14 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         launch {
             val issue = gdd.getIssue(repo.owner, repo.name, issueNumber).await()
             val vhs = issue.comments.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
-            RvAnimation.set(binding.recycler, fastAdapter)
             binding.refresh.isRefreshing = false
-            fastAdapter.add(vhs)
+            if (vhs.isNotEmpty()) {
+                RvAnimation.set(binding.recycler, fastAdapter)
+                fastAdapter.add(vhs)
+            } else {
+                RvAnimation.FAST.set(binding.recycler)
+                fastAdapter.add(PlaceholderVhBinding(R.string.no_comments))
+            }
         }
     }
 
