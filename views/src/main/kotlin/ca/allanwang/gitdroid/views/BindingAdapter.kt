@@ -14,6 +14,8 @@ import ca.allanwang.kau.utils.visible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.button.MaterialButton
+import github.fragment.FullIssue
+import github.fragment.ShortActor
 import java.net.URI
 import java.util.*
 
@@ -37,11 +39,6 @@ fun TextView.languageColor(color: String?) {
     (this as? MaterialButton)?.iconTint = c
 }
 
-private fun glideModel(model: Any?): Any? = when {
-    model is URI -> model.toString()
-    else -> model
-}
-
 @BindingAdapter("relativeDateText")
 fun TextView.relativeDateText(date: Date?) {
     if (date == null) {
@@ -53,6 +50,11 @@ fun TextView.relativeDateText(date: Date?) {
         System.currentTimeMillis(),
         DateUtils.SECOND_IN_MILLIS
     )
+}
+
+private fun glideModel(model: Any?): Any? = when {
+    model is URI -> model.toString()
+    else -> model
 }
 
 @BindingAdapter("glide")

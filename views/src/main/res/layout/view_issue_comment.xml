@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="github.fragment.FullIssue" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/kau_padding_normal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/kau_activity_horizontal_margin"
+            android:paddingTop="@dimen/kau_padding_small"
+            android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+            android:paddingBottom="@dimen/kau_padding_small">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/list_avatar_size"
+                android:layout_height="@dimen/list_avatar_size"
+                android:src="@{model.author.fragments.shortActor.avatarUrl}"
+                app:glideRound="${model"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/login"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/kau_padding_small"
+                android:text="@{model.author.fragments.shortActor.login}"
+                android:textColor="?android:textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintStart_toEndOf="@id/avatar"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:layout_constraintVertical_bias="0.5"
+                tools:text="@tools:sample/full_names" />
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/kau_padding_small"
+                android:text="@{model.updatedAt}"
+                android:textColor="?android:textColorSecondary"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintStart_toEndOf="@id/login"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:layout_constraintVertical_bias="0.5"
+                tools:text="@tools:sample/date/mmddyy" />
+
+            <ImageView
+                android:id="@+id/more"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more_vert"
+                android:tint="?android:textColorSecondary"
+                android:tintMode="src_in"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <ImageView
+                android:id="@+id/reaction"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_marginEnd="@dimen/kau_padding_small"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_tag_faces"
+                android:tint="?android:textColorSecondary"
+                android:tintMode="src_in"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintEnd_toStartOf="@id/more"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <TextView
+                android:id="@+id/label"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/kau_padding_normal"
+                android:background="@drawable/label_border"
+                android:paddingLeft="@dimen/kau_spacing_micro"
+                android:paddingRight="@dimen/kau_spacing_micro"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintEnd_toStartOf="@id/reaction"
+                app:layout_constraintTop_toTopOf="@id/avatar"
+                app:layout_constraintVertical_bias="0.5"
+                tools:text="owner" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/kau_padding_small"
+                android:text="@{model.body}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/avatar"
+                tools:text="@tools:sample/lorem/random" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

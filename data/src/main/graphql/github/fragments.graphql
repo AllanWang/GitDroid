@@ -182,24 +182,24 @@ fragment FullIssue on Issue {
     viewerCannotUpdateReasons
     viewerCanUpdate
     viewerCanSubscribe
-    viewerCanReact
     url
-    userContentEdits(first: 0) {
-        totalCount
-    }
+    ...ShortReaction
     author {
-        avatarUrl
-        login
-        url
-    }
-    reactionGroups {
-        ... Reactions
+        ...ShortActor
     }
     createdViaEmail
     repository {
         nameWithOwner
     }
     authorAssociation
+    comments(first: 20) {
+        nodes {
+            ...ShortComment
+            ...ShortReaction
+            viewerCanUpdate
+            viewerCanDelete
+        }
+    }
     participants(first: 10) {
         nodes {
             ... ShortUserRowItem
@@ -210,17 +210,35 @@ fragment FullIssue on Issue {
             ... Labels
         }
     }
-    assignees(first: 30) {
-        nodes {
-            ... ShortUserRowItem
-        }
+#    assignees(first: 30) {
+#        nodes {
+#            ... ShortUserRowItem
+#        }
+#    }
+#    milestone {
+#        ...MilestoneFragment
+#    }
+}
+
+fragment ShortComment on Comment {
+    author {
+        ...ShortActor
     }
-    milestone {
-        ...MilestoneFragment
+    authorAssociation
+    bodyText
+    createdAt
+    includesCreatedEdit
+
+}
+
+fragment ShortReaction on Reactable {
+    viewerCanReact
+    reactionGroups {
+        ...ShortReactionGroup
     }
 }
 
-fragment Reactions on ReactionGroup {
+fragment ShortReactionGroup on ReactionGroup {
     content
     createdAt
     viewerHasReacted

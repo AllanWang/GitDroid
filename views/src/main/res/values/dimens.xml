@@ -4,6 +4,7 @@
     <dimen name="list_avatar_size">40dp</dimen>
     <dimen name="path_crumbs_icon_size">16dp</dimen>
     <dimen name="icon_size">24dp</dimen>
+    <dimen name="label_corner_radius">3dp</dimen>
     <dimen name="login_corner_radius">8dp</dimen>
     <dimen name="login_main_icon_size">128dp</dimen>
     <dimen name="login_card_margin_horizontal">64dp</dimen>

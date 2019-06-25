@@ -63,7 +63,7 @@ query getIssueTimeline($login: String!, $repo: String!, $number: Int!, $page: St
                             viewerCanMinimize
                             viewerCannotUpdateReasons
                             reactionGroups {
-                                ... Reactions
+                                ... ShortReactionGroup
                             }
                         }
                         ... on CrossReferencedEvent {
