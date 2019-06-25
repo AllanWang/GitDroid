@@ -18,8 +18,10 @@ import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
+import ca.allanwang.gitdroid.views.itemdecoration.MarginDecoration
 import ca.allanwang.kau.animators.*
 import ca.allanwang.kau.utils.KAU_BOTTOM
+import ca.allanwang.kau.utils.dimenPixelSize
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
@@ -81,6 +83,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         recycler.apply {
             adapter = fastAdapter
             recycledViewPool.setMaxRecycledViews(RepoVhBinding.layoutRes, 20)
+            addItemDecoration(MarginDecoration(marginBottom = dimenPixelSize(R.dimen.design_bottom_navigation_height)))
         }
 
         val fancyAnimator = KauAnimator(
