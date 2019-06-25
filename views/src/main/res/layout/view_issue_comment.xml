@@ -25,8 +25,8 @@
 
             <ImageView
                 android:id="@+id/avatar"
-                android:layout_width="@dimen/list_avatar_size"
-                android:layout_height="@dimen/list_avatar_size"
+                android:layout_width="@dimen/list_avatar_size_small"
+                android:layout_height="@dimen/list_avatar_size_small"
                 app:glideRound="@{model.fragments.shortComment.author.fragments.shortActor.avatarUrl}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +34,8 @@
 
             <TextView
                 android:id="@+id/login"
-                style="@style/TextAppearance.AppCompat.Medium"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/kau_padding_small"
@@ -51,13 +52,11 @@
                 style="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:layout_constraintBaseline_toBaselineOf="@id/login"
                 android:layout_marginStart="@dimen/kau_padding_small"
                 app:relativeDateText="@{model.fragments.shortComment.updatedAt}"
                 android:textColor="?android:textColorSecondary"
-                app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintStart_toEndOf="@id/login"
-                app:layout_constraintTop_toTopOf="@id/avatar"
-                app:layout_constraintVertical_bias="0.5"
                 tools:text="@tools:sample/date/mmddyy" />
 
             <ImageView
@@ -97,10 +96,8 @@
                 android:paddingLeft="@dimen/kau_spacing_micro"
                 android:paddingRight="@dimen/kau_spacing_micro"
                 android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="@id/avatar"
+                app:layout_constraintBaseline_toBaselineOf="@id/login"
                 app:layout_constraintEnd_toStartOf="@id/reaction"
-                app:layout_constraintTop_toTopOf="@id/avatar"
-                app:layout_constraintVertical_bias="0.5"
                 tools:text="owner" />
 
             <TextView

@@ -9,6 +9,7 @@ import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.GitNameAndOwner
 import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
@@ -30,8 +31,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     override val layoutRes: Int
         get() = R.layout.view_repo_files
 
-    val login by stringExtra { login }
-    val repo by stringExtra { repo }
+    val repo by repoExtra()
 
     private val pathCrumbs: PathCrumbsView
         get() = binding.repoPathCrumbs
@@ -127,7 +127,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     private fun loadRepo(forceRefresh: Boolean = false) {
         fastAdapter.clear()
         launch {
-            val repo = gdd.getRepo(login, repo).await(forceRefresh = forceRefresh)
+            val repo = gdd.getRepo(repo.owner, repo.name).await(forceRefresh = forceRefresh)
             val defaultBranch = repo.defaultBranchRef
             if (defaultBranch == null) {
 
@@ -146,14 +146,14 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     }
 
     private fun loadTextBlob(name: String, oid: GitObjectID, forceRefresh: Boolean = false) {
-        BlobActivity.launch(this, login, repo, name, oid)
+        BlobActivity.launch(this, repo, name, oid)
     }
 
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
         fastAdapter.clear()
         L._d { "Loading folder $oid" }
         launch {
-            val obj = gdd.getObject(login, repo, oid).await(forceRefresh = forceRefresh)
+            val obj = gdd.getObject(repo.owner, repo.name, oid).await(forceRefresh = forceRefresh)
             if (obj !is ObjectItem.AsTree) {
                 throw CancellationException(("Expected object to be tree, but actually ${obj.__typename}"))
             }
@@ -178,9 +178,8 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     companion object {
         private const val SAVED_STATE = "repo_saved_state"
 
-        fun launch(context: Context, login: String, repo: String) {
+        fun launch(context: Context, repo: GitNameAndOwner) {
             context.startActivity<RepoActivity>(intentBuilder = {
-                putExtra(Args.login, login)
                 putExtra(Args.repo, repo)
             })
         }

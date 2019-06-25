@@ -44,13 +44,17 @@ fragment FullRepo on Repository {
     }
 }
 
-fragment ShortRepoRowItem on Repository {
-    id
-    databaseId
+fragment RepoNameAndOwner on Repository {
     name
     owner {
         login
     }
+}
+
+fragment ShortRepoRowItem on Repository {
+    ...RepoNameAndOwner
+    id
+    databaseId
     nameWithOwner
     description
     isFork
@@ -104,7 +108,7 @@ fragment ShortIssueRowItem on Issue {
     }
     title
     repository {
-        nameWithOwner
+        ...RepoNameAndOwner
     }
     comments(first: 1) {
         totalCount
@@ -123,7 +127,7 @@ fragment ShortPullRequestRowItem on PullRequest {
     }
     title
     repository {
-        nameWithOwner
+        ...RepoNameAndOwner
     }
     comments(first: 1) {
         totalCount

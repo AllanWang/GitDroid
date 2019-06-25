@@ -2,6 +2,7 @@
 <resources>
     <dimen name="avatar_size">72dp</dimen>
     <dimen name="list_avatar_size">40dp</dimen>
+    <dimen name="list_avatar_size_small">30dp</dimen>
     <dimen name="path_crumbs_icon_size">16dp</dimen>
     <dimen name="icon_size">24dp</dimen>
     <dimen name="label_corner_radius">3dp</dimen>

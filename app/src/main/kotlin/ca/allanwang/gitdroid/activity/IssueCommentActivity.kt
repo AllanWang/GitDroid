@@ -3,52 +3,67 @@ package ca.allanwang.gitdroid.activity
 import android.content.Context
 import android.os.Bundle
 import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.activity.base.IntentActivity
-import ca.allanwang.gitdroid.databinding.ActivityIssueCommentBinding
-import ca.allanwang.gitdroid.utils.setCoordinatorLayoutScrollingBehaviour
+import ca.allanwang.gitdroid.activity.base.ToolbarActivity
+import ca.allanwang.gitdroid.databinding.HeaderIssueCommentBinding
+import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
+import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.GitNameAndOwner
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
 import kotlinx.coroutines.launch
 
-class IssueCommentActivity : IntentActivity() {
+class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
 
-    private val login by stringExtra { login }
 
-    private val repo by stringExtra { repo }
+    private val repo by repoExtra()
 
     private val issueNumber by intExtra { issueNumber }
 
-    lateinit var binding: ActivityIssueCommentBinding
+    private val issueName by stringExtra { name }
+
+    override val layoutRes: Int
+        get() = R.layout.view_refresh_recycler
 
     private val fastAdapter: FastBindingAdapter = FastBindingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = bindContentView(R.layout.activity_issue_comment)
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.also {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowHomeEnabled(true)
-        }
-        binding.contentContainer.setCoordinatorLayoutScrollingBehaviour()
-        binding.vrr.recycler.also {
+        binding.recycler.also {
             it.adapter = fastAdapter
         }
+        supportActionBar?.also {
+            it.title = getString(R.string.issue_n, issueNumber)
+            it.subtitle = repo.nameWithOwner
+        }
+        val headerBinding: HeaderIssueCommentBinding = bindView(appbar, R.layout.header_issue_comment, false)
+        addAppBarView(headerBinding.root)
+        headerBinding.title.text = issueName
+        binding.refresh.setOnRefreshListener {
+            fastAdapter.clear()
+            loadIssue()
+        }
+        loadIssue()
+    }
+
+    private fun loadIssue() {
+        L.d { "Load issue" }
         launch {
-            val issue = gdd.getIssue(login, repo, issueNumber).await()
+            val issue = gdd.getIssue(repo.owner, repo.name, issueNumber).await()
             val vhs = issue.comments.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
+            RvAnimation.set(binding.recycler, fastAdapter)
+            binding.refresh.isRefreshing = false
             fastAdapter.add(vhs)
         }
     }
 
-
     companion object {
 
-        fun launch(context: Context, login: String, repo: String, issueNumber: Int) {
+        fun launch(context: Context, repo: GitNameAndOwner, name: String, issueNumber: Int) {
             context.startActivity<IssueCommentActivity>(intentBuilder = {
-                putExtra(Args.login, login)
                 putExtra(Args.repo, repo)
+                putExtra(Args.name, name)
                 putExtra(Args.issueNumber, issueNumber)
             })
         }

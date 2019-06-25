@@ -3,7 +3,9 @@ package ca.allanwang.gitdroid.activity.base
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.views.GitNameAndOwner
 import kotlin.reflect.KProperty
 
 abstract class IntentActivity : BaseActivity() {
@@ -14,6 +16,9 @@ abstract class IntentActivity : BaseActivity() {
         verifyExtras(newIntent)
         super.setIntent(newIntent)
     }
+
+    protected fun repoExtra() = parcelableExtra<GitNameAndOwner> { repo }
+    protected fun oidExtra() = parcelableExtra<GitObjectID> { oid }
 
     protected fun <T : Parcelable> parcelableExtra(key: Args.() -> String) =
         intentDelegate(Args.key()) { getParcelableExtra<T>(it)!! }
@@ -58,8 +63,8 @@ abstract class IntentActivity : BaseActivity() {
 
         const val login = "$TAG-login"
         const val repo = "$TAG-repo"
-        const val fileName = "$TAG-filename"
         const val issueNumber = "$TAG-issue-number"
+        const val name = "$TAG-name"
         const val oid = "$TAG-oid"
     }
 

@@ -6,8 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitCall
@@ -15,13 +13,13 @@ import ca.allanwang.gitdroid.data.lmap
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
+import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.MarginDecoration
-import ca.allanwang.kau.animators.*
-import ca.allanwang.kau.utils.KAU_BOTTOM
 import ca.allanwang.kau.utils.dimenPixelSize
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
@@ -70,17 +68,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val cache = mutableMapOf<Int, List<GenericBindingItem>>()
 
-        var lastClearTime: Long = -1
-
-        val changeThreshold = 300L
-
         val pending = mutableSetOf<Int>()
 
         var currentId: Int = bottomNavigation.menu.getItem(0).itemId
 
-        val fastAdapter = FastBindingAdapter()
-
-        fastAdapter.addEventHook(RepoVhBinding.clickHook())
+        val fastAdapter = FastBindingAdapter().apply {
+            addEventHook(RepoVhBinding.clickHook())
+            addEventHook(IssuePrVhBinding.clickHook())
+        }
 
         recycler.apply {
             adapter = fastAdapter
@@ -88,40 +83,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             addItemDecoration(MarginDecoration(marginBottom = dimenPixelSize(R.dimen.design_bottom_navigation_height)))
         }
 
-        val fancyAnimator = KauAnimator(
-            addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
-            removeAnimator = FadeScaleAnimatorRemove(),
-            changeAnimator = NoAnimatorChange()
-        ).apply {
-            addDuration = 500L
-            interpolator = FastOutSlowInInterpolator()
-        }
-        val fadeAnimator =
-            KauAnimator(
-                addAnimator = FadeScaleAnimatorAdd(),
-                removeAnimator = FadeScaleAnimatorRemove(),
-                changeAnimator = NoAnimatorChange()
-            )
-        val noAnimator =
-            KauAnimator(
-                addAnimator = NoAnimatorAdd(),
-                removeAnimator = NoAnimatorRemove(),
-                changeAnimator = NoAnimatorChange()
-            )
-
         recycler.setHasFixedSize(false)
-
-        fun setAnimator(animator: RecyclerView.ItemAnimator) {
-            // Setting animator cancels some animations, which we don't necessarily need
-            if (recycler.itemAnimator !== animator) {
-                recycler.itemAnimator = animator
-            }
-        }
-
-        fun clear() {
-            fastAdapter.clear()
-            lastClearTime = System.currentTimeMillis()
-        }
 
         /**
          * Submit a launch request on the main thread
@@ -142,30 +104,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             } else {
                 if (id in pending) {
-                    clear()
+                    fastAdapter.clear()
                     return
                 }
                 val prev = cache[id]
                 if (prev != null && !forceRefresh) {
-                    setAnimator(noAnimator)
-                    clear()
+                    RvAnimation.INSTANT.set(recycler)
+                    fastAdapter.clear()
                     fastAdapter.add(prev)
                     return
                 }
             }
             pending.add(id)
             refresh.isRefreshing = true
-            if (fastAdapter.itemCount > 0) {
-                clear()
-            }
+            fastAdapter.clear()
             launchMain {
                 val data = loader().await(forceRefresh = samePanel || forceRefresh)
                 cache[id] = data
                 if (currentId == id) {
-                    val newItemAnimator =
-                        if (System.currentTimeMillis() - lastClearTime > changeThreshold) fancyAnimator
-                        else fadeAnimator
-                    setAnimator(newItemAnimator)
+                    RvAnimation.set(recycler, fastAdapter)
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {

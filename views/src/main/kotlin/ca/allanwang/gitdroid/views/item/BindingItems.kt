@@ -3,10 +3,7 @@ package ca.allanwang.gitdroid.views.item
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.views.GitIssueOrPr
-import ca.allanwang.gitdroid.views.PathCrumb
-import ca.allanwang.gitdroid.views.R
-import ca.allanwang.gitdroid.views.SlimEntry
+import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
@@ -29,10 +26,10 @@ abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val ty
 }
 
 class IssueVhBinding(data: ShortIssueRowItem) :
-    IssuePrVhBinding(GitIssueOrPr.fromIssue(data), R.id.git_vh_issue)
+    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_issue)
 
 class PullRequestVhBinding(data: ShortPullRequestRowItem) :
-    IssuePrVhBinding(GitIssueOrPr.fromPullRequest(data), R.id.git_vh_pr)
+    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_pr)
 
 
 class RepoVhBinding(override val data: ShortRepoRowItem) :

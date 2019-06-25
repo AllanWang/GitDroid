@@ -26,7 +26,7 @@
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{model.name}"
+            android:text="@{model.fragments.repoNameAndOwner.name}"
             android:textColor="?android:textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
