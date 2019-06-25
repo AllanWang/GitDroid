@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid
 
 import android.os.Bundle
+import ca.allanwang.gitdroid.activity.IssueCommentActivity
 import ca.allanwang.gitdroid.activity.LoginActivity
 import ca.allanwang.gitdroid.activity.MainActivity
 import ca.allanwang.gitdroid.activity.base.BaseActivity
@@ -14,7 +15,8 @@ class StartActivity : BaseActivity() {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
 //            else -> RepoActivity.launch(this, "AllanWang/KAU")
 //            else -> startActivity<BlobActivity>()
-            else -> startActivity<MainActivity>()
+            else -> IssueCommentActivity.launch(this, "Kotlin", "KEEP", 155)
+//            else -> startActivity<MainActivity>()
         }
     }
 }
