@@ -42,7 +42,6 @@ class RichTextView @JvmOverloads constructor(
         // Do in post since start and end drawables don't get registered immediately
         doOnPreDraw {
             val drawables = compoundDrawables
-            // L.d { "NNN ${drawables.any { it != null }}" }
             setCompoundDrawables(drawables[0], drawables[1], drawables[2], drawables[3])
         }
     }

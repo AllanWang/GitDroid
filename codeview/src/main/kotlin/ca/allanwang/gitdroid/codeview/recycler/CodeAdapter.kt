@@ -45,7 +45,6 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
             count < 10 -> return 1
             else -> log10(count).toInt() + 1
         }
-        L.d { "Digit count $digitCount" }
         return CodeViewUtils.computeWidth(textPaint, "0".repeat(digitCount)).ceilInt()
     }
 
