@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="ca.allanwang.gitdroid.views.RefEntry" />
+    </data>
+
+    <ca.allanwang.gitdroid.views.custom.RichTextView
+        android:id="@+id/ref_text"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@{model.icon}"
+        android:drawablePadding="@dimen/kau_padding_normal"
+        android:drawableTintMode="src_in"
+        android:drawableTint="?android:textColorTertiary"
+        android:foreground="?selectableItemBackground"
+        android:paddingStart="@dimen/kau_activity_horizontal_margin"
+        android:paddingTop="@dimen/kau_padding_small"
+        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+        android:paddingBottom="@dimen/kau_padding_small"
+        android:text="@{model.ref.name}"
+        app:compoundDrawableSize="@dimen/icon_size"
+        tools:drawableStart="@drawable/ic_branch"
+        tools:text="@tools:sample/lorem" />
+</layout>

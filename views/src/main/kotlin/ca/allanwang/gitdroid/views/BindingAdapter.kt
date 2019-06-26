@@ -2,18 +2,19 @@ package ca.allanwang.gitdroid.views
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.text.format.DateUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import ca.allanwang.gitdroid.views.custom.RichTextView
 import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.invisibleIf
 import ca.allanwang.kau.utils.round
 import ca.allanwang.kau.utils.string
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import github.fragment.TreeEntryItem
 import github.type.CommentAuthorAssociation
 import java.net.URI
 import java.util.*
@@ -94,6 +95,23 @@ fun ImageView.glideRound(model: Any?) {
 @BindingAdapter("android:src")
 fun ImageView.setImageViewResource(resource: Int) {
     setImageResource(resource)
+}
+
+@BindingAdapter(value = ["android:drawableStart", "android:drawableEnd"], requireAll = false)
+fun TextView.compoundDrawables(drawableResStart: Int, drawableResEnd: Int) {
+    fun drawable(res: Int): Drawable? = if (res == 0) null else context.getDrawable(res)
+    // TODO LTR support
+    setCompoundDrawables(drawable(drawableResStart), null, drawable(drawableResEnd), null)
+}
+
+@BindingAdapter("treeEntrySizeText")
+fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
+    val blob = obj?.obj as? TreeEntryItem.AsBlob
+    if (blob == null) {
+        text = null
+    } else {
+        text = blob.byteSize.toString()
+    }
 }
 
 @BindingAdapter("compactNumberText")

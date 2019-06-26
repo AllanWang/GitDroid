@@ -22,28 +22,6 @@ fragment TreeEntryItem on TreeEntry {
     }
 }
 
-fragment FullRepo on Repository {
-    ... ShortRepoRowItem
-    url
-    openGraphImageUrl
-    licenseInfo {
-        key
-        featured
-    }
-    defaultBranchRef {
-        name
-        target {
-            ... on Commit {
-                tree {
-                    entries {
-                        ...TreeEntryItem
-                    }
-                }
-            }
-        }
-    }
-}
-
 fragment RepoNameAndOwner on Repository {
     name
     owner {
@@ -66,6 +44,9 @@ fragment ShortRepoRowItem on Repository {
         color
         name
     }
+    defaultBranchRef {
+        ... ShortRef
+    }
     issues(first: 0, states: OPEN) {
         totalCount
     }
@@ -85,6 +66,28 @@ fragment ShortRepoRowItem on Repository {
     createdAt
     updatedAt
     pushedAt
+}
+
+fragment FullRepo on Repository {
+    ... ShortRepoRowItem
+    url
+    openGraphImageUrl
+    licenseInfo {
+        key
+        featured
+    }
+    defaultBranchRef {
+        ... ShortRef
+        target {
+            ... on Commit {
+                tree {
+                    entries {
+                        ...TreeEntryItem
+                    }
+                }
+            }
+        }
+    }
 }
 
 fragment ShortContributions on ContributionsCollection {
@@ -281,6 +284,7 @@ fragment MilestoneFragment on Milestone {
 
 fragment ShortRef on Ref {
     name
+    prefix
     target {
         oid
     }

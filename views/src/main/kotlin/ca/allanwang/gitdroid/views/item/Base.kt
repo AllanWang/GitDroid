@@ -25,14 +25,12 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
         get() = layoutRes
 
     override fun createView(ctx: Context, parent: ViewGroup?): View {
-        val start = System.currentTimeMillis()
         val binding: ViewDataBinding = DataBindingUtil.inflate(
             LayoutInflater.from(ctx),
             layoutRes, parent,
             false,
             null
         )
-        L.v { "Create view ${System.currentTimeMillis() - start}ms" }
         return binding.root
     }
 

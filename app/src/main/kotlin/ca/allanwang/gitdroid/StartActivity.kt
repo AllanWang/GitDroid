@@ -16,8 +16,8 @@ class StartActivity : BaseActivity() {
         when {
             prefs.token.isBlank() -> startActivity<LoginActivity>()
 //            else -> startActivity<BlobActivity>()
-            else -> startActivity<MainActivity>()
-//            else -> repoActivityTest()
+//            else -> startActivity<MainActivity>()
+            else -> repoActivityTest()
         }
     }
 

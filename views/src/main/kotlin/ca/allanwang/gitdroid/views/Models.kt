@@ -67,5 +67,6 @@ data class PathCrumb(val segment: String, val oid: GitObjectID) : Parcelable
 
 data class RefEntry(@DrawableRes val icon: Int, val ref: ShortRef, val selected: Boolean)
 
-fun GitRefs.entries(selected: GitObjectID): List<RefEntry> =
-    branchRefs.map { ref -> RefEntry(R.drawable.ic_branch, ref, ref.target.oid == selected) }
+fun GitRefs.entries(selected: ShortRef? = null): List<RefEntry> =
+    branchRefs.map { ref -> RefEntry(R.drawable.ic_branch, ref, ref.target.oid == selected?.target?.oid) } +
+            tagRefs.map { ref -> RefEntry(R.drawable.ic_label, ref, ref.target.oid == selected?.target?.oid) }

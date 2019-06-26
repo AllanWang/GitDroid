@@ -66,3 +66,5 @@ fun PathCrumb.vh(): GenericBindingItem =
 fun TreeEntryItem.vh(): GenericBindingItem = TreeEntryVhBinding(this)
 
 fun ShortIssueComment.vh(): GenericBindingItem = IssueCommentVhBinding(this)
+
+fun RefEntry.vh(): GenericBindingItem = RefEntryVhBinding(this)

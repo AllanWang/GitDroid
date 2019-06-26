@@ -4,7 +4,6 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.data.nameAndOwner
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
@@ -140,18 +139,6 @@ class TreeEntryVhBinding(override val data: TreeEntryItem) :
 
         override val layoutRes: Int
             get() = R.layout.view_tree_entry
-
-        @BindingAdapter("treeEntrySizeText")
-        @JvmStatic
-        fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
-            val blob = obj?.obj as? TreeEntryItem.AsBlob
-            if (blob == null) {
-                text = null
-            } else {
-                text = blob.byteSize.toString()
-            }
-        }
-
     }
 }
 
@@ -186,6 +173,21 @@ class PlaceholderVhBinding(@StringRes override val data: Int) :
 
         override val layoutRes: Int
             get() = R.layout.view_placeholder
+
+    }
+}
+
+class RefEntryVhBinding(override val data: RefEntry) :
+    BindingItem<ViewRefEntryBinding>(data), BindingLayout<ViewRefEntryBinding> by Companion {
+
+    override fun ViewRefEntryBinding.unbindView(holder: ViewHolder) {
+        unbind(refText)
+    }
+
+    companion object : BindingLayout<ViewRefEntryBinding> {
+
+        override val layoutRes: Int
+            get() = R.layout.view_ref_entry
 
     }
 }

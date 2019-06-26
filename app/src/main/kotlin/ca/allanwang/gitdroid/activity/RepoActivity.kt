@@ -7,20 +7,25 @@ import android.view.Menu
 import android.view.MenuItem
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
-import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.utils.lazyUi
 import ca.allanwang.gitdroid.views.FastBindingAdapter
-import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
+import ca.allanwang.gitdroid.views.entries
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
+import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
+import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.startActivity
+import com.afollestad.materialdialogs.list.customListAdapter
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
+import github.fragment.ShortRef
 import github.fragment.TreeEntryItem
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.CancellationException
@@ -35,30 +40,47 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     val repo by repoExtra()
 
+    private var currentRef: ShortRef? = null
+
     private val pathCrumbs: PathCrumbsView
         get() = binding.repoPathCrumbs
 
-    private val fastAdapter: FastBindingAdapter = FastBindingAdapter()
+    private val fastAdapter: FastBindingAdapter by lazyUi {
+        FastBindingAdapter().apply {
+            onClickListener = { _, _, item, _ ->
+                if (item is TreeEntryVhBinding) {
+                    onClick(item.data)
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    private val refAdapter: FastBindingAdapter by lazyUi {
+        FastBindingAdapter().apply {
+            onClickListener = { _, _, item, _ ->
+                if (item is RefEntryVhBinding) {
+                    currentRef = item.data.ref
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fastAdapter.onClickListener = { _, _, item, _ ->
-            if (item is TreeEntryVhBinding) {
-                onClick(item.data)
-                true
-            } else {
-                false
-            }
-        }
-
         binding.repoRecycler.adapter = fastAdapter
 
         pathCrumbs.callback = { data ->
-            load(data, false)
+            loadObject(data, false)
         }
         binding.repoRefresh.setOnRefreshListener {
-            load(pathCrumbs.getCurrentCrumb(), true)
+            loadObject(pathCrumbs.getCurrentCrumb(), true)
         }
         loadRepo()
     }
@@ -118,7 +140,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         }
     }
 
-    private fun load(data: PathCrumb?, forceRefresh: Boolean = false) {
+    private fun loadObject(data: PathCrumb?, forceRefresh: Boolean = false) {
         if (data == null) {
             loadRepo(forceRefresh)
         } else {
@@ -169,7 +191,12 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     private fun loadRefs(forceRefresh: Boolean) {
         launch {
             val refs = gdd.getRefs(repo, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
-            val entries = (refs.branchRefs.asSequence() + refs.tagRefs.asSequence()).map {  }
+            val entries = refs.entries(currentRef).map { it.vh() }
+            val adapter = FastBindingAdapter()
+            materialDialog {
+                customListAdapter(adapter)
+                adapter.add(entries)
+            }
         }
     }
 
@@ -180,7 +207,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.action_branch -> loadRefs()
+            R.id.action_branch -> loadRefs(forceRefresh = false)
             else -> return super.onOptionsItemSelected(item)
         }
         return true

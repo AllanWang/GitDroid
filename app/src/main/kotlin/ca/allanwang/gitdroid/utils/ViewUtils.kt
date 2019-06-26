@@ -8,3 +8,8 @@ fun View.setCoordinatorLayoutScrollingBehaviour() {
     val params = layoutParams as? CoordinatorLayout.LayoutParams ?: return
     params.behavior = AppBarLayout.ScrollingViewBehavior(context, null)
 }
+
+/**
+ * Lazy without thread safety
+ */
+fun <T> lazyUi(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initializer)
