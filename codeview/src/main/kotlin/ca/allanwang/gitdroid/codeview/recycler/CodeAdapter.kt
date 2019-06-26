@@ -117,15 +117,10 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
             codeItemLineNum.width = lineNumWidth
             codeItemLine.text = item.code
             codeItemLine.width = lineCodeWidth
-            theme?.also {
+            theme.also {
                 codeItemLineNum.setTextColor(it.lineNumTextColor)
                 codeItemLineNum.setBackgroundColor(it.lineNumBg)
                 root.setBackgroundColor(it.contentBg)
-            }
-            if (position == 0) {
-                codeItemLine.doOnNextLayout {
-                    L.d { "Measure ${codeItemLine.width} ${codeItemLine.measuredWidth}" }
-                }
             }
         }
         holder.itemView.setTag(R.id.code_view_item_data, item)
