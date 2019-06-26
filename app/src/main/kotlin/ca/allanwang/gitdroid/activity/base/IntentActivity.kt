@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.views.GitNameAndOwner
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import kotlin.reflect.KProperty
 
 abstract class IntentActivity : BaseActivity() {

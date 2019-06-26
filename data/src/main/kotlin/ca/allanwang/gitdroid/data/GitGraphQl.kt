@@ -93,8 +93,8 @@ interface GitGraphQl {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem }
         }
 
-    suspend fun getIssue(login: String, repo: String, issueNumber: Int): GitCall<FullIssue> =
-        query(GetIssueQuery(login, repo, issueNumber)) {
+    suspend fun getIssue(repo: GitNameAndOwner, issueNumber: Int): GitCall<FullIssue> =
+        query(GetIssueQuery(repo.owner, repo.name, issueNumber)) {
             repository?.issue?.fragments?.fullIssue
         }
 
@@ -129,14 +129,14 @@ interface GitGraphQl {
         }
 
 
-    suspend fun getRepo(login: String, repo: String): GitCall<FullRepo> =
-        query(GetRepoQuery(login, repo)) {
+    suspend fun getRepo(repo: GitNameAndOwner): GitCall<FullRepo> =
+        query(GetRepoQuery(repo.owner, repo.name)) {
             repository?.fragments?.fullRepo
         }
 
 
-    suspend fun getObject(login: String, repo: String, oid: GitObjectID): GitCall<ObjectItem> =
-        query(GetObjectQuery(login, repo, oid)) {
+    suspend fun getObject(repo: GitNameAndOwner, oid: GitObjectID): GitCall<ObjectItem> =
+        query(GetObjectQuery(repo.owner, repo.name, oid)) {
             repository?.obj?.fragments?.objectItem
         }
 
@@ -152,6 +152,31 @@ interface GitGraphQl {
             )
         ) {
             search.nodes?.mapNotNull { it.fragments.shortPullRequestRowItem }
+        }
+
+    suspend fun getRefs(
+        repo: GitNameAndOwner,
+        branchCursor: String? = null,
+        getBranches: Boolean = false,
+        tagCursor: String? = null,
+        getTags: Boolean = false
+    ): GitCall<GitRefs> =
+        query(
+            GetRefsQuery(
+                repo.owner,
+                repo.name,
+                Input.optional(branchCursor),
+                getBranches,
+                Input.optional(tagCursor),
+                getTags
+            )
+        ) {
+            val repository = repository ?: return@query null
+            val branches = repository.branches?.nodes?.map { it.fragments.shortRef } ?: emptyList()
+            val newBranchCursor = repository.branches?.pageInfo?.fragments?.shortPageInfo?.startCursor ?: branchCursor
+            val tags = repository.tags?.nodes?.map { it.fragments.shortRef } ?: emptyList()
+            val newTagCursor = repository.tags?.pageInfo?.fragments?.shortPageInfo?.startCursor ?: tagCursor
+            GitRefs(branches, newBranchCursor, tags, newTagCursor)
         }
 }
 

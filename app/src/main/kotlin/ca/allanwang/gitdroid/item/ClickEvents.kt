@@ -10,7 +10,7 @@ import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
 import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
 import ca.allanwang.gitdroid.views.databinding.ViewSlimEntryBinding
 import ca.allanwang.gitdroid.views.item.*
-import ca.allanwang.gitdroid.views.nameAndOwner
+import ca.allanwang.gitdroid.data.nameAndOwner
 import com.mikepenz.fastadapter.FastAdapter
 
 fun SlimEntryVhBinding.Companion.clickHook() =

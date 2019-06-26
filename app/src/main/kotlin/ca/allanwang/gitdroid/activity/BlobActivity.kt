@@ -8,7 +8,7 @@ import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.LexerCache
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.databinding.ViewBlobBinding
-import ca.allanwang.gitdroid.views.GitNameAndOwner
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.ObjectItem
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
 
         launch {
 
-            val blob: ObjectItem.AsBlob? = gdd.getObject(repo.owner, repo.name, oid).await() as? ObjectItem.AsBlob
+            val blob: ObjectItem.AsBlob? = gdd.getObject(repo, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"
             binding.codeview.setData(
                 content,
@@ -45,7 +45,7 @@ class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
     companion object {
         val lexerCache: LexerCache = LexerCache(CodeLanguage.all())
 
-        fun launch(context: Context,repo: GitNameAndOwner, fileName: String, oid: GitObjectID) {
+        fun launch(context: Context, repo: GitNameAndOwner, fileName: String, oid: GitObjectID) {
             context.startActivity<BlobActivity>(intentBuilder = {
                 putExtra(Args.repo, repo)
                 putExtra(Args.name, fileName)

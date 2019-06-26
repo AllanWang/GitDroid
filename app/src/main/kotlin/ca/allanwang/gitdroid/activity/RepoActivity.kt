@@ -11,7 +11,7 @@ import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.FastBindingAdapter
-import ca.allanwang.gitdroid.views.GitNameAndOwner
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.custom.PathCrumbsView
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
@@ -19,7 +19,6 @@ import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.kau.utils.startActivity
-import ca.allanwang.kau.utils.toast
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
@@ -131,7 +130,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         binding.repoRefresh.isRefreshing = false
         fastAdapter.clear()
         launch {
-            val repo = gdd.getRepo(repo.owner, repo.name).await(forceRefresh = forceRefresh)
+            val repo = gdd.getRepo(repo).await(forceRefresh = forceRefresh)
             val defaultBranch = repo.defaultBranchRef
             if (defaultBranch == null) {
 
@@ -158,13 +157,20 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
         fastAdapter.clear()
         L._d { "Loading folder $oid" }
         launch {
-            val obj = gdd.getObject(repo.owner, repo.name, oid).await(forceRefresh = forceRefresh)
+            val obj = gdd.getObject(repo, oid).await(forceRefresh = forceRefresh)
             if (obj !is ObjectItem.AsTree) {
                 throw CancellationException(("Expected object to be tree, but actually ${obj.__typename}"))
             }
 
             val entries: List<TreeEntryItem> = obj.entries?.map { it.fragments.treeEntryItem } ?: emptyList()
             showEntries(entries)
+        }
+    }
+
+    private fun loadRefs(forceRefresh: Boolean) {
+        launch {
+            val refs = gdd.getRefs(repo, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
+            val entries = (refs.branchRefs.asSequence() + refs.tagRefs.asSequence()).map {  }
         }
     }
 
@@ -175,7 +181,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_branch -> toast("Branch")
+            R.id.action_branch -> loadRefs()
             else -> return super.onOptionsItemSelected(item)
         }
         return true

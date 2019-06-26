@@ -3,22 +3,16 @@ package ca.allanwang.gitdroid.views
 import android.os.Parcelable
 import android.view.View
 import androidx.annotation.DrawableRes
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitObjectID
-import github.fragment.*
+import ca.allanwang.gitdroid.data.GitRefs
+import ca.allanwang.gitdroid.data.nameAndOwner
+import github.fragment.ShortIssueRowItem
+import github.fragment.ShortPullRequestRowItem
+import github.fragment.ShortRef
 import kotlinx.android.parcel.Parcelize
 import java.net.URI
 import java.util.*
-
-@Parcelize
-data class GitNameAndOwner(val name: String, val owner: String) : Parcelable {
-    val nameWithOwner: String
-        get() = "$owner/$name"
-}
-
-fun ShortIssueRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
-fun ShortPullRequestRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
-fun ShortRepoRowItem.nameAndOwner(): GitNameAndOwner = fragments.repoNameAndOwner.nameAndOwner()
-fun RepoNameAndOwner.nameAndOwner(): GitNameAndOwner = GitNameAndOwner(name = name, owner = owner.login)
 
 data class GitIssueOrPr(
     val id: String,
@@ -70,3 +64,8 @@ data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: 
 
 @Parcelize
 data class PathCrumb(val segment: String, val oid: GitObjectID) : Parcelable
+
+data class RefEntry(@DrawableRes val icon: Int, val ref: ShortRef, val selected: Boolean)
+
+fun GitRefs.entries(selected: GitObjectID): List<RefEntry> =
+    branchRefs.map { ref -> RefEntry(R.drawable.ic_branch, ref, ref.target.oid == selected) }

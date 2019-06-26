@@ -1,10 +1,7 @@
 query searchRepos($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: REPOSITORY, first: $count, after: $cursor) {
         pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
+            ...ShortPageInfo
         }
         nodes {
             ...ShortRepoRowItem
@@ -35,10 +32,7 @@ query objectInfo($query: String!, $oid: GitObjectID!) {
 query searchIssues($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: ISSUE, first: $count, after: $cursor) {
         pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
+            ...ShortPageInfo
         }
         nodes {
             ...ShortIssueRowItem
@@ -49,10 +43,7 @@ query searchIssues($query: String!, $count: Int, $cursor: String) {
 query searchPullRequests($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: ISSUE, first: $count, after: $cursor) {
         pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
+            ...ShortPageInfo
         }
         nodes {
             ...ShortPullRequestRowItem
@@ -63,10 +54,7 @@ query searchPullRequests($query: String!, $count: Int, $cursor: String) {
 query searchUser($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: USER, first: $count, after: $cursor) {
         pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-            hasPreviousPage
+            ...ShortPageInfo
         }
         nodes {
             ...ShortUserRowItem

@@ -11,3 +11,24 @@ query getObject($login: String!, $repo: String!, $oid: GitObjectID!) {
         }
     }
 }
+
+query getRefs($login: String!, $repo: String!, $branchCursor: String, $getBranches: Boolean!, $tagCursor: String, $getTags: Boolean!) {
+    repository(owner: $login, name: $repo) {
+        branches: refs(refPrefix: "refs/heads/", first: 20, after: $branchCursor, orderBy: {field: TAG_COMMIT_DATE, direction: DESC})  @include(if: $getBranches){
+            nodes {
+                ...ShortRef
+            }
+            pageInfo {
+                ...ShortPageInfo
+            }
+        }
+        tags: refs(refPrefix: "refs/tags/", first: 20, after: $tagCursor, orderBy: {field: TAG_COMMIT_DATE, direction: DESC})  @include(if: $getTags){
+            nodes {
+                ...ShortRef
+            }
+            pageInfo {
+                ...ShortPageInfo
+            }
+        }
+    }
+}

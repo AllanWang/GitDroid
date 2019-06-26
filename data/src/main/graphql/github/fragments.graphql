@@ -278,3 +278,17 @@ fragment MilestoneFragment on Milestone {
     title
     state
 }
+
+fragment ShortRef on Ref {
+    name
+    target {
+        oid
+    }
+}
+
+fragment ShortPageInfo on PageInfo {
+    startCursor
+    endCursor
+    hasNextPage
+    hasPreviousPage
+}
