@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
+import ca.allanwang.gitdroid.data.nameAndOwner
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.databinding.*
 import com.mikepenz.fastadapter.FastAdapter
@@ -37,7 +38,7 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
     BindingItem<ViewRepoBinding>(data), BindingLayout<ViewRepoBinding> by Companion {
 
 //    override fun ViewRepoBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-//        repoName.text = data.name
+//        repoName.text = data.nameAndOwner().name
 //        repoDesc.text = data.description
 //        repoDesc.goneFlag(data.description)
 //        repoStars.compactNumberText(data.stargazers.totalCount)

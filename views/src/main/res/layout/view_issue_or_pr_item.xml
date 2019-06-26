@@ -92,15 +92,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/kau_padding_normal"
-            android:ellipsize="end"
             android:layout_marginBottom="@dimen/kau_padding_small"
+            android:ellipsize="end"
             android:lines="1"
             android:maxLines="2"
             android:text="@{model.nameWithOwner + '#' + model.number}"
             android:textColor="?android:textColorSecondary"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ipr_v_edge"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ipr_avatar"
             app:layout_constraintTop_toBottomOf="@id/ipr_title"
             tools:text="org/repo#123" />
@@ -120,14 +120,14 @@
             app:layout_constraintTop_toTopOf="@id/ipr_login"
             app:layout_constraintVertical_bias="0.5" />
 
-        <com.google.android.material.chip.Chip
+        <ca.allanwang.gitdroid.views.custom.RichTextView
             android:id="@+id/ipr_comments"
-            style="@style/SmallChipBadge"
+            style="@style/SmallBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_edge_margin"
             android:layout_marginEnd="@dimen/small_edge_margin"
-            app:chipIcon="@drawable/ic_chat_bubble"
+            android:drawableStart="@drawable/ic_chat_bubble"
             app:compactNumberText="@{model.commentCount}"
             app:goneFlag="@{model.commentCount}"
             app:layout_constraintBottom_toBottomOf="@id/ipr_details"

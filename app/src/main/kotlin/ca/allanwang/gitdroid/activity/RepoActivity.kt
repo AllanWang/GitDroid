@@ -181,7 +181,7 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_branch -> loadRefs()
+//            R.id.action_branch -> loadRefs()
             else -> return super.onOptionsItemSelected(item)
         }
         return true

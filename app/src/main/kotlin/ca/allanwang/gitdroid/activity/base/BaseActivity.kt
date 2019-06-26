@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.activity.base
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -100,7 +101,12 @@ abstract class BaseActivity : KauBaseActivity() {
     fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {
         val tintList = ColorStateList.valueOf(Color.WHITE)
         menuInflater.inflate(menuRes, menu)
-        menu.forEach { it.iconTintList = tintList }
+        // TODO tint for other versions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            menu.forEach {
+                it.iconTintList = tintList
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
