@@ -155,7 +155,6 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
     private fun loadFolder(oid: GitObjectID, forceRefresh: Boolean = false) {
         binding.repoRefresh.isRefreshing = false
         fastAdapter.clear()
-        L._d { "Loading folder $oid" }
         launch {
             val obj = gdd.getObject(repo, oid).await(forceRefresh = forceRefresh)
             if (obj !is ObjectItem.AsTree) {

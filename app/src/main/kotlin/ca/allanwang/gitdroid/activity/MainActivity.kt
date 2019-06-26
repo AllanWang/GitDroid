@@ -25,6 +25,7 @@ import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.yield
 
 typealias GitCallVhList = GitCall<List<GenericBindingItem>>
 
@@ -115,13 +116,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
             pending.add(id)
+            RvAnimation.FAST.set(recycler)
             refresh.isRefreshing = true
             fastAdapter.clear()
             launchMain {
                 val data = loader().await(forceRefresh = samePanel || forceRefresh)
                 cache[id] = data
                 if (currentId == id) {
+                    refresh.isRefreshing = false
+                    yield()
                     RvAnimation.set(recycler, fastAdapter)
+                    yield()
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {

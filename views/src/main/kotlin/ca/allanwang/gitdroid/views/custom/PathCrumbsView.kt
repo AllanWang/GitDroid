@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.PathCrumb
 import ca.allanwang.gitdroid.views.R
@@ -65,7 +66,7 @@ class PathCrumbsView @JvmOverloads constructor(
                 }
             }
         }
-        super.setAdapter(FastAdapter.with(fastAdapter).apply {
+        super.setAdapter(fastAdapter.apply {
             onClickListener = { v, adapter, item, position ->
                 if (position == adapter.adapterItemCount - 1) {
                     false
@@ -125,7 +126,7 @@ class PathCrumbsView @JvmOverloads constructor(
         if (size <= 1) {
             return false
         }
-        callback?.invoke((fastAdapter.getItem(size - 2) as PathCrumbVhBinding).data)
+        callback?.invoke((fastAdapter.getItem(size - 2) as? PathCrumbVhBinding)?.data)
         fastAdapter.remove(size - 1)
         return true
     }

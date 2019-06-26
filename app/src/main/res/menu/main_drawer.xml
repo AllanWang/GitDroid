@@ -4,6 +4,7 @@
     <group android:id="@+id/nav_group_main">
         <item
             android:id="@+id/nav_home"
+            android:checkable="false"
             android:icon="@drawable/ic_home"
             android:title="@string/home" />
         <item
