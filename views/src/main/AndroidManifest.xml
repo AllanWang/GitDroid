@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ca.allanwang.gitdroid.views">
 
-    <application android:supportsRtl="true" />
+    <application
+        android:supportsRtl="true"
+        android:theme="@style/Theme.GitDroid.Light" />
 </manifest>

@@ -11,6 +11,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.BR
+import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
 import com.bumptech.glide.Glide
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
@@ -32,7 +33,7 @@ abstract class BindingItem<Binding : ViewDataBinding>(open val data: Any?) : Abs
             false,
             null
         )
-        L.d { "Create view ${(System.nanoTime() - start) / 1000000}" }
+        L.d { "Create view ${(System.nanoTime() - start) / 1000000}ms" }
         return binding.root
     }
 

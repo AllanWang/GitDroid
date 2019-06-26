@@ -14,4 +14,13 @@
         <item>#239a3b</item>
         <item>#196127</item>
     </array>
+
+    <declare-styleable name="RichTextView">
+        <attr name="compoundDrawableSize" format="dimension" />
+        <attr name="compoundDrawableTint" format="color" />
+        <attr name="compoundDrawableGravity" format="enum">
+            <enum name="center" value="0" />
+            <enum name="top" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>
