@@ -79,6 +79,7 @@ class GitDroidData : KoinComponent, GitGraphQl {
                     .serverUrl(GRAPHQL_URL)
                     .okHttpClient(okHttpClient.build())
                     .addCustomTypeAdapter(CustomType.URI, UriApolloAdapter)
+                    //.addCustomTypeAdapter(CustomType.DATE, DateApolloAdapter)
                     .addCustomTypeAdapter(CustomType.DATETIME, DateTimeApolloAdapter)
                     .addCustomTypeAdapter(CustomType.GITOBJECTID, GitObjectIDApolloAdapter)
                     .addCustomTypeAdapter(CustomType.HTML, ObjectApolloAdapter)
