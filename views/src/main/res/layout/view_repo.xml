@@ -99,6 +99,7 @@
                 android:drawableStart="@drawable/ic_language"
                 android:ellipsize="end"
                 android:text="@{model.primaryLanguage.name}"
+                app:invisibleFlag="@{model.primaryLanguage.name}"
                 app:languageColor="@{model.primaryLanguage.color}"
                 tools:text="Jupyter Notebook" />
 

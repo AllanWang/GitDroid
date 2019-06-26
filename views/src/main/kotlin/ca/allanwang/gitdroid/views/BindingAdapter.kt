@@ -7,24 +7,35 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import ca.allanwang.kau.utils.*
+import ca.allanwang.gitdroid.views.custom.RichTextView
+import ca.allanwang.kau.utils.goneIf
+import ca.allanwang.kau.utils.invisibleIf
+import ca.allanwang.kau.utils.round
+import ca.allanwang.kau.utils.string
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.button.MaterialButton
 import github.type.CommentAuthorAssociation
 import java.net.URI
 import java.util.*
 
+private fun notVisible(value: Any?): Boolean = when (value) {
+    null -> true
+    is String -> value.isBlank()
+    is Boolean -> value
+    is Number -> value == 0
+    else -> false
+}
+
 @BindingAdapter("goneFlag")
 fun View.goneFlag(value: Any?) {
-    when (value) {
-        null -> gone()
-        is String -> goneIf(value.isBlank())
-        is Boolean -> goneIf(value)
-        is Number -> goneIf(value == 0)
-        else -> visible()
-    }
+    goneIf(notVisible(value))
 }
+
+@BindingAdapter("invisibleFlag")
+fun View.invisibleFlag(value: Any?) {
+    invisibleIf(notVisible(value))
+}
+
 
 @BindingAdapter("languageColor")
 fun TextView.languageColor(color: String?) {
@@ -32,7 +43,6 @@ fun TextView.languageColor(color: String?) {
     val c = ColorStateList.valueOf(Color.parseColor(color))
     compoundDrawableTintList = c
     setTextColor(c)
-    (this as? MaterialButton)?.iconTint = c
 }
 
 @BindingAdapter("relativeDateText")

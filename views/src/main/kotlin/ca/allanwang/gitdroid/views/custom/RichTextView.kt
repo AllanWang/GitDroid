@@ -2,8 +2,10 @@ package ca.allanwang.gitdroid.views.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.TextPaint
@@ -20,7 +22,6 @@ class RichTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : TextView(context, attrs, defStyleAttr) {
 
-    private val compoundDrawableTint: Int?
     private val compoundDrawableSize: Int
     private val compoundDrawableGravity: Int
     private val compoundDrawableBounds: Rect?
@@ -30,10 +31,6 @@ class RichTextView @JvmOverloads constructor(
             .apply {
                 try {
                     compoundDrawableSize = getDimensionPixelSize(R.styleable.RichTextView_compoundDrawableSize, -1)
-                    compoundDrawableTint = if (hasValue(R.styleable.RichTextView_compoundDrawableTint)) getColor(
-                        R.styleable.RichTextView_compoundDrawableTint,
-                        0
-                    ) else null
                     compoundDrawableGravity = getInt(R.styleable.RichTextView_compoundDrawableGravity, 0)
                     compoundDrawableBounds =
                         if (compoundDrawableSize == -1) null else Rect(0, 0, compoundDrawableSize, compoundDrawableSize)
@@ -50,11 +47,11 @@ class RichTextView @JvmOverloads constructor(
         }
     }
 
-    private interface DrawableWrapper {
-        val drawable: Drawable
-    }
-
-    private class TopDrawable(override val drawable: Drawable, val paint: TextPaint) : Drawable(), DrawableWrapper {
+    /**
+     * Delegate that passes on values to the original drawable.
+     * This allows us to override certain fields as we wish
+     */
+    private open class DrawableWrapper(val drawable: Drawable) : Drawable() {
 
         override fun setAlpha(alpha: Int) {
             drawable.alpha = alpha
@@ -72,17 +69,48 @@ class RichTextView @JvmOverloads constructor(
             return drawable.colorFilter
         }
 
+        /**
+         * We must pass this to super as well since [getBounds] is final
+         */
+        override fun setBounds(bounds: Rect) {
+            super.setBounds(bounds)
+            drawable.bounds = bounds
+        }
+
+        override fun draw(canvas: Canvas) {
+            drawable.draw(canvas)
+        }
+
+        override fun setTintList(tint: ColorStateList?) {
+            drawable.setTintList(tint)
+        }
+
+
+        override fun setTint(tintColor: Int) {
+            drawable.setTint(tintColor)
+        }
+
+        override fun setTintMode(tintMode: PorterDuff.Mode) {
+            drawable.setTintMode(tintMode)
+        }
+
+        override fun getIntrinsicWidth(): Int {
+            return drawable.intrinsicWidth
+        }
+
+        override fun getIntrinsicHeight(): Int {
+            return drawable.intrinsicHeight
+        }
+    }
+
+    private class TopDrawable(drawable: Drawable, val paint: TextPaint) : DrawableWrapper(drawable) {
+
         @SuppressLint("CanvasSize")
         override fun draw(canvas: Canvas) {
             val lineHeight = paint.fontMetrics.bottom - paint.fontMetrics.top
             canvas.withTranslation(y = (lineHeight - canvas.height) / 2f) {
-                drawable.draw(canvas)
+                super.draw(canvas)
             }
-        }
-
-        override fun setBounds(bounds: Rect) {
-            super.setBounds(bounds)
-            drawable.bounds = bounds
         }
 
     }
@@ -96,11 +124,8 @@ class RichTextView @JvmOverloads constructor(
             1 -> drawable.topDrawable()
             else -> throw RuntimeException("Unknown drawable gravity flag $compoundDrawableGravity")
         }
-        if (compoundDrawableBounds != null) {
-            d.bounds = compoundDrawableBounds
-        }
-        if (compoundDrawableTint != null) {
-            d.setTint(compoundDrawableTint)
+        compoundDrawableBounds?.also {
+            d.bounds = it
         }
         return d
     }
