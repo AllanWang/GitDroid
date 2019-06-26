@@ -49,7 +49,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_stars"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_star_border"
@@ -61,7 +61,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_forks"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_fork"
@@ -73,7 +73,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_issues"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_issues"
@@ -85,7 +85,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_prs"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_pull_requests"
@@ -97,7 +97,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_language"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:ellipsize="end"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/repo_date"
-            style="@style/RepoChips"
+            style="@style/RepoBadge"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:chipIcon="@drawable/ic_time"

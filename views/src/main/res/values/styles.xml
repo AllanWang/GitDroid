@@ -46,7 +46,7 @@
         <item name="cornerRadius">@dimen/login_corner_radius</item>
     </style>
 
-    <style name="SmallChipBadge">
+    <style name="SmallBadge">
         <item name="android:clickable">false</item>
         <item name="android:focusable">false</item>
         <item name="compoundDrawableSize">@dimen/small_icon_size</item>
@@ -56,7 +56,7 @@
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
-    <style name="RepoChips" parent="SmallChipBadge">
+    <style name="RepoBadge" parent="SmallBadge">
         <item name="compoundDrawableGravity">top</item>
         <item name="android:layout_marginTop">@dimen/kau_padding_small</item>
         <item name="compoundDrawableTint">?android:textColorSecondary</item>

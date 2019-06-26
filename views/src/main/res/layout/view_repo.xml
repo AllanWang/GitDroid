@@ -51,7 +51,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_stars"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
@@ -62,7 +62,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_forks"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
@@ -72,7 +72,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_issues"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
@@ -82,7 +82,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_prs"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
@@ -92,7 +92,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_language"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
@@ -104,7 +104,7 @@
 
             <ca.allanwang.gitdroid.views.custom.RichTextView
                 android:id="@+id/repo_date"
-                style="@style/RepoChips"
+                style="@style/RepoBadge"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"

@@ -122,7 +122,7 @@
 
         <ca.allanwang.gitdroid.views.custom.RichTextView
             android:id="@+id/ipr_comments"
-            style="@style/SmallChipBadge"
+            style="@style/SmallBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_edge_margin"
