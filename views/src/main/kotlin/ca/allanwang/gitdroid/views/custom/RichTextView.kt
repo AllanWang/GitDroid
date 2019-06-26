@@ -10,7 +10,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.withTranslation
 import androidx.core.view.doOnPreDraw
 import ca.allanwang.gitdroid.views.R
@@ -20,7 +20,7 @@ import ca.allanwang.gitdroid.views.R
  */
 class RichTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : TextView(context, attrs, defStyleAttr) {
+) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private val compoundDrawableSize: Int
     private val compoundDrawableGravity: Int
