@@ -4,7 +4,17 @@ query getRepo($login: String!, $repo: String!) {
     }
 }
 
-query getObject($login: String!, $repo: String!, $oid: GitObjectID!) {
+query getRepoDefaultObject($login: String!, $repo: String!) {
+    repository(owner: $login, name: $repo) {
+        defaultBranchRef {
+            target {
+                ...ObjectItem
+            }
+        }
+    }
+}
+
+query getRepoObject($login: String!, $repo: String!, $oid: GitObjectID!) {
     repository(owner: $login, name: $repo) {
         obj: object(oid: $oid) {
             ...ObjectItem

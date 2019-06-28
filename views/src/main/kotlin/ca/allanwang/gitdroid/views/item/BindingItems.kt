@@ -1,11 +1,10 @@
 package ca.allanwang.gitdroid.views.item
 
-import android.widget.TextView
 import androidx.annotation.StringRes
-import androidx.databinding.BindingAdapter
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.views.*
 import ca.allanwang.gitdroid.views.databinding.*
+import ca.allanwang.gitdroid.views.utils.*
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
 import github.fragment.*

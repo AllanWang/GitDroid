@@ -2,7 +2,7 @@ package ca.allanwang.gitdroid.utils
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.animators.*
 import ca.allanwang.kau.utils.KAU_BOTTOM
 

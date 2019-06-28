@@ -49,7 +49,7 @@
             android:orientation="horizontal">
 
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_stars"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"
@@ -60,7 +60,7 @@
                 app:compactNumberText="@{model.stargazers.totalCount}"
                 tools:text="123" />
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_forks"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"
@@ -70,7 +70,7 @@
                 app:compactNumberText="@{model.forkCount}"
                 tools:text="123" />
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_issues"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"
@@ -80,7 +80,7 @@
                 app:compactNumberText="@{model.issues.totalCount}"
                 tools:text="1.5k" />
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_prs"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"
@@ -90,7 +90,7 @@
                 app:compactNumberText="@{model.pullRequests.totalCount}"
                 tools:text="123" />
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_language"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"
@@ -103,7 +103,7 @@
                 app:languageColor="@{model.primaryLanguage.color}"
                 tools:text="Jupyter Notebook" />
 
-            <ca.allanwang.gitdroid.views.custom.RichTextView
+            <ca.allanwang.gitdroid.views.components.RichTextView
                 android:id="@+id/repo_date"
                 style="@style/RepoBadge"
                 android:layout_width="0dp"

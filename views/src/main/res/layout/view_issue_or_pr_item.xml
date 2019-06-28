@@ -7,7 +7,7 @@
 
         <variable
             name="model"
-            type="ca.allanwang.gitdroid.views.GitIssueOrPr" />
+            type="ca.allanwang.gitdroid.views.utils.GitIssueOrPr" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -120,7 +120,7 @@
             app:layout_constraintTop_toTopOf="@id/ipr_login"
             app:layout_constraintVertical_bias="0.5" />
 
-        <ca.allanwang.gitdroid.views.custom.RichTextView
+        <ca.allanwang.gitdroid.views.components.RichTextView
             android:id="@+id/ipr_comments"
             style="@style/SmallBadge"
             android:layout_width="wrap_content"

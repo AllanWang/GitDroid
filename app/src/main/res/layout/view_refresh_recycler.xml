@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
+    <ca.allanwang.gitdroid.views.components.SwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

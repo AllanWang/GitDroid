@@ -8,7 +8,7 @@ import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.utils.RvAnimation
-import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull

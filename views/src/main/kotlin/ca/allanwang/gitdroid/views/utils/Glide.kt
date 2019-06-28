@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.views
+package ca.allanwang.gitdroid.views.utils
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader

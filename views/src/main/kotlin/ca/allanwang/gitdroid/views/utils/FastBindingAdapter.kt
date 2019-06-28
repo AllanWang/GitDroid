@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.views
+package ca.allanwang.gitdroid.views.utils
 
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import com.mikepenz.fastadapter.FastAdapter

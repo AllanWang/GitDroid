@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.activity.base
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -14,26 +15,32 @@ import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
+import ca.allanwang.gitdroid.activity.MainActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L
+import ca.allanwang.gitdroid.presenters.PresenterContext
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
+import ca.allanwang.kau.utils.startActivity
 import github.sql.GitUser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
-abstract class BaseActivity : KauBaseActivity() {
+abstract class BaseActivity : KauBaseActivity(), PresenterContext {
 
     val prefs: Prefs by inject()
-    val db: Database by inject()
-    val gdd: GitDroidData by inject()
+    override val db: Database by inject()
+    override val gdd: GitDroidData by inject()
+
+    override val context: Context
+        get() = this
 
     fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
         DataBindingUtil.setContentView(this, layoutRes)
@@ -42,7 +49,7 @@ abstract class BaseActivity : KauBaseActivity() {
      * Returns current user based on token
      * If not found, will auto redirect to the login page.
      */
-    suspend fun me(): GitUser {
+    override suspend fun me(): GitUser {
         val me = db.userQueries.select(prefs.token).awaitOptional()
         if (me == null) {
             withContext(Dispatchers.Main) {
@@ -56,7 +63,7 @@ abstract class BaseActivity : KauBaseActivity() {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean = false): T =
+    override suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean): T =
         with(call(forceRefresh = forceRefresh)) {
             errors().also {
                 if (it.isNotEmpty()) {
@@ -111,7 +118,7 @@ abstract class BaseActivity : KauBaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> if (BuildConfig.DEBUG) startActivity<MainActivity>() else onBackPressed()
             else -> return super.onOptionsItemSelected(item)
         }
         return true

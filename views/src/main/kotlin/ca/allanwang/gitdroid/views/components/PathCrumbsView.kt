@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.views.custom
+package ca.allanwang.gitdroid.views.components
 
 import android.content.Context
 import android.graphics.Color
@@ -7,9 +7,8 @@ import android.widget.LinearLayout
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.views.FastBindingAdapter
-import ca.allanwang.gitdroid.views.PathCrumb
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.PathCrumb
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.item.PathCrumbHomeVhBinding
 import ca.allanwang.gitdroid.views.item.PathCrumbVhBinding
@@ -18,7 +17,6 @@ import ca.allanwang.gitdroid.views.itemdecoration.SquareDecoration
 import ca.allanwang.kau.utils.drawable
 import ca.allanwang.kau.utils.tint
 import ca.allanwang.kau.utils.withAlpha
-import com.mikepenz.fastadapter.FastAdapter
 
 /**
  *  Callback from crumb selection
@@ -120,6 +118,10 @@ class PathCrumbsView @JvmOverloads constructor(
     fun getCrumbs(): List<PathCrumb> = fastAdapter.adapterItems.mapNotNull { (it as? PathCrumbVhBinding)?.data }
 
     fun getCurrentCrumb(): PathCrumb? = (fastAdapter.adapterItems.last() as? PathCrumbVhBinding)?.data
+
+    fun reset() {
+        fastAdapter.removeRange(1, fastAdapter.adapterItemCount - 1)
+    }
 
     fun onBackPressed(): Boolean {
         val size = fastAdapter.itemCount

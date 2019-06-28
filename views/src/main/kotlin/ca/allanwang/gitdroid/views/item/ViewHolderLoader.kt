@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.views.item
 
 import android.content.Context
 import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.utils.*
 import github.GetProfileQuery
 import github.fragment.*
 import java.util.*

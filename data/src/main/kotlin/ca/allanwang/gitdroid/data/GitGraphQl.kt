@@ -79,7 +79,7 @@ interface GitGraphQl {
             user
         }
 
-    suspend fun getUserIssues(
+    suspend fun searchUserIssues(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -98,7 +98,7 @@ interface GitGraphQl {
             repository?.issue?.fragments?.fullIssue
         }
 
-    suspend fun getUserRepos(
+    suspend fun searchUserRepos(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -113,7 +113,7 @@ interface GitGraphQl {
             user?.repositories?.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
         }
 
-    suspend fun getRepos(
+    suspend fun searchRepos(
         query: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -135,12 +135,19 @@ interface GitGraphQl {
         }
 
 
-    suspend fun getObject(repo: GitNameAndOwner, oid: GitObjectID): GitCall<ObjectItem> =
-        query(GetObjectQuery(repo.owner, repo.name, oid)) {
-            repository?.obj?.fragments?.objectItem
+    suspend fun getRepoObject(repo: GitNameAndOwner, oid: GitObjectID?): GitCall<ObjectItem> =
+        if (oid == null) {
+            query(GetRepoDefaultObjectQuery(repo.owner, repo.name)) {
+                repository?.defaultBranchRef?.target?.fragments?.objectItem
+            }
+        } else {
+            query(GetRepoObjectQuery(repo.owner, repo.name, oid)) {
+                repository?.obj?.fragments?.objectItem
+            }
         }
 
-    suspend fun getPullRequests(
+
+    suspend fun searchPullRequests(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null

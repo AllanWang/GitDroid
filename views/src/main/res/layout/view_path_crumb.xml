@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="ca.allanwang.gitdroid.views.PathCrumb" />
+            type="ca.allanwang.gitdroid.views.utils.PathCrumb" />
 
     </data>
 
