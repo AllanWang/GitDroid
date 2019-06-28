@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
+    </ca.allanwang.gitdroid.views.components.SwipeRefreshLayout>
 
 
 </layout>

@@ -25,19 +25,19 @@ open class BaseViewModel : ViewModel(), KoinComponent {
      */
     val gitCallErrors = BroadcastChannel<List<Error>>(Channel.CONFLATED)
 
-    suspend fun <T> GitCall<T>.await(forceRefresh: Boolean): LoadingData<T?> =
+    suspend fun <T> GitCall<T>.await(forceRefresh: Boolean): LoadingData<T> =
         with(call(forceRefresh = forceRefresh)) {
-            errors().also {
+            errors.also {
                 if (it.isNotEmpty()) {
-                    L.e { "Error in ${operation().name()}" }
+                    L.e { "Error in ${operation.name()}" }
                     gitCallErrors.send(it)
                     return@with FailedLoad
                 }
             }
-            LoadedData(data())
+            LoadedData(data)
         }
 
-    protected fun <T> gitCallLaunch(liveData: LoadingLiveData<T?>, call: GitCall<T>): GitCallExecutor =
+    protected fun <T> gitCallLaunch(liveData: LoadingLiveData<T>, call: GitCall<T>): GitCallExecutor =
         object : GitCallExecutor {
             override fun execute(forceRefresh: Boolean) {
                 liveData.value = Loading

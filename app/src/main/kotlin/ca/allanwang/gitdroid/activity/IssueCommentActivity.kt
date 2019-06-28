@@ -62,7 +62,7 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         binding.refresh.isRefreshing = true
         launch {
             val issue = gdd.getIssue(repo, issueNumber).await()
-            val vhs = issue.comments.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
+            val vhs = issue?.comments?.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
             binding.refresh.isRefreshing = false
             if (vhs.isNotEmpty()) {
                 RvAnimation.set(binding.recycler, fastAdapter)

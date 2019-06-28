@@ -32,6 +32,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 abstract class BaseActivity : KauBaseActivity(), PresenterContext {
 
@@ -63,11 +65,11 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    override suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean): T =
-        with(call(forceRefresh = forceRefresh)) {
-            errors().also {
+    override suspend fun <T> GitCall<T>.await(forceRefresh: Boolean): T {
+        return with(call(forceRefresh = forceRefresh)) {
+            errors.also {
                 if (it.isNotEmpty()) {
-                    L.e { "Error in ${operation().name()}" }
+                    L.e { "Error in ${operation.name()}" }
                     if (BuildConfig.DEBUG) {
                         withContext(Dispatchers.Main) {
                             materialDialog {
@@ -80,10 +82,10 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
                             snackbar(R.string.error_occurred)
                         }
                     }
-                    throw CancellationException("Error in ${operation().name()}")
+                    throw CancellationException("Error in ${operation.name()}")
                 }
             }
-            data().let {
+            data.let {
                 if (it == null) {
                     withContext(Dispatchers.Main) {
                         snackbar(R.string.error_not_found) // todo this isn't really an error
@@ -93,6 +95,7 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
                 it
             }
         }
+    }
 
     fun <T : ViewDataBinding> bindView(
         parent: ViewGroup,

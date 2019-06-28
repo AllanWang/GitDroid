@@ -128,7 +128,7 @@ class RepoFilePresenter(
                 when (obj) {
                     is ObjectItem.AsTree -> obj.entries?.map { it.fragments.treeEntryItem }
                     is ObjectItem.AsCommit -> obj.tree.entries?.map { it.fragments.treeEntryItem }
-                    else -> throw CancellationException(("Expected object to be tree, but actually ${obj.__typename}"))
+                    else -> throw CancellationException(("Expected object to be tree, but actually ${obj?.__typename}"))
                 }
             showEntries(entries ?: emptyList())
         }

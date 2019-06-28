@@ -34,9 +34,26 @@ inline fun <T, R> Response<T>.fmap(action: (T?) -> R): GitResponse<R> = GitRespo
     fromCache = fromCache()
 )
 
+inline fun <T, R> GitResponse<T>.fmap(action: (T) -> R): GitResponse<R> = GitResponse(
+    operation = operation,
+    data = action(data),
+    errors = errors,
+    dependentKeys = dependentKeys,
+    fromCache = fromCache
+)
+
+
 interface GitCall<T> {
     suspend fun call(forceRefresh: Boolean = false): GitResponse<T>
 }
+
+inline fun <T, R> GitCall<T>.fmap(crossinline action: (T) -> R): GitCall<R> = object : GitCall<R> {
+    override suspend fun call(forceRefresh: Boolean): GitResponse<R> =
+        this@fmap.call(forceRefresh).fmap(action)
+}
+
+inline fun <T, R> GitCall<List<T>>.lmap(crossinline action: (T) -> R): GitCall<List<R>> =
+    fmap { list -> list.map(action) }
 
 interface GitGraphQl {
 
@@ -55,12 +72,12 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun <D : Operation.Data, T : Any, V : Operation.Variables>
+    fun <D : Operation.Data, T : Any, V : Operation.Variables>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>
     ): GitCall<T?> = query(query) { it }
 
-    suspend fun <D : Operation.Data, T : Any, V : Operation.Variables, R>
+    fun <D : Operation.Data, T : Any, V : Operation.Variables, R>
             query(
         query: com.apollographql.apollo.api.Query<D, T, V>,
         mapper: (T?) -> R
@@ -73,7 +90,7 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun <D : Operation.Data, T : Any, V : Operation.Variables, R>
+    fun <D : Operation.Data, T : Any, V : Operation.Variables, R>
             queryList(
         query: com.apollographql.apollo.api.Query<D, T, V>,
         mapper: T.() -> List<R>?
@@ -88,14 +105,14 @@ interface GitGraphQl {
         }
     }
 
-    suspend fun me(): GitCall<MeQuery.Data?> = query(MeQuery())
+    fun me(): GitCall<MeQuery.Data?> = query(MeQuery())
 
-    suspend fun getProfile(login: String): GitCall<GetProfileQuery.User?> =
+    fun getProfile(login: String): GitCall<GetProfileQuery.User?> =
         query(GetProfileQuery(login)) {
             it?.user
         }
 
-    suspend fun searchUserIssues(
+    fun searchUserIssues(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -109,12 +126,12 @@ interface GitGraphQl {
             search.nodes?.mapNotNull { it.fragments.shortIssueRowItem }
         }
 
-    suspend fun getIssue(repo: GitNameAndOwner, issueNumber: Int): GitCall<FullIssue?> =
+    fun getIssue(repo: GitNameAndOwner, issueNumber: Int): GitCall<FullIssue?> =
         query(GetIssueQuery(repo.owner, repo.name, issueNumber)) {
             it?.repository?.issue?.fragments?.fullIssue
         }
 
-    suspend fun searchUserRepos(
+    fun searchUserRepos(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -129,7 +146,7 @@ interface GitGraphQl {
             user?.repositories?.nodes?.mapNotNull { it.fragments.shortRepoRowItem }
         }
 
-    suspend fun searchRepos(
+    fun searchRepos(
         query: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -145,13 +162,13 @@ interface GitGraphQl {
         }
 
 
-    suspend fun getRepo(repo: GitNameAndOwner): GitCall<FullRepo?> =
+    fun getRepo(repo: GitNameAndOwner): GitCall<FullRepo?> =
         query(GetRepoQuery(repo.owner, repo.name)) {
             it?.repository?.fragments?.fullRepo
         }
 
 
-    suspend fun getRepoObject(repo: GitNameAndOwner, oid: GitObjectID?): GitCall<ObjectItem?> =
+    fun getRepoObject(repo: GitNameAndOwner, oid: GitObjectID?): GitCall<ObjectItem?> =
         if (oid == null) {
             query(GetRepoDefaultObjectQuery(repo.owner, repo.name)) {
                 it?.repository?.defaultBranchRef?.target?.fragments?.objectItem
@@ -163,7 +180,7 @@ interface GitGraphQl {
         }
 
 
-    suspend fun searchPullRequests(
+    fun searchPullRequests(
         login: String,
         count: Int = GET_COUNT,
         cursor: String? = null
@@ -177,7 +194,7 @@ interface GitGraphQl {
             search.nodes?.mapNotNull { it.fragments.shortPullRequestRowItem }
         }
 
-    suspend fun getRefs(
+    fun getRefs(
         repo: GitNameAndOwner,
         branchCursor: String? = null,
         getBranches: Boolean = false,

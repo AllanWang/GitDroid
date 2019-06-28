@@ -27,7 +27,7 @@ interface PresenterContext {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean = false): T
+    suspend fun <T> GitCall<T>.await(forceRefresh: Boolean = false): T
 }
 
 abstract class BasePresenter(presenterContext: PresenterContext) : CoroutineScope,
