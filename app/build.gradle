@@ -34,6 +34,11 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
     implementation "com.squareup.sqldelight:android-driver:${Versions.sqlDelight}"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
+
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt
 

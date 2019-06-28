@@ -21,6 +21,10 @@ interface GitCall<T> {
     suspend fun call(forceRefresh: Boolean = false): Response<T>
 }
 
+//class GitCallMap<T, R>(val gitCall: GitCall<T>, val mapper: (T)-> R): GitCall<R> {
+//
+//}
+
 fun <T, R> GitCall<T>.fmap(action: (T) -> R?): GitCall<R> = object : GitCall<R> {
     override suspend fun call(forceRefresh: Boolean): Response<R> = this@fmap.call(forceRefresh).fmap(action)
 }
@@ -29,6 +33,14 @@ fun <T, R : Any> GitCall<List<T>>.lmap(action: (T) -> R?): GitCall<List<R>> = ob
     override suspend fun call(forceRefresh: Boolean): Response<List<R>> =
         this@lmap.call(forceRefresh).fmap { list -> list.mapNotNull(action) }
 }
+
+data class GitCallResponse<T>(
+    val operation: Operation<*, *, *>,
+    val data: T,
+    val errors: List<Error>,
+    val dependentKeys: Set<String>,
+    val fromCache: Boolean
+)
 
 interface GitGraphQl {
 
