@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package ca.allanwang.gitdroid.viewmodel
+package ca.allanwang.gitdroid.viewmodel.base
 
 import androidx.lifecycle.LiveData
 
@@ -64,3 +64,5 @@ open class MutableLiveDataKtx<T> : LiveDataKtx<T>() {
         super.postValue(value)
     }
 }
+
+typealias IntentLiveData<T> = MutableLiveDataKtx<T>

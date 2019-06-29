@@ -1,7 +1,9 @@
-package ca.allanwang.gitdroid.viewmodel
+package ca.allanwang.gitdroid.viewmodel.base
 
-import androidx.lifecycle.MutableLiveData
+import android.os.Bundle
+import androidx.annotation.CheckResult
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
@@ -27,20 +29,22 @@ open class BaseViewModel : ViewModel(), KoinComponent {
 
     suspend fun <T> GitCall<T>.await(forceRefresh: Boolean): LoadingData<T> =
         with(call(forceRefresh = forceRefresh)) {
-            errors.also {
-                if (it.isNotEmpty()) {
-                    L.e { "Error in ${operation.name()}" }
-                    gitCallErrors.send(it)
-                    return@with FailedLoad
-                }
+            if (errors.isNotEmpty()) {
+                L.e { "Error in ${operation.name()}" }
+                gitCallErrors.send(errors)
+                return@with FailedLoad
             }
             LoadedData(data)
         }
 
+    protected open fun withBundle(bundle: Bundle) {}
+
+    @CheckResult(suggest = "Apply using execute")
     protected fun <T> gitCallLaunch(liveData: LoadingLiveData<T>, call: GitCall<T>): GitCallExecutor =
         object : GitCallExecutor {
             override fun execute(forceRefresh: Boolean) {
                 liveData.value = Loading
+                L.d { "Post entries" }
                 viewModelScope.launch {
                     val result = call.await(forceRefresh)
                     liveData.postValue(result)
@@ -48,17 +52,20 @@ open class BaseViewModel : ViewModel(), KoinComponent {
             }
         }
 
-
-    protected fun <T> gitCallListLaunch(liveData: LoadingLiveData<List<T>>, call: GitCall<List<T>>): GitCallExecutor =
-        object : GitCallExecutor {
-            override fun execute(forceRefresh: Boolean) {
-                liveData.value = Loading
-                viewModelScope.launch {
-                    val result = call.await(forceRefresh).map { it ?: emptyList() }
-                    liveData.postValue(result)
-                }
+    class Factory(val bundle: Bundle?) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (!BaseViewModel::class.java.isAssignableFrom(modelClass)) {
+                throw RuntimeException("Requested view model ${modelClass.simpleName} does not extend ${BaseViewModel::class.java.simpleName}")
             }
+            val model = modelClass.newInstance()
+            if (model is BaseViewModel && bundle != null) {
+                model.withBundle(bundle)
+            }
+            return model
         }
+
+    }
+
 }
 
 
@@ -70,7 +77,7 @@ interface GitCallExecutor {
 }
 
 
-typealias LoadingLiveData<T> = MutableLiveData<LoadingData<T>>
+typealias LoadingLiveData<T> = MutableLiveDataKtx<LoadingData<T>>
 typealias LoadingListLiveData<T> = LoadingLiveData<List<T>>
 
 sealed class LoadingData<out T>

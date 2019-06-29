@@ -38,6 +38,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}"
 
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt

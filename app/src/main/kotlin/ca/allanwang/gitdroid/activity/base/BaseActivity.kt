@@ -12,6 +12,9 @@ import androidx.annotation.MenuRes
 import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
@@ -23,6 +26,7 @@ import ca.allanwang.gitdroid.presenters.PresenterContext
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
+import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
@@ -32,8 +36,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 abstract class BaseActivity : KauBaseActivity(), PresenterContext {
 
@@ -107,6 +109,9 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
         binding.action()
         return binding
     }
+
+    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory? = BaseViewModel.Factory(intent.extras)) =
+        ViewModelProviders.of(this, factory).get(T::class.java).apply { L.d { "Activity view model ${hashCode()}" } }
 
     fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {
         val tintList = ColorStateList.valueOf(Color.WHITE)

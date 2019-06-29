@@ -3,6 +3,7 @@ package ca.allanwang.gitdroid.views.utils
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.annotation.PluralsRes
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,3 +20,10 @@ fun <T> List<T>.repeat(n: Int): List<T> = generateSequence { this }.take(n).flat
  * Lazy without thread safety
  */
 fun <T> lazyUi(initializer: () -> T) = lazy(LazyThreadSafetyMode.NONE, initializer)
+
+var RecyclerView.fastAdapter: FastBindingAdapter
+    set(value) {
+        adapter = value
+    }
+    get() = adapter as? FastBindingAdapter
+        ?: throw RuntimeException("${FastBindingAdapter::class.java.simpleName} not bound to recyclerview")

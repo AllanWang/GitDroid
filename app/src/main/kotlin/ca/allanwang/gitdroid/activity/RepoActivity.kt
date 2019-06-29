@@ -1,16 +1,21 @@
 package ca.allanwang.gitdroid.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitRef
 import ca.allanwang.gitdroid.data.gitRef
-import ca.allanwang.gitdroid.presenters.RepoFilePresenter
-import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
+import ca.allanwang.gitdroid.databinding.ViewViewpagerBinding
+import ca.allanwang.gitdroid.fragment.RepoFileFragment
+import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
@@ -21,12 +26,14 @@ import ca.allanwang.kau.utils.startActivity
 import com.afollestad.materialdialogs.list.customListAdapter
 import kotlinx.coroutines.launch
 
-class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
+class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
 
     override val layoutRes: Int
-        get() = R.layout.view_repo_files
+        get() = R.layout.view_viewpager
 
     val repo by repoExtra()
+
+    lateinit var model: RepoViewModel
 
     private var currentRef: GitRef? = null
 
@@ -45,7 +52,19 @@ class RepoActivity : ToolbarActivity<ViewRepoFilesBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RepoFilePresenter(binding, this, repo)
+        model = viewModel()
+        model.repo.value = repo
+        binding.viewpager.adapter = RepoPagerAdapter(supportFragmentManager)
+    }
+
+    @SuppressLint("WrongConstant")
+    class RepoPagerAdapter(manager: FragmentManager) :
+        FragmentPagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        override fun getItem(position: Int): Fragment = items[position].java.newInstance()
+
+        override fun getCount(): Int = items.size
+
+        val items = arrayOf(RepoFileFragment::class)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

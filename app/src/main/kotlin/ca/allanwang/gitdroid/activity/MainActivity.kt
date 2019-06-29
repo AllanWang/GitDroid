@@ -124,9 +124,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 cache[id] = data
                 if (currentId == id) {
                     refresh.isRefreshing = false
-                    yield()
                     RvAnimation.set(recycler, fastAdapter)
-                    yield()
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {
