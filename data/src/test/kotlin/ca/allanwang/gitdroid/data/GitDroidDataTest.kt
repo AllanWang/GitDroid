@@ -47,9 +47,10 @@ class GitDroidDataTest : KoinTest {
         stopKoin()
     }
 
-    private suspend fun <T : Any> GitCall<T>.validate(): T = with(call(forceRefresh = true)) {
-        assertTrue(errors().isEmpty(), "Found errors: ${errors()}")
-        assertNotNull(data(), "Result is empty")
+    private suspend fun <T: Any?> GitCall<T>.validate(): T = with(call(forceRefresh = true)) {
+        assertTrue(errors.isEmpty(), "Found errors: $errors")
+        assertTrue(data != null, "Result is empty")
+        data
     }
 
     @Test
@@ -57,7 +58,7 @@ class GitDroidDataTest : KoinTest {
         runBlocking {
             val r = gdd.getProfile("allanwang").validate()
 //            r.user!!.contributionsCollection.fragments.shortContributions.contributionCalendar.months[0].firstDay
-            assertEquals("AllanWang", r.login)
+            assertEquals("AllanWang", r?.login)
             println(r)
         }
     }
