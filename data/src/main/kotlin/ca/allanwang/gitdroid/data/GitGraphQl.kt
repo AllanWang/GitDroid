@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit
 
 private const val GET_COUNT = 30
 
+/**
+ * Kotlin copy of [Response], but with the possibility of nonnull data.
+ */
 data class GitResponse<T>(
     val operation: Operation<*, *, *>,
     val data: T,
