@@ -52,9 +52,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private suspend fun loadRepos(): GitCallVhList = gdd.searchUserRepos(me().login).lmap { it.vh() }
-
     private suspend fun loadIssues(): GitCallVhList = gdd.searchUserIssues(me().login).lmap { it.vh() }
-    private suspend fun loadPullRequests(): GitCallVhList = gdd.searchPullRequests(me().login).lmap { it.vh() }
+    private suspend fun loadPullRequests(): GitCallVhList = gdd.searchUserPullRequests(me().login).lmap { it.vh() }
 
     @SuppressLint("PrivateResource")
     private fun ActivityMainBinding.bindContent() {
