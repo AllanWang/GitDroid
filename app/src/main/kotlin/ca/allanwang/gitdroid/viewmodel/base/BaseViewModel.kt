@@ -5,7 +5,7 @@ import androidx.annotation.CheckResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import ca.allanwang.gitdroid.data.GitCall
+import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database

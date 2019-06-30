@@ -1,5 +1,6 @@
 package ca.allanwang.gitdroid.data
 
+import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.data.internal.PrivProps
 import kotlinx.coroutines.runBlocking
 import org.junit.Assume

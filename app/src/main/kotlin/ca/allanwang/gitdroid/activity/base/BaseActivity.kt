@@ -18,7 +18,7 @@ import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
 import ca.allanwang.gitdroid.activity.MainActivity
-import ca.allanwang.gitdroid.data.GitCall
+import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database
