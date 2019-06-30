@@ -7,13 +7,14 @@ import android.widget.LinearLayout
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
-import ca.allanwang.gitdroid.views.utils.PathCrumb
+import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.item.PathCrumbHomeVhBinding
 import ca.allanwang.gitdroid.views.item.PathCrumbVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.SquareDecoration
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.PathCrumb
 import ca.allanwang.kau.utils.drawable
 import ca.allanwang.kau.utils.tint
 import ca.allanwang.kau.utils.withAlpha
@@ -23,7 +24,7 @@ import ca.allanwang.kau.utils.withAlpha
  *  [info] is nonnull if the callback comes from a click event in the adapter.
  *  It is null otherwise, such as on back press
  */
-typealias PathCrumbsCallback = (data: PathCrumb?) -> Unit
+typealias PathCrumbsCallback = (oid: GitObjectID?) -> Unit
 
 
 class PathCrumbsView @JvmOverloads constructor(
@@ -47,13 +48,12 @@ class PathCrumbsView @JvmOverloads constructor(
             } else {
                 when (item) {
                     is PathCrumbHomeVhBinding -> {
-                        callback?.invoke(null)
-                        fastAdapter
+                        callback?.invoke(item.data)
                         fastAdapter.removeRange(1, adapter.adapterItemCount - 1)
                         true
                     }
                     is PathCrumbVhBinding -> {
-                        callback?.invoke(item.data)
+                        callback?.invoke(item.data.oid)
                         fastAdapter.removeRange(
                             position + 1,
                             this@PathCrumbsView.fastAdapter.adapterItemCount - position
@@ -64,31 +64,8 @@ class PathCrumbsView @JvmOverloads constructor(
                 }
             }
         }
-        super.setAdapter(fastAdapter.apply {
-            onClickListener = { v, adapter, item, position ->
-                if (position == adapter.adapterItemCount - 1) {
-                    false
-                } else {
-                    when (item) {
-                        is PathCrumbHomeVhBinding -> {
-                            callback?.invoke(null)
-                            this@PathCrumbsView.fastAdapter.removeRange(1, adapter.adapterItemCount - 1)
-                            true
-                        }
-                        is PathCrumbVhBinding -> {
-                            callback?.invoke(item.data)
-                            this@PathCrumbsView.fastAdapter.removeRange(
-                                position + 1,
-                                this@PathCrumbsView.fastAdapter.adapterItemCount - position
-                            )
-                            true
-                        }
-                        else -> false
-                    }
-                }
-            }
-        })
-        fastAdapter.add(PathCrumbHomeVhBinding)
+        fastAdapter.add(PathCrumbHomeVhBinding(null))
+        super.setAdapter(fastAdapter)
         addItemDecoration(
             SquareDecoration(
                 context,
@@ -107,13 +84,17 @@ class PathCrumbsView @JvmOverloads constructor(
         }
     }
 
-    fun setCrumbs(crumbs: List<PathCrumb>) {
-        val data = listOf(PathCrumbHomeVhBinding) + crumbs.map { it.vh() }
-        fastAdapter.setNewList(data)
-        postDelayed(100) {
+    fun setCrumbs(rootOid: GitObjectID?, crumbs: List<PathCrumb>) {
+        val crumbsVh = listOf(PathCrumbHomeVhBinding(rootOid)) + crumbs.map { PathCrumbVhBinding(it) }
+        fastAdapter.setWithDiff(crumbsVh, false)
+        postDelayed(100)
+        {
             smoothScrollToPosition(fastAdapter.adapterItemCount - 1)
         }
     }
+
+    val crumbCount: Int
+        get() = fastAdapter.adapterItemCount
 
     fun getCrumbs(): List<PathCrumb> = fastAdapter.adapterItems.mapNotNull { (it as? PathCrumbVhBinding)?.data }
 
@@ -128,7 +109,7 @@ class PathCrumbsView @JvmOverloads constructor(
         if (size <= 1) {
             return false
         }
-        callback?.invoke((fastAdapter.getItem(size - 2) as? PathCrumbVhBinding)?.data)
+        callback?.invoke((fastAdapter.getItem(size - 2) as? PathCrumbVhBinding)?.data?.oid)
         fastAdapter.remove(size - 1)
         return true
     }

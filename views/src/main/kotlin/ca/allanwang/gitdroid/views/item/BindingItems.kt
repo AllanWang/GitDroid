@@ -2,14 +2,18 @@ package ca.allanwang.gitdroid.views.item
 
 import androidx.annotation.StringRes
 import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.data.GitObjectID
+import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.databinding.*
 import ca.allanwang.gitdroid.views.utils.*
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
 import github.fragment.*
 
-open class BlankViewHolderBinding(override val layoutRes: Int) : BindingItem<ViewDataBinding>(Unit)
+open class BlankViewHolderBinding(override val layoutRes: Int) : BindingItem<ViewDataBinding>(Unit) {
+    final override fun ViewDataBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {}
+    final override fun ViewDataBinding.unbindView(holder: ViewHolder) {}
+}
 
 abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val type: Int) :
     BindingItem<ViewIssueOrPrItemBinding>(data), BindingLayout<ViewIssueOrPrItemBinding> by Companion {
@@ -104,6 +108,8 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 
 }
 
+class PathCrumbHomeVhBinding(override val data: GitObjectID?) : BlankViewHolderBinding(R.layout.view_path_crumb_home)
+
 class PathCrumbVhBinding(override val data: PathCrumb) :
     BindingItem<ViewPathCrumbBinding>(data), BindingLayout<ViewPathCrumbBinding> by Companion {
 
@@ -123,8 +129,6 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
             get() = R.layout.view_path_crumb
     }
 }
-
-object PathCrumbHomeVhBinding : BlankViewHolderBinding(R.layout.view_path_crumb_home)
 
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
     BindingItem<ViewTreeEntryBinding>(data), BindingLayout<ViewTreeEntryBinding> by Companion {

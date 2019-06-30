@@ -85,7 +85,7 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
             val refs = gdd.getRefs(repo, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
             val entries = refs?.entries(currentRef?.oid)?.map { it.vh() } ?: emptyList()
             refAdapter.setNewList(entries)
-            context.materialDialog {
+            materialDialog {
                 customListAdapter(refAdapter)
             }
         }

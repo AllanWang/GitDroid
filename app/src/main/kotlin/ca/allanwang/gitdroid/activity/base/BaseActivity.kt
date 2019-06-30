@@ -1,6 +1,5 @@
 package ca.allanwang.gitdroid.activity.base
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -22,7 +21,6 @@ import ca.allanwang.gitdroid.activity.MainActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.presenters.PresenterContext
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
@@ -37,14 +35,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 
-abstract class BaseActivity : KauBaseActivity(), PresenterContext {
+abstract class BaseActivity : KauBaseActivity() {
 
     val prefs: Prefs by inject()
-    override val db: Database by inject()
-    override val gdd: GitDroidData by inject()
-
-    override val context: Context
-        get() = this
+    val db: Database by inject()
+    val gdd: GitDroidData by inject()
 
     fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
         DataBindingUtil.setContentView(this, layoutRes)
@@ -53,7 +48,7 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
      * Returns current user based on token
      * If not found, will auto redirect to the login page.
      */
-    override suspend fun me(): GitUser {
+    suspend fun me(): GitUser {
         val me = db.userQueries.select(prefs.token).awaitOptional()
         if (me == null) {
             withContext(Dispatchers.Main) {
@@ -67,7 +62,7 @@ abstract class BaseActivity : KauBaseActivity(), PresenterContext {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    override suspend fun <T> GitCall<T>.await(forceRefresh: Boolean): T {
+    suspend fun <T> GitCall<T>.await(forceRefresh: Boolean = true): T {
         return with(call(forceRefresh = forceRefresh)) {
             errors.also {
                 if (it.isNotEmpty()) {

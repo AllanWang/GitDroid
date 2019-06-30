@@ -45,16 +45,19 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
     override fun ViewRepoFilesBinding.onViewCreated(view: View, savedInstanceState: Bundle?) {
         repoRecycler.adapter = fastAdapter
         RvAnimation.FAST.set(repoRecycler)
-        fastAdapter.add(PlaceholderVhBinding(R.string.error))
 
-        repoPathCrumbs.callback = { data ->
-            model.entryLoader(data?.oid).execute(false)
+        // TODO position isn't currently in viewmodel
+        repoPathCrumbs.callback = { oid ->
+            model.entryLoader(oid).execute(false)
         }
         repoRefresh.setOnRefreshListener {
             model.entryLoader(repoPathCrumbs.getCurrentCrumb()?.oid).execute(true)
         }
         model.repo.observe {
             model.entryLoader(null).execute(false)
+        }
+        model.ref.observe {
+            repoPathCrumbs.setCrumbs(it?.oid, emptyList())
         }
         model.entries.observeLoadingData(repoRefresh, repoRecycler) { _, recycler, data ->
             L.d { "Entries received $data" }
