@@ -10,13 +10,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ca.allanwang.gitdroid.R
-import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.viewmodel.base.*
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
-import ca.allanwang.gitdroid.views.utils.fastAdapter
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment<Binding : ViewDataBinding> : Fragment() {
 
@@ -39,39 +40,54 @@ abstract class BaseFragment<Binding : ViewDataBinding> : Fragment() {
     fun <T> LiveData<T>.observe(handler: (T) -> Unit) =
         observe(viewLifecycleOwner, handler)
 
+    /**
+     * Observe loading cycles for the refresh layout.
+     * Refreshing can optionally be delayed if responses are typically quick, to avoid blinking the indicator.
+     * Set to a value below 0L to disable.
+     * Refresh cancellation always occurs, in case the user chooses to refresh manually
+     */
     @MainThread
-    fun <T> LoadingLiveData<T>.observeLoadingData(
+    fun <T> LoadingLiveData<T>.observeRefresh(
         refresh: SwipeRefreshLayout,
-        recycler: RecyclerView,
-        onLoading: ((refresh: SwipeRefreshLayout, recycler: RecyclerView) -> Unit)? = null,
-        onFailed: ((refresh: SwipeRefreshLayout, recycler: RecyclerView) -> Unit)? = null,
-        onLoad: (refresh: SwipeRefreshLayout, recycler: RecyclerView, data: T) -> Unit
+        delayMillis: Long = 0L
     ): Observer<LoadingData<T>> {
+        var pending: Job? = null
+        val scope = viewLifecycleOwner.lifecycleScope
         return observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Loading -> {
-                    if (onLoading != null) {
-                        onLoading(refresh, recycler)
-                    } else {
-                        refresh.isRefreshing = true
-                        recycler.fastAdapter.clear()
+                    when {
+                        delayMillis == 0L -> refresh.isRefreshing = true
+                        delayMillis > 0L -> pending = scope.launch {
+                            delay(delayMillis)
+                            refresh.isRefreshing = true
+                        }
+                        // Else ignore
                     }
                 }
+                is FailedLoad, is LoadedData -> {
+                    pending?.cancel()
+                    pending = null
+                    refresh.isRefreshing = false
+                }
+            }
+        }
+    }
+
+
+    @MainThread
+    fun <T> LoadingLiveData<T>.observeAdapter(
+        adapter: FastBindingAdapter,
+        onLoad: (data: T) -> Unit
+    ): Observer<LoadingData<T>> {
+        return observe(viewLifecycleOwner) { result ->
+            adapter.clear()
+            when (result) {
                 is FailedLoad -> {
-                    if (onFailed != null) {
-                        onFailed(refresh, recycler)
-                    } else {
-                        refresh.isRefreshing = false
-                        recycler.fastAdapter.apply {
-                            clear()
-                            add(PlaceholderVhBinding(R.string.error))
-                        }
-                    }
+                    adapter.add(PlaceholderVhBinding(R.string.error))
                 }
                 is LoadedData -> {
-                    refresh.isRefreshing = false
-                    recycler.fastAdapter.clear()
-                    onLoad(refresh, recycler, result.data)
+                    onLoad(result.data)
                 }
             }
         }

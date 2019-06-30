@@ -14,7 +14,6 @@ import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.PathCrumb
-import ca.allanwang.gitdroid.views.utils.fastAdapter
 import ca.allanwang.gitdroid.views.utils.lazyUi
 import github.fragment.TreeEntryItem
 
@@ -59,14 +58,17 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
         model.ref.observe {
             repoPathCrumbs.setCrumbs(it?.oid, emptyList())
         }
-        model.entries.observeLoadingData(repoRefresh, repoRecycler) { _, recycler, data ->
-            L.d { "Entries received $data" }
-            val vhs = data.map { it.vh() }
-            recycler.fastAdapter.apply {
-                if (vhs.isEmpty()) {
-                    add(PlaceholderVhBinding(R.string.error)) // TODO
-                } else {
-                    add(vhs)
+        model.entries.apply {
+            observeRefresh(repoRefresh, 1000L)
+            observeAdapter(fastAdapter) { data ->
+                L.d { "Entries received $data" }
+                val vhs = data.map { it.vh() }
+                fastAdapter.apply {
+                    if (vhs.isEmpty()) {
+                        add(PlaceholderVhBinding(R.string.error)) // TODO
+                    } else {
+                        add(vhs)
+                    }
                 }
             }
         }
