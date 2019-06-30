@@ -8,10 +8,10 @@ import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.utils.RvAnimation
-import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.startActivity
 import ca.allanwang.kau.utils.string
@@ -51,7 +51,8 @@ class UserActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         launchMain {
             val user = gdd.getProfile(login).await()
             binding.refresh.isRefreshing = false
-            fastAdapter.add(user.vhFull(this@UserActivity))
+            val vh = user?.vhFull(this@UserActivity)!! // TODO handle missing user
+            fastAdapter.add(vh)
         }
     }
 

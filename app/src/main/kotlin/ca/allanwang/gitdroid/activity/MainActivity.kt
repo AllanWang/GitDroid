@@ -14,18 +14,17 @@ import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
-import ca.allanwang.gitdroid.views.FastBindingAdapter
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.MarginDecoration
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.utils.dimenPixelSize
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.yield
 
 typealias GitCallVhList = GitCall<List<GenericBindingItem>>
 
@@ -52,10 +51,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setNavigationItemSelectedListener(this@MainActivity)
     }
 
-    private suspend fun loadRepos(): GitCallVhList = gdd.getUserRepos(me().login).lmap { it.vh() }
+    private suspend fun loadRepos(): GitCallVhList = gdd.searchUserRepos(me().login).lmap { it.vh() }
 
-    private suspend fun loadIssues(): GitCallVhList = gdd.getUserIssues(me().login).lmap { it.vh() }
-    private suspend fun loadPullRequests(): GitCallVhList = gdd.getPullRequests(me().login).lmap { it.vh() }
+    private suspend fun loadIssues(): GitCallVhList = gdd.searchUserIssues(me().login).lmap { it.vh() }
+    private suspend fun loadPullRequests(): GitCallVhList = gdd.searchPullRequests(me().login).lmap { it.vh() }
 
     @SuppressLint("PrivateResource")
     private fun ActivityMainBinding.bindContent() {
@@ -124,9 +123,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 cache[id] = data
                 if (currentId == id) {
                     refresh.isRefreshing = false
-                    yield()
                     RvAnimation.set(recycler, fastAdapter)
-                    yield()
                     fastAdapter.add(data)
                 }
             }.invokeOnCompletion {

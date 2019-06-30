@@ -11,7 +11,7 @@
 
     </data>
 
-    <ca.allanwang.gitdroid.views.custom.ContributionsView
+    <ca.allanwang.gitdroid.views.components.ContributionsView
         android:id="@+id/user_contributions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

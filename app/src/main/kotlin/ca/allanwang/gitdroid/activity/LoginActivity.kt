@@ -53,7 +53,7 @@ class LoginActivity : BaseActivity() {
             L.d { "Received new login" }
             prefs.token = token
             val gdd: GitDroidData = get()
-            val result = gdd.me().call(forceRefresh = true).data() ?: return
+            val result = gdd.me().call(forceRefresh = true).data ?: return
             val db: Database = get()
             with(result.viewer) {
                 db.userQueries.insert(

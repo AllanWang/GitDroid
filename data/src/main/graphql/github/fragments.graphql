@@ -8,6 +8,13 @@ fragment ObjectItem on GitObject {
         text
         isTruncated
     }
+    ... on Commit {
+        tree {
+            entries {
+                ...TreeEntryItem
+            }
+        }
+    }
 }
 
 fragment TreeEntryItem on TreeEntry {
@@ -57,10 +64,42 @@ fragment ShortRepoRowItem on Repository {
         totalCount
     }
     isPrivate
-    stargazers(first: 1) {
+    stargazers(first: 0) {
         totalCount
     }
-    watchers(first: 1) {
+    watchers(first: 0) {
+        totalCount
+    }
+    createdAt
+    updatedAt
+    pushedAt
+}
+
+fragment RepoMainInfo on Repository {
+    description
+    isFork
+    isArchived
+    isPrivate
+    isMirror
+    forkCount
+    primaryLanguage {
+        color
+        name
+    }
+    issues(first: 20, states: OPEN) {
+        totalCount
+    }
+    pullRequests(first: 20, states: OPEN) {
+        totalCount
+    }
+    forks(first: 20) {
+        totalCount
+    }
+    isPrivate
+    stargazers(first: 20) {
+        totalCount
+    }
+    watchers(first: 20) {
         totalCount
     }
     createdAt
@@ -75,18 +114,6 @@ fragment FullRepo on Repository {
     licenseInfo {
         key
         featured
-    }
-    defaultBranchRef {
-        ... ShortRef
-        target {
-            ... on Commit {
-                tree {
-                    entries {
-                        ...TreeEntryItem
-                    }
-                }
-            }
-        }
     }
 }
 

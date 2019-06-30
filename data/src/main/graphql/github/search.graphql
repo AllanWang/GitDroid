@@ -9,26 +9,6 @@ query searchRepos($query: String!, $count: Int, $cursor: String) {
     }
 }
 
-query repoInfo($query: String!) {
-    search(query: $query, type: REPOSITORY, first: 1) {
-        nodes {
-            ...FullRepo
-        }
-    }
-}
-
-query objectInfo($query: String!, $oid: GitObjectID!) {
-    search(query: $query, type: REPOSITORY, first: 1) {
-        nodes {
-            ... on Repository {
-                obj: object(oid: $oid) {
-                    ...ObjectItem
-                }
-            }
-        }
-    }
-}
-
 query searchIssues($query: String!, $count: Int, $cursor: String) {
     search(query: $query, type: ISSUE, first: $count, after: $cursor) {
         pageInfo {

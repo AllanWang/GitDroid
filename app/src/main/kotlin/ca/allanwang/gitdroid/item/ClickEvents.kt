@@ -10,7 +10,8 @@ import ca.allanwang.gitdroid.views.databinding.ViewIssueOrPrItemBinding
 import ca.allanwang.gitdroid.views.databinding.ViewRepoBinding
 import ca.allanwang.gitdroid.views.databinding.ViewSlimEntryBinding
 import ca.allanwang.gitdroid.views.item.*
-import ca.allanwang.gitdroid.data.nameAndOwner
+import ca.allanwang.gitdroid.data.gitNameAndOwner
+import ca.allanwang.gitdroid.data.gitRef
 import com.mikepenz.fastadapter.FastAdapter
 
 fun SlimEntryVhBinding.Companion.clickHook() =
@@ -53,7 +54,7 @@ fun RepoVhBinding.Companion.clickHook() =
             fastAdapter: FastAdapter<RepoVhBinding>,
             item: RepoVhBinding
         ) {
-            RepoActivity.launch(v.context, item.data.nameAndOwner())
+            RepoActivity.launch(v.context, item.data.gitNameAndOwner())
         }
     }
 

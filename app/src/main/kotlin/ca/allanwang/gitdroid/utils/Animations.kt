@@ -2,7 +2,8 @@ package ca.allanwang.gitdroid.utils
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.fastAdapter
 import ca.allanwang.kau.animators.*
 import ca.allanwang.kau.utils.KAU_BOTTOM
 
@@ -19,8 +20,8 @@ enum class RvAnimation(val animator: RecyclerView.ItemAnimator) {
         }),
     FAST(
         KauAnimator(
-            addAnimator = FadeScaleAnimatorAdd(),
-            removeAnimator = FadeScaleAnimatorRemove(),
+            addAnimator = FadeScaleAnimatorAdd(itemDelayFactor = 0f),
+            removeAnimator = FadeScaleAnimatorRemove(itemDelayFactor = 0f),
             changeAnimator = NoAnimatorChange()
         )
     ),
@@ -41,11 +42,10 @@ enum class RvAnimation(val animator: RecyclerView.ItemAnimator) {
     companion object {
         const val THRESHOLD = 300L
 
-        fun set(recyclerView: RecyclerView, lastChangeTime: Long) {
-            val anim = if (System.currentTimeMillis() - lastChangeTime > THRESHOLD) SMOOTH else FAST
+        fun set(recyclerView: RecyclerView, adapter: FastBindingAdapter = recyclerView.fastAdapter) {
+            val anim = if (System.currentTimeMillis() - adapter.lastClearTime > THRESHOLD) SMOOTH else FAST
             anim.set(recyclerView)
         }
 
-        fun set(recyclerView: RecyclerView, adapter: FastBindingAdapter) = set(recyclerView, adapter.lastClearTime)
     }
 }

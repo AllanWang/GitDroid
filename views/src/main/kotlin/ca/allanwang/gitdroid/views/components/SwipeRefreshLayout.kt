@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.views.custom
+package ca.allanwang.gitdroid.views.components
 
 import android.content.Context
 import android.util.AttributeSet

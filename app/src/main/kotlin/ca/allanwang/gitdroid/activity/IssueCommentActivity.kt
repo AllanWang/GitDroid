@@ -10,7 +10,7 @@ import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
-import ca.allanwang.gitdroid.views.FastBindingAdapter
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.views.item.IssueCommentVhBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
@@ -32,7 +32,8 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
     override val layoutRes: Int
         get() = R.layout.view_refresh_recycler
 
-    private val fastAdapter: FastBindingAdapter = FastBindingAdapter()
+    private val fastAdapter: FastBindingAdapter =
+        FastBindingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +62,7 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
         binding.refresh.isRefreshing = true
         launch {
             val issue = gdd.getIssue(repo, issueNumber).await()
-            val vhs = issue.comments.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
+            val vhs = issue?.comments?.nodes?.map { it.fragments.shortIssueComment.vh() } ?: emptyList()
             binding.refresh.isRefreshing = false
             if (vhs.isNotEmpty()) {
                 RvAnimation.set(binding.recycler, fastAdapter)

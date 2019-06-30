@@ -11,18 +11,24 @@ import androidx.annotation.MenuRes
 import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
+import ca.allanwang.gitdroid.activity.MainActivity
 import ca.allanwang.gitdroid.data.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
+import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
+import ca.allanwang.kau.utils.startActivity
 import github.sql.GitUser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -56,11 +62,11 @@ abstract class BaseActivity : KauBaseActivity() {
     /**
      * Get call data, cancelling if an error occurred or if null data was received
      */
-    suspend fun <T : Any> GitCall<T>.await(forceRefresh: Boolean = false): T =
-        with(call(forceRefresh = forceRefresh)) {
-            errors().also {
+    suspend fun <T> GitCall<T>.await(forceRefresh: Boolean = true): T {
+        return with(call(forceRefresh = forceRefresh)) {
+            errors.also {
                 if (it.isNotEmpty()) {
-                    L.e { "Error in ${operation().name()}" }
+                    L.e { "Error in ${operation.name()}" }
                     if (BuildConfig.DEBUG) {
                         withContext(Dispatchers.Main) {
                             materialDialog {
@@ -73,10 +79,10 @@ abstract class BaseActivity : KauBaseActivity() {
                             snackbar(R.string.error_occurred)
                         }
                     }
-                    throw CancellationException("Error in ${operation().name()}")
+                    throw CancellationException("Error in ${operation.name()}")
                 }
             }
-            data().let {
+            data.let {
                 if (it == null) {
                     withContext(Dispatchers.Main) {
                         snackbar(R.string.error_not_found) // todo this isn't really an error
@@ -86,6 +92,7 @@ abstract class BaseActivity : KauBaseActivity() {
                 it
             }
         }
+    }
 
     fun <T : ViewDataBinding> bindView(
         parent: ViewGroup,
@@ -97,6 +104,9 @@ abstract class BaseActivity : KauBaseActivity() {
         binding.action()
         return binding
     }
+
+    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory? = BaseViewModel.Factory(intent.extras)) =
+        ViewModelProviders.of(this, factory).get(T::class.java).apply { L.d { "Activity view model ${hashCode()}" } }
 
     fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {
         val tintList = ColorStateList.valueOf(Color.WHITE)
@@ -111,7 +121,7 @@ abstract class BaseActivity : KauBaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> if (BuildConfig.DEBUG) startActivity<MainActivity>() else onBackPressed()
             else -> return super.onOptionsItemSelected(item)
         }
         return true

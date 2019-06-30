@@ -27,4 +27,6 @@ object Versions {
     const val sqlDelight = "1.1.3"
     // https://github.com/mikepenz/FastAdapter/releases
     const val fastAdapter = "4.0.1"
+    // https://developer.android.com/topic/libraries/architecture/coroutines
+    const val lifecycle = "2.2.0-alpha01"
 }

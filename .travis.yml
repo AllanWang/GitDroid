@@ -21,7 +21,7 @@ android:
   - ".+"
 script:
 - "./gradlew --quiet androidGitVersion"
-- "./gradlew lintRelease test"
+- "./gradlew lintRelease testReleaseUnitTest"
 branches:
   except:
   - gh-pages

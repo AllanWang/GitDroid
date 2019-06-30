@@ -19,7 +19,7 @@
                 android:id="@+id/view_toolbar"
                 layout="@layout/view_toolbar" />
 
-            <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
+            <ca.allanwang.gitdroid.views.components.SwipeRefreshLayout
                 android:id="@+id/refresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -32,7 +32,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:context=".activity.MainActivity" />
 
-            </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
+            </ca.allanwang.gitdroid.views.components.SwipeRefreshLayout>
 
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

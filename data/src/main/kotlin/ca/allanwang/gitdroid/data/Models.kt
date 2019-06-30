@@ -20,10 +20,10 @@ data class GitNameAndOwner(val name: String, val owner: String) : Parcelable {
         get() = "$owner/$name"
 }
 
-fun ShortIssueRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
-fun ShortPullRequestRowItem.nameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.nameAndOwner()
-fun ShortRepoRowItem.nameAndOwner(): GitNameAndOwner = fragments.repoNameAndOwner.nameAndOwner()
-fun RepoNameAndOwner.nameAndOwner(): GitNameAndOwner =
+fun ShortIssueRowItem.gitNameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.gitNameAndOwner()
+fun ShortPullRequestRowItem.gitNameAndOwner(): GitNameAndOwner = repository.fragments.repoNameAndOwner.gitNameAndOwner()
+fun ShortRepoRowItem.gitNameAndOwner(): GitNameAndOwner = fragments.repoNameAndOwner.gitNameAndOwner()
+fun RepoNameAndOwner.gitNameAndOwner(): GitNameAndOwner =
     GitNameAndOwner(name = name, owner = owner.login)
 
 data class GitRefs(
@@ -32,3 +32,9 @@ data class GitRefs(
     val tagRefs: List<ShortRef>,
     val tagCursor: String?
 )
+
+@Parcelize
+data class GitRef(val name: String, val prefix: String, val oid: GitObjectID): Parcelable
+
+fun ShortRef.gitRef(): GitRef = GitRef(name, prefix, target.oid)
+fun ShortRepoRowItem.gitRef(): GitRef? = defaultBranchRef?.fragments?.shortRef?.gitRef()

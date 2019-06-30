@@ -30,7 +30,7 @@ class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
 
         launch {
 
-            val blob: ObjectItem.AsBlob? = gdd.getObject(repo, oid).await() as? ObjectItem.AsBlob
+            val blob: ObjectItem.AsBlob? = gdd.getRepoObject(repo, oid).await() as? ObjectItem.AsBlob
             val content = blob?.text ?: "Error"
             binding.codeview.setData(
                 content,

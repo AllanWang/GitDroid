@@ -12,6 +12,7 @@ dependencies {
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt
     implementation "com.mikepenz:fastadapter:${Versions.fastAdapter}"
+    implementation "com.mikepenz:fastadapter-extensions-diff:${Versions.fastAdapter}"
 
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 }

@@ -1,4 +1,4 @@
-package ca.allanwang.gitdroid.views
+package ca.allanwang.gitdroid.views.utils
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import ca.allanwang.gitdroid.views.R
 import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.invisibleIf
 import ca.allanwang.kau.utils.round

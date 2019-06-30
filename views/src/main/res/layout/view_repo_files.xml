@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout
+    <ca.allanwang.gitdroid.views.components.SwipeRefreshLayout
         android:id="@+id/repo_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ca.allanwang.gitdroid.views.custom.PathCrumbsView
+            <ca.allanwang.gitdroid.views.components.PathCrumbsView
                 android:id="@+id/repo_path_crumbs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,10 +27,11 @@
                 android:id="@+id/repo_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                tools:listitem="@layout/view_tree_entry"
                 android:layout_weight="1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </LinearLayout>
-    </ca.allanwang.gitdroid.views.custom.SwipeRefreshLayout>
+    </ca.allanwang.gitdroid.views.components.SwipeRefreshLayout>
 
 </layout>
