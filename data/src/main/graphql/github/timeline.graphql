@@ -1,0 +1,174 @@
+
+query getPullRequestTimeline($login: String!, $repo: String!, $number: Int!,$count: Int!, $cursor: String) {
+    repository(owner: $login, name: $repo) {
+        pullRequest(number: $number) {
+            timelineItems(first: $count, after: $cursor) {
+                pageInfo {
+                    ...ShortPageInfo
+                }
+                nodes {
+                    ...ShortPullRequestTimelineItems
+                }
+            }
+        }
+    }
+}
+
+
+fragment ShortPullRequestTimelineItems on PullRequestTimelineItems {
+    ...ShortPullRequestCommit
+    # CommitCommentThread
+    # PullRequestReview
+    # PullRequestReviewThread
+    # PullRequestReviewComment
+    ...ShortIssueComment
+    ...ShortClosedEvent
+    ...ShortReopenedEvent
+    ...ShortSubscribedEvent
+    ...ShortUnsubscribedEvent
+    ...ShortMergedEvent
+    ...ShortReferencedEvent
+    ...ShortAssignedEvent
+    ...ShortUnassignedEvent
+    ...ShortLabeledEvent
+    ...ShortUnlabeledEvent
+    ...ShortMilestonedEvent
+    ...ShortRenamedTitleEvent
+    ...ShortLockedEvent
+    ...ShortUnlockedEvent
+}
+
+fragment ShortClosedEvent on ClosedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    closer {
+        ...ShortCommit
+        ...ShortPullRequestRowItem
+    }
+}
+
+fragment ShortReopenedEvent on ReopenedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+}
+
+fragment ShortSubscribedEvent on SubscribedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+}
+
+fragment ShortUnsubscribedEvent on UnsubscribedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+}
+
+fragment ShortMergedEvent on MergedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    commit {
+        ...ShortCommit
+    }
+}
+
+fragment ShortReferencedEvent on ReferencedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    commit {
+        ...ShortCommit
+    }
+    commitRepository {
+        ...ShortRepoRowItem # TODO verify
+    }
+}
+
+fragment ShortAssignedEvent on AssignedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    user {
+        ...ShortActor
+    }
+}
+
+fragment ShortUnassignedEvent on UnassignedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    user {
+        ...ShortActor
+    }
+}
+
+fragment ShortLabeledEvent on LabeledEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    label {
+        ...ShortLabel
+    }
+}
+
+fragment ShortUnlabeledEvent on UnlabeledEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    label {
+        ...ShortLabel
+    }
+}
+
+fragment ShortMilestonedEvent on MilestonedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    milestoneTitle
+}
+
+fragment ShortDemilestonedEvent on DemilestonedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    milestoneTitle
+}
+
+fragment ShortRenamedTitleEvent on RenamedTitleEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    currentTitle
+    previousTitle
+}
+
+fragment ShortLockedEvent on LockedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+    lockReason
+}
+
+fragment ShortUnlockedEvent on UnlockedEvent {
+    actor {
+        ...ShortActor
+    }
+    createdAt
+}

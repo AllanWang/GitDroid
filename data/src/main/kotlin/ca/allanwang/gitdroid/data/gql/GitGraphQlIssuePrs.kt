@@ -6,6 +6,7 @@ import ca.allanwang.gitdroid.data.GitRefs
 import com.apollographql.apollo.api.Input
 import github.*
 import github.fragment.FullIssue
+import github.fragment.FullPullRequest
 import github.fragment.FullRepo
 import github.fragment.ObjectItem
 
@@ -19,6 +20,11 @@ interface GitGraphQlIssuePrs : GitGraphQlBase {
     fun getRepo(repo: GitNameAndOwner): GitCall<FullRepo?> =
         query(GetRepoQuery(repo.owner, repo.name)) {
             it?.repository?.fragments?.fullRepo
+        }
+
+    fun getPullRequest(repo: GitNameAndOwner, issueNumber: Int): GitCall<FullPullRequest?> =
+        query(GetPullRequestQuery(repo.owner, repo.name, issueNumber)) {
+            it?.repository?.pullRequest?.fragments?.fullPullRequest
         }
 
 

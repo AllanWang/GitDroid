@@ -186,10 +186,16 @@ fragment ShortActor on Actor {
     url
 }
 
-fragment CommitFragment on Commit {
+fragment ShortPullRequestCommit on PullRequestCommit {
+    c: commit {
+        ...ShortCommit
+    }
+}
+
+fragment ShortCommit on Commit {
     author {
         name
-        avatarUrl
+        avatarUrl(size: 150)
     }
     message
     abbreviatedOid
@@ -198,6 +204,60 @@ fragment CommitFragment on Commit {
     authoredDate
     committedViaWeb
     id
+}
+
+fragment FullPullRequest on PullRequest {
+    id
+    databaseId
+    number
+    title
+    bodyHTML
+    body
+    state
+    createdAt
+    updatedAt
+    closed
+    closedAt
+    locked
+    activeLockReason
+    viewerSubscription
+    viewerDidAuthor
+    viewerCannotUpdateReasons
+    viewerCanUpdate
+    viewerCanSubscribe
+    url
+    ...ShortReaction
+    author {
+        ...ShortActor
+    }
+    createdViaEmail
+    repository {
+        nameWithOwner
+    }
+    authorAssociation
+    comments(first: 20) {
+        nodes {
+            ...ShortIssueComment
+        }
+    }
+    participants(first: 10) {
+        nodes {
+            ... ShortUserRowItem
+        }
+    }
+    labels(first: 30) {
+        nodes {
+            ... ShortLabel
+        }
+    }
+    #    assignees(first: 30) {
+    #        nodes {
+    #            ... ShortUserRowItem
+    #        }
+    #    }
+    #    milestone {
+    #        ...MilestoneFragment
+    #    }
 }
 
 fragment FullIssue on Issue {
@@ -241,7 +301,7 @@ fragment FullIssue on Issue {
     }
     labels(first: 30) {
         nodes {
-            ... Labels
+            ... ShortLabel
         }
     }
     #    assignees(first: 30) {
@@ -288,7 +348,7 @@ fragment ShortReactionGroup on ReactionGroup {
     }
 }
 
-fragment Labels on Label {
+fragment ShortLabel on Label {
     color
     description
     name
@@ -298,7 +358,7 @@ fragment Labels on Label {
     isDefault
 }
 
-fragment MilestoneFragment on Milestone {
+fragment ShortMilestone on Milestone {
     description
     dueOn
     id
