@@ -11,8 +11,37 @@ query me {
 query searchUserRepos($login: String!, $count: Int, $cursor: String) {
     user(login: $login) {
         repositories(first: $count, after: $cursor, orderBy: {direction: DESC, field: PUSHED_AT}) {
+            pageInfo {
+                ...ShortPageInfo
+            }
             nodes {
                 ... ShortRepoRowItem
+            }
+        }
+    }
+}
+
+query searchUserIssues($login: String!, $count: Int, $cursor: String) {
+    user(login: $login) {
+        issues(first: $count, after: $cursor, orderBy: {direction: DESC, field: UPDATED_AT}) {
+            pageInfo {
+                ...ShortPageInfo
+            }
+            nodes {
+                ... ShortIssueRowItem
+            }
+        }
+    }
+}
+
+query searchUserPullRequests($login: String!, $count: Int, $cursor: String) {
+    user(login: $login) {
+        pullRequests(first: $count, after: $cursor, orderBy: {direction: DESC, field: UPDATED_AT}) {
+            pageInfo {
+                ...ShortPageInfo
+            }
+            nodes {
+                ... ShortPullRequestRowItem
             }
         }
     }
