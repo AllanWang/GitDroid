@@ -12,12 +12,8 @@
         android:title="@string/code" />
 
     <item
-        android:id="@+id/nav_bottom_issues"
-        android:icon="@drawable/ic_issues"
-        android:title="@string/issues" />
+        android:id="@+id/nav_bottom_commits"
+        android:icon="@drawable/ic_commit"
+        android:title="@string/commits" />
 
-    <item
-        android:id="@+id/nav_bottom_prs"
-        android:icon="@drawable/ic_pull_requests"
-        android:title="@string/prs" />
 </menu>

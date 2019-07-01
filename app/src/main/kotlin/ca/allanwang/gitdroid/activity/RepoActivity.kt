@@ -21,6 +21,9 @@ import ca.allanwang.gitdroid.views.utils.entries
 import ca.allanwang.gitdroid.views.utils.lazyUi
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.startActivity
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onCancel
+import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.afollestad.materialdialogs.list.customListAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
@@ -37,7 +40,10 @@ class RepoActivity : ToolbarActivity() {
         FastBindingAdapter().apply {
             onClickListener = { _, _, item, _ ->
                 if (item is RefEntryVhBinding) {
-                    currentRef = item.data.ref.gitRef()
+                    if (!item.data.current) {
+                        model.ref.value = item.data.ref.gitRef()
+                    }
+                    refDialog?.dismiss()
                     true
                 } else {
                     false
@@ -45,6 +51,8 @@ class RepoActivity : ToolbarActivity() {
             }
         }
     }
+
+    private var refDialog: MaterialDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,8 +88,14 @@ class RepoActivity : ToolbarActivity() {
                 gdd.getRefs(model.repo.value, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
             val entries = refs?.entries(currentRef?.oid)?.map { it.vh() } ?: emptyList()
             refAdapter.setNewList(entries)
-            materialDialog {
+            refDialog = materialDialog {
                 customListAdapter(refAdapter)
+                onCancel {
+                    refDialog = null
+                }
+                onDismiss {
+                    refDialog = null
+                }
             }
         }
     }

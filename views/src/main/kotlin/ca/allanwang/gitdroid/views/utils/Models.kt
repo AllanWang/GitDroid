@@ -68,7 +68,7 @@ data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: 
 @Parcelize
 data class PathCrumb(val segment: String, val oid: GitObjectID) : Parcelable
 
-data class RefEntry(@DrawableRes val icon: Int, val ref: ShortRef, val selected: Boolean)
+data class RefEntry(@DrawableRes val icon: Int, val ref: ShortRef, val current: Boolean)
 
 fun GitRefs.entries(selected: GitObjectID? = null): List<RefEntry> =
     branchRefs.map { ref ->

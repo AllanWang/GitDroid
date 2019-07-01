@@ -5,7 +5,6 @@ import android.view.View
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.BlobActivity
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
-import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
@@ -62,6 +61,7 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
         }
         model.ref.observe {
             repoPathCrumbs.setCrumbs(it?.oid, emptyList())
+            model.entryLoader(it?.oid).execute()
         }
         model.entries.apply {
             observeRefresh(repoRefresh, 1000L)
