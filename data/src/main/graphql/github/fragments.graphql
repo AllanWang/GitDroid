@@ -33,6 +33,7 @@ fragment RepoNameAndOwner on Repository {
     name
     owner {
         login
+        url
     }
 }
 

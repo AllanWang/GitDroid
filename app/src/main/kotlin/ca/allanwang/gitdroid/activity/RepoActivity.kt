@@ -12,8 +12,11 @@ import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitRef
 import ca.allanwang.gitdroid.data.gitRef
 import ca.allanwang.gitdroid.fragment.RepoFileFragment
+import ca.allanwang.gitdroid.fragment.RepoOverviewFragment
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
 import ca.allanwang.gitdroid.utils.addBottomNavBar
+import ca.allanwang.gitdroid.utils.firstId
+import ca.allanwang.gitdroid.utils.verifyLoaders
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
@@ -66,7 +69,20 @@ class RepoActivity : ToolbarActivity() {
         model.ref.observe(this) {
             supportActionBar?.subtitle = it?.name
         }
-        showFragment(RepoFileFragment())
+        val loaders = mapOf(
+            R.id.nav_bottom_overview to RepoOverviewFragment::class,
+            R.id.nav_bottom_code to RepoFileFragment::class,
+            R.id.nav_bottom_commits to RepoFileFragment::class
+        ).mapValues { (_, v) -> lazyUi { v.java.newInstance() } }
+
+        bottomNavBar.verifyLoaders(loaders.keys)
+
+        bottomNavBar.setOnNavigationItemSelectedListener {
+            showFragment(loaders.getValue(it.itemId).value)
+            true
+        }
+
+        showFragment(loaders.getValue(bottomNavBar.firstId).value)
     }
 
     private fun showFragment(fragment: Fragment) {
