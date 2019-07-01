@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.format.DateUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.ImageView
@@ -54,6 +55,7 @@ fun TextView.repoHeaderText(repo: ShortRepoRowItem) {
     }
     val nao = repo.gitNameAndOwner()
     repo.fragments.repoNameAndOwner.owner.url
+    movementMethod = LinkMovementMethod.getInstance()
     text = buildSpannedString {
         inSpans(ownerClick) {
             append(nao.owner)

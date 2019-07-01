@@ -116,6 +116,9 @@ fragment FullRepo on Repository {
         key
         featured
     }
+    releases(first: 0) {
+        totalCount
+    }
 }
 
 fragment ShortContributions on ContributionsCollection {

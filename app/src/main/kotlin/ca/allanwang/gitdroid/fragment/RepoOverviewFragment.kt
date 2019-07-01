@@ -9,6 +9,7 @@ import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
+import ca.allanwang.gitdroid.views.item.vhFull
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.lazyUi
@@ -38,6 +39,11 @@ class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
             model.fullRepoLoader().execute(true)
         }
         model.fullRepo.observeRefresh(refresh)
+        model.fullRepo.observeAdapter(fastAdapter) { fullRepo ->
+            if (fullRepo != null) {
+                fastAdapter.add(fullRepo.vhFull(recycler.context))
+            }
+        }
     }
 
     override val layoutRes: Int

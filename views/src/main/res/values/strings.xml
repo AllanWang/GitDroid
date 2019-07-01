@@ -20,6 +20,30 @@
         <item quantity="one">%d gist</item>
         <item quantity="other">%d gists</item>
     </plurals>
+    <plurals name="issues_n">
+        <item quantity="one">%d issue</item>
+        <item quantity="other">%d issues</item>
+    </plurals>
+    <plurals name="pull_requests_n">
+        <item quantity="one">%d pull request</item>
+        <item quantity="other">%d pull requests</item>
+    </plurals>
+    <plurals name="forks_n">
+        <item quantity="one">%d fork</item>
+        <item quantity="other">%d forks</item>
+    </plurals>
+    <plurals name="releases_n">
+        <item quantity="one">%d release</item>
+        <item quantity="other">%d releases</item>
+    </plurals>
+    <plurals name="stars_n">
+        <item quantity="one">%d star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
+    <plurals name="watchers_n">
+        <item quantity="one">%d watcher</item>
+        <item quantity="other">%d watchers</item>
+    </plurals>
     <string name="member_since_s">Member since %s</string>
     <string name="no_comments">No comments</string>
 </resources>
