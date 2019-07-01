@@ -9,5 +9,8 @@
     <string name="bug_report">Bug Report</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="overview">Overview</string>
+    <string name="code">Code</string>
+    <string name="commits">Commits</string>
 
 </resources>

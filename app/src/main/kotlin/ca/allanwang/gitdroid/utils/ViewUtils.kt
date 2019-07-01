@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.GitCallVhList
 import ca.allanwang.gitdroid.activity.base.BaseActivity
+import ca.allanwang.gitdroid.databinding.ActivityBaseToolbarBinding
+import ca.allanwang.gitdroid.databinding.ViewBottomNavBinding
 import ca.allanwang.gitdroid.databinding.ViewBottomNavRecyclerBinding
 import ca.allanwang.gitdroid.databinding.ViewToolbarBinding
 import ca.allanwang.gitdroid.logger.L
@@ -19,6 +21,7 @@ import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CancellationException
 
 fun View.setCoordinatorLayoutScrollingBehaviour() {
@@ -32,6 +35,12 @@ fun ViewToolbarBinding.addAppBarView(v: View) {
                 AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS or
                 AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP
     appbar.addView(v)
+}
+
+fun ActivityBaseToolbarBinding.addBottomNavBar(): BottomNavigationView {
+    val inflater = LayoutInflater.from(coordinator.context)
+    val binding = ViewBottomNavBinding.inflate(inflater, coordinator, true)
+    return binding.bottomNavigation
 }
 
 
@@ -102,6 +111,7 @@ fun ViewBottomNavRecyclerBinding.setLoader(config: ViewBottomNavRecyclerConfig):
                 RvAnimation.INSTANT.set(recycler)
                 fastAdapter.clear()
                 fastAdapter.add(prev)
+                refresh.isRefreshing = false
                 return
             }
         }

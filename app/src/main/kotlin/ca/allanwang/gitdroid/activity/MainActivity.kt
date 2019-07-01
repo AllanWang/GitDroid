@@ -18,6 +18,7 @@ import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
+import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
@@ -67,6 +68,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 addEventHook(IssuePrVhBinding.clickHook())
             }
 
+        }
+        bindings.viewBottomNavRecycler.recycler.apply {
+            recycledViewPool.setMaxRecycledViews(RepoVhBinding.layoutRes, 20)
+            addItemDecoration(BottomNavDecoration(this@MainActivity))
         }
         bindings.viewBottomNavRecycler.setLoader(config)
     }

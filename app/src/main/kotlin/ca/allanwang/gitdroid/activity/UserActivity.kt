@@ -17,10 +17,9 @@ import ca.allanwang.kau.utils.startActivity
 import ca.allanwang.kau.utils.string
 import ca.allanwang.kau.utils.withSceneTransitionAnimation
 
-class UserActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
+class UserActivity : ToolbarActivity() {
 
-    override val layoutRes: Int
-        get() = R.layout.view_refresh_recycler
+    private lateinit var binding: ViewRefreshRecyclerBinding
 
     private val login by stringExtra { login }
 
@@ -28,6 +27,7 @@ class UserActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = bindContent(R.layout.view_refresh_recycler)
         supportActionBar?.also {
             it.title = login
         }

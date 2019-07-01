@@ -6,17 +6,16 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.codeview.language.CodeLanguage
 import ca.allanwang.gitdroid.codeview.pattern.LexerCache
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.databinding.ViewBlobBinding
-import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.kau.utils.startActivity
 import github.fragment.ObjectItem
 import kotlinx.coroutines.launch
 
-class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
+class BlobActivity : ToolbarActivity() {
 
-    override val layoutRes: Int
-        get() = R.layout.view_blob
+    private lateinit var binding: ViewBlobBinding
 
     private val repo by repoExtra()
     private val fileName by stringExtra { name }
@@ -24,6 +23,7 @@ class BlobActivity : ToolbarActivity<ViewBlobBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = bindContent(R.layout.view_blob)
         supportActionBar?.also {
             it.title = fileName
         }

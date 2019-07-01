@@ -12,6 +12,7 @@ import ca.allanwang.gitdroid.views.databinding.ViewRepoFilesBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
+import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.PathCrumb
 import ca.allanwang.gitdroid.views.utils.lazyUi
@@ -42,7 +43,11 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
     }
 
     override fun ViewRepoFilesBinding.onViewCreated(view: View, savedInstanceState: Bundle?) {
-        repoRecycler.adapter = fastAdapter
+        repoRecycler.apply {
+            adapter = fastAdapter
+            addItemDecoration(BottomNavDecoration(context))
+        }
+
         RvAnimation.FAST.set(repoRecycler)
 
         // TODO position isn't currently in viewmodel

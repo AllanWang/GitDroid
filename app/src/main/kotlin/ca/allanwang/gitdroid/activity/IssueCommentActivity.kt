@@ -21,8 +21,9 @@ import ca.allanwang.kau.utils.string
 import ca.allanwang.kau.utils.withSceneTransitionAnimation
 import kotlinx.coroutines.launch
 
-class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
+class IssueCommentActivity : ToolbarActivity() {
 
+    private lateinit var binding: ViewRefreshRecyclerBinding
 
     private val repo by repoExtra()
 
@@ -30,14 +31,13 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
 
     private val issueName by stringExtra { name }
 
-    override val layoutRes: Int
-        get() = R.layout.view_refresh_recycler
-
     private val fastAdapter: FastBindingAdapter =
         FastBindingAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = bindContent(R.layout.view_refresh_recycler)
+
         binding.recycler.also {
             it.adapter = fastAdapter
         }

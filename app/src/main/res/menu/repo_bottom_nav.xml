@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_bottom_overview"
+        android:icon="@drawable/ic_repo"
+        android:title="@string/overview" />
+
+    <item
+        android:id="@+id/nav_bottom_code"
+        android:icon="@drawable/ic_code"
+        android:title="@string/code" />
+
+    <item
+        android:id="@+id/nav_bottom_issues"
+        android:icon="@drawable/ic_issues"
+        android:title="@string/issues" />
+
+    <item
+        android:id="@+id/nav_bottom_prs"
+        android:icon="@drawable/ic_pull_requests"
+        android:title="@string/prs" />
+</menu>

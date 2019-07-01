@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class MarginDecoration(
+open class MarginDecoration(
     private val marginTop: Int = 0,
     private val marginBottom: Int = 0
 ) : RecyclerView.ItemDecoration() {

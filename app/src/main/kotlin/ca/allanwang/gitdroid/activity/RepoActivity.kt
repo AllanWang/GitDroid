@@ -1,20 +1,18 @@
 package ca.allanwang.gitdroid.activity
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitRef
 import ca.allanwang.gitdroid.data.gitRef
-import ca.allanwang.gitdroid.databinding.ViewViewpagerBinding
 import ca.allanwang.gitdroid.fragment.RepoFileFragment
+import ca.allanwang.gitdroid.fragment.base.BaseFragment
+import ca.allanwang.gitdroid.utils.addBottomNavBar
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
@@ -24,14 +22,14 @@ import ca.allanwang.gitdroid.views.utils.lazyUi
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.startActivity
 import com.afollestad.materialdialogs.list.customListAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
-class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
-
-    override val layoutRes: Int
-        get() = R.layout.view_viewpager
+class RepoActivity : ToolbarActivity() {
 
     lateinit var model: RepoViewModel
+
+    lateinit var bottomNavBar: BottomNavigationView
 
     private var currentRef: GitRef? = null
 
@@ -51,18 +49,17 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = viewModel()
-        binding.viewpager.adapter = RepoPagerAdapter(supportFragmentManager)
+        bottomNavBar = toolbarBinding.addBottomNavBar()
+        bottomNavBar.inflateMenu(R.menu.repo_bottom_nav)
+        showFragment(RepoFileFragment())
     }
 
-    @SuppressLint("WrongConstant")
-    class RepoPagerAdapter(manager: FragmentManager) :
-        FragmentPagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        override fun getItem(position: Int): Fragment = items[position].java.newInstance()
-
-        override fun getCount(): Int = items.size
-
-        val items = arrayOf(RepoFileFragment::class)
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(toolbarBinding.contentContainer.id, fragment).commit()
     }
+
+    private fun currentFragment(): BaseFragment<*>? =
+        supportFragmentManager.findFragmentById(toolbarBinding.contentContainer.id) as? BaseFragment<*>
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         inflateMenu(R.menu.menu_repo, menu)
@@ -95,7 +92,9 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
     }
 
     override fun onBackPressed() {
-        // TODO
+        if (currentFragment()?.onBackPressed() == true) {
+            return
+        }
         super.onBackPressed()
     }
 
