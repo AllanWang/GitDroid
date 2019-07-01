@@ -8,8 +8,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
-import ca.allanwang.gitdroid.data.GitCall
-import ca.allanwang.gitdroid.data.lmap
+import ca.allanwang.gitdroid.data.gql.GitCall
+import ca.allanwang.gitdroid.data.gql.lmap
 import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
@@ -52,9 +52,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private suspend fun loadRepos(): GitCallVhList = gdd.searchUserRepos(me().login).lmap { it.vh() }
-
     private suspend fun loadIssues(): GitCallVhList = gdd.searchUserIssues(me().login).lmap { it.vh() }
-    private suspend fun loadPullRequests(): GitCallVhList = gdd.searchPullRequests(me().login).lmap { it.vh() }
+    private suspend fun loadPullRequests(): GitCallVhList = gdd.searchUserPullRequests(me().login).lmap { it.vh() }
 
     @SuppressLint("PrivateResource")
     private fun ActivityMainBinding.bindContent() {

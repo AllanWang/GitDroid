@@ -6,7 +6,7 @@ import ca.allanwang.gitdroid.activity.base.IntentActivity
 import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.GitRef
-import ca.allanwang.gitdroid.data.fmap
+import ca.allanwang.gitdroid.data.gql.fmap
 import ca.allanwang.gitdroid.data.helpers.GitComparators
 import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
 import ca.allanwang.gitdroid.viewmodel.base.IntentLiveData

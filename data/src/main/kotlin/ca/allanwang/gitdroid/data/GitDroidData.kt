@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.data
 
 import android.content.Context
+import ca.allanwang.gitdroid.data.gql.GitGraphQlBase
 import ca.allanwang.gitdroid.data.helpers.*
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.cache.http.HttpCache
@@ -9,7 +10,6 @@ import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import github.type.CustomType
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.KoinComponent
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
