@@ -5,16 +5,17 @@ import android.os.Bundle
 import android.view.View
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
+import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.databinding.HeaderIssueCommentBinding
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.utils.RvAnimation
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
-import ca.allanwang.gitdroid.data.GitNameAndOwner
+import ca.allanwang.gitdroid.utils.addAppBarView
 import ca.allanwang.gitdroid.views.item.IssueCommentVhBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.vh
+import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.kau.utils.startActivity
 import ca.allanwang.kau.utils.string
 import ca.allanwang.kau.utils.withSceneTransitionAnimation
@@ -47,8 +48,8 @@ class IssueCommentActivity : ToolbarActivity<ViewRefreshRecyclerBinding>() {
             it.title = getString(R.string.issue_n, issueNumber)
             it.subtitle = repo.nameWithOwner
         }
-        val headerBinding: HeaderIssueCommentBinding = bindView(appbar, R.layout.header_issue_comment, false)
-        addAppBarView(headerBinding.root)
+        val headerBinding: HeaderIssueCommentBinding =
+            toolbarBinding.viewToolbar.addAppBarView(R.layout.header_issue_comment)
         headerBinding.title.text = issueName
         binding.refresh.setOnRefreshListener {
             fastAdapter.clear()
