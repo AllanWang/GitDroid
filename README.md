@@ -14,3 +14,7 @@ With the focus on design, GitDroid takes inspiration from a couple of other proj
 * [FastHub](https://github.com/k0shk0sh/FastHub)
 * [OctoDroid](https://github.com/slapperwan/gh4a)
 * [Plaid](https://github.com/android/plaid)
+
+## Sneak Peek
+
+![Profile](https://github.com/AllanWang/Storage-Hub/blob/master/gitdroid/screenshots/profile.jpg)
