@@ -44,7 +44,6 @@ open class BaseViewModel : ViewModel(), KoinComponent {
         object : GitCallExecutor {
             override fun execute(forceRefresh: Boolean) {
                 liveData.value = Loading
-                L.d { "Post entries" }
                 viewModelScope.launch {
                     val result = call.await(forceRefresh)
                     liveData.postValue(result)

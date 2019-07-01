@@ -66,7 +66,6 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
         model.entries.apply {
             observeRefresh(repoRefresh, 1000L)
             observeAdapter(fastAdapter) { data ->
-                L.d { "Entries received $data" }
                 val vhs = data.map { it.vh() }
                 fastAdapter.apply {
                     if (vhs.isEmpty()) {
