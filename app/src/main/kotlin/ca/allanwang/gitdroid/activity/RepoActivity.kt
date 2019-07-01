@@ -31,8 +31,6 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
     override val layoutRes: Int
         get() = R.layout.view_viewpager
 
-    val repo by repoExtra()
-
     lateinit var model: RepoViewModel
 
     private var currentRef: GitRef? = null
@@ -53,7 +51,6 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = viewModel()
-        model.repo.value = repo
         binding.viewpager.adapter = RepoPagerAdapter(supportFragmentManager)
     }
 
@@ -82,7 +79,8 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
 
     private fun loadRefs(forceRefresh: Boolean) {
         launch {
-            val refs = gdd.getRefs(repo, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
+            val refs =
+                gdd.getRefs(model.repo.value, getBranches = true, getTags = true).await(forceRefresh = forceRefresh)
             val entries = refs?.entries(currentRef?.oid)?.map { it.vh() } ?: emptyList()
             refAdapter.setNewList(entries)
             materialDialog {
@@ -102,12 +100,9 @@ class RepoActivity : ToolbarActivity<ViewViewpagerBinding>() {
     }
 
     companion object {
-        private const val SAVED_STATE = "repo_saved_state"
-
-        fun launch(context: Context, repo: GitNameAndOwner, defaultRef: GitRef? = null) {
+        fun launch(context: Context, repo: GitNameAndOwner) {
             context.startActivity<RepoActivity>(intentBuilder = {
                 putExtra(Args.repo, repo)
-                putExtra(Args.ref, defaultRef)
             })
         }
     }

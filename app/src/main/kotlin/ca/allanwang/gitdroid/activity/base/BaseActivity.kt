@@ -106,7 +106,7 @@ abstract class BaseActivity : KauBaseActivity() {
     }
 
     inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory? = BaseViewModel.Factory(intent.extras)) =
-        ViewModelProviders.of(this, factory).get(T::class.java).apply { L.d { "Activity view model ${hashCode()}" } }
+        ViewModelProviders.of(this, factory).get(T::class.java)
 
     fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {
         val tintList = ColorStateList.valueOf(Color.WHITE)
