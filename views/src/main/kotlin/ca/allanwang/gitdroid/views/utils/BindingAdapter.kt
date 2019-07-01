@@ -3,11 +3,18 @@ package ca.allanwang.gitdroid.views.utils
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.text.format.DateUtils
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.databinding.BindingAdapter
+import ca.allanwang.gitdroid.data.gitNameAndOwner
+import ca.allanwang.gitdroid.ktx.browser.launchUrl
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.kau.utils.goneIf
 import ca.allanwang.kau.utils.invisibleIf
@@ -15,6 +22,7 @@ import ca.allanwang.kau.utils.round
 import ca.allanwang.kau.utils.string
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import github.fragment.ShortRepoRowItem
 import github.fragment.TreeEntryItem
 import github.type.CommentAuthorAssociation
 import java.net.URI
@@ -38,6 +46,24 @@ fun View.invisibleFlag(value: Any?) {
     invisibleIf(notVisible(value))
 }
 
+@BindingAdapter("repoHeaderText")
+fun TextView.repoHeaderText(repo: ShortRepoRowItem) {
+    val ownerClick = object : ClickableSpan() {
+        override fun onClick(widget: View) {
+            widget.context.launchUrl(Uri.parse(repo.fragments.repoNameAndOwner.owner.url.toString()))
+        }
+    }
+    val nao = repo.gitNameAndOwner()
+    repo.fragments.repoNameAndOwner.owner.url
+    movementMethod = LinkMovementMethod.getInstance()
+    text = buildSpannedString {
+        inSpans(ownerClick) {
+            append(nao.owner)
+        }
+        append('/')
+        append(nao.name)
+    }
+}
 
 @BindingAdapter("languageColor")
 fun TextView.languageColor(color: String?) {

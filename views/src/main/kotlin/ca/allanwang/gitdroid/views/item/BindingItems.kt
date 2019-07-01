@@ -194,3 +194,18 @@ class RefEntryVhBinding(override val data: RefEntry) :
 
     }
 }
+
+class RepoOverviewHeaderVhBinding(override val data: ShortRepoRowItem) :
+    BindingItem<ViewRepoOverviewHeaderBinding>(data), BindingLayout<ViewRepoOverviewHeaderBinding> by Companion {
+
+    override fun ViewRepoOverviewHeaderBinding.unbindView(holder: ViewHolder) {
+        unbind(repoTitle, repoDesc)
+    }
+
+    companion object : BindingLayout<ViewRepoOverviewHeaderBinding> {
+
+        override val layoutRes: Int
+            get() = R.layout.view_repo_overview_header
+
+    }
+}

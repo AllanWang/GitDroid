@@ -50,6 +50,19 @@ fun <T : ViewDataBinding> ViewToolbarBinding.addAppBarView(layoutRes: Int): T {
     return binding
 }
 
+val BottomNavigationView.firstId: Int
+    get() = menu.getItem(0).itemId
+
+fun BottomNavigationView.verifyLoaders(ids: Set<Int>) {
+    val navIds = menu.children.mapTo(HashSet()) { it.itemId }
+    if (navIds.isEmpty()) {
+        throw IllegalArgumentException("Verifying bottom nav view when no items are attached")
+    }
+    if (navIds != ids) {
+        throw IllegalArgumentException("Bottom nav loader mismatch; expected $navIds, got $ids")
+    }
+}
+
 interface ViewBottomNavRecyclerConfig {
     val menuRes: Int
         @MenuRes get
@@ -73,23 +86,16 @@ interface ViewBottomNavRecyclerLoader {
 fun ViewBottomNavRecyclerBinding.setLoader(config: ViewBottomNavRecyclerConfig): ViewBottomNavRecyclerLoader {
     bottomNavigation.menu.clear()
     bottomNavigation.inflateMenu(config.menuRes)
-    val ids = bottomNavigation.menu.children.map { it.itemId }.toSet()
-    if (ids.isEmpty()) {
-        throw IllegalArgumentException("Loader set with empty menu")
-    }
     val loaders = config.loaders
     val fastAdapter = config.adapter
 
-    if (ids != loaders.keys) {
-        throw IllegalArgumentException("Bottom nav loader mismatch; expected $ids, got ${loaders.keys}")
-    }
+    bottomNavigation.verifyLoaders(loaders.keys)
 
     val cache = mutableMapOf<Int, List<GenericBindingItem>>()
 
     val pending = mutableSetOf<Int>()
 
-    var currentId: Int = bottomNavigation.menu.getItem(0).itemId
-
+    var currentId: Int = bottomNavigation.firstId
 
     recycler.adapter = fastAdapter
 

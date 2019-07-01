@@ -76,7 +76,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_issues"
+                android:drawableStart="@drawable/ic_issue"
                 app:compactNumberText="@{model.issues.totalCount}"
                 tools:text="1.5k" />
 
@@ -86,7 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_pull_requests"
+                android:drawableStart="@drawable/ic_pull_request"
                 app:compactNumberText="@{model.pullRequests.totalCount}"
                 tools:text="123" />
 

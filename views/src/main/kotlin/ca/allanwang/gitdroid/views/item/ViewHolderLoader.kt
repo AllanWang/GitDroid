@@ -1,7 +1,7 @@
 package ca.allanwang.gitdroid.views.item
 
 import android.content.Context
-import ca.allanwang.gitdroid.views.*
+import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.utils.*
 import github.GetProfileQuery
 import github.fragment.*
@@ -69,3 +69,40 @@ fun TreeEntryItem.vh(): GenericBindingItem = TreeEntryVhBinding(this)
 fun ShortIssueComment.vh(): GenericBindingItem = IssueCommentVhBinding(this)
 
 fun RefEntry.vh(): GenericBindingItem = RefEntryVhBinding(this)
+
+fun ShortRepoRowItem.vhHeader(): GenericBindingItem = RepoOverviewHeaderVhBinding(this)
+
+fun FullRepo.vhFull(context: Context): List<GenericBindingItem> {
+    val slimModels = with(fragments.shortRepoRowItem) {
+        listOf(
+            SlimEntry(
+                R.drawable.ic_issue,
+                context.quantityN(R.plurals.issues_n, issues.totalCount)
+            ),
+            SlimEntry(
+                R.drawable.ic_pull_request,
+                context.quantityN(R.plurals.pull_requests_n, pullRequests.totalCount)
+            ),
+            SlimEntry(
+                R.drawable.ic_fork,
+                context.quantityN(R.plurals.forks_n, forks.totalCount)
+            ),
+            SlimEntry(
+                R.drawable.ic_release,
+                context.quantityN(R.plurals.releases_n, releases.totalCount)
+            ),
+            SlimEntry(
+                R.drawable.ic_star,
+                context.quantityN(R.plurals.stars_n, stargazers.totalCount)
+            ),
+            SlimEntry(
+                R.drawable.ic_eye,
+                context.quantityN(R.plurals.releases_n, watchers.totalCount)
+            )
+        )
+    }
+    return mutableListOf<GenericBindingItem>().apply {
+        add(fragments.shortRepoRowItem.vhHeader())
+        addAll(slimModels.map { it.vh() })
+    }
+}

@@ -5,14 +5,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitNameAndOwner
 import ca.allanwang.gitdroid.data.GitRef
 import ca.allanwang.gitdroid.data.gitRef
 import ca.allanwang.gitdroid.fragment.RepoFileFragment
+import ca.allanwang.gitdroid.fragment.RepoOverviewFragment
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
 import ca.allanwang.gitdroid.utils.addBottomNavBar
+import ca.allanwang.gitdroid.utils.firstId
+import ca.allanwang.gitdroid.utils.verifyLoaders
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
@@ -59,7 +63,26 @@ class RepoActivity : ToolbarActivity() {
         model = viewModel()
         bottomNavBar = toolbarBinding.addBottomNavBar()
         bottomNavBar.inflateMenu(R.menu.repo_bottom_nav)
-        showFragment(RepoFileFragment())
+        model.repo.observe(this) {
+            supportActionBar?.title = it.nameWithOwner
+        }
+        model.ref.observe(this) {
+            supportActionBar?.subtitle = it?.name
+        }
+        val loaders = mapOf(
+            R.id.nav_bottom_overview to RepoOverviewFragment::class,
+            R.id.nav_bottom_code to RepoFileFragment::class,
+            R.id.nav_bottom_commits to RepoFileFragment::class
+        ).mapValues { (_, v) -> lazyUi { v.java.newInstance() } }
+
+        bottomNavBar.verifyLoaders(loaders.keys)
+
+        bottomNavBar.setOnNavigationItemSelectedListener {
+            showFragment(loaders.getValue(it.itemId).value)
+            true
+        }
+
+        showFragment(loaders.getValue(bottomNavBar.firstId).value)
     }
 
     private fun showFragment(fragment: Fragment) {
@@ -113,9 +136,10 @@ class RepoActivity : ToolbarActivity() {
     }
 
     companion object {
-        fun launch(context: Context, repo: GitNameAndOwner) {
+        fun launch(context: Context, repo: GitNameAndOwner, ref: GitRef?) {
             context.startActivity<RepoActivity>(intentBuilder = {
                 putExtra(Args.repo, repo)
+                putExtra(Args.ref, ref)
             })
         }
     }

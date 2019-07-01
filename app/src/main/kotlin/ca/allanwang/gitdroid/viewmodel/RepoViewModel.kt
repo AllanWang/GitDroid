@@ -8,10 +8,8 @@ import ca.allanwang.gitdroid.data.GitObjectID
 import ca.allanwang.gitdroid.data.GitRef
 import ca.allanwang.gitdroid.data.gql.fmap
 import ca.allanwang.gitdroid.data.helpers.GitComparators
-import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
-import ca.allanwang.gitdroid.viewmodel.base.IntentLiveData
-import ca.allanwang.gitdroid.viewmodel.base.LoadingListLiveData
-import ca.allanwang.gitdroid.viewmodel.base.MutableLiveDataKtx
+import ca.allanwang.gitdroid.viewmodel.base.*
+import github.fragment.FullRepo
 import github.fragment.ObjectItem
 import github.fragment.TreeEntryItem
 import kotlinx.coroutines.CancellationException
@@ -22,10 +20,14 @@ class RepoViewModel : BaseViewModel() {
 
     val repo = IntentLiveData<GitNameAndOwner>()
 
+    val fullRepo = LoadingLiveData<FullRepo?>()
+
     val entries = LoadingListLiveData<TreeEntryItem>()
 
     override fun withBundle(bundle: Bundle) {
         repo.value = bundle.getParcelable(IntentActivity.Args.repo)!!
+        ref.value = bundle.getParcelable(IntentActivity.Args.ref)
+        fullRepoLoader().execute()
     }
 
     /**
@@ -43,8 +45,6 @@ class RepoViewModel : BaseViewModel() {
             result.sortedWith(GitComparators.treeEntryItem())
         })
 
-    fun setRepo(repo: GitNameAndOwner) {
-        this.repo.value = repo
-    }
-
+    fun fullRepoLoader() =
+        gitCallLaunch(fullRepo, gdd.getRepo(repo.value))
 }
