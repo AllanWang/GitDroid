@@ -54,7 +54,7 @@ fun RepoVhBinding.Companion.clickHook() =
             fastAdapter: FastAdapter<RepoVhBinding>,
             item: RepoVhBinding
         ) {
-            RepoActivity.launch(v.context, item.data.gitNameAndOwner())
+            RepoActivity.launch(v.context, item.data.gitNameAndOwner(), item.data.defaultBranchRef?.fragments?.shortRef?.gitRef())
         }
     }
 

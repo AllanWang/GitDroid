@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.ToolbarActivity
 import ca.allanwang.gitdroid.data.GitNameAndOwner
@@ -59,6 +60,12 @@ class RepoActivity : ToolbarActivity() {
         model = viewModel()
         bottomNavBar = toolbarBinding.addBottomNavBar()
         bottomNavBar.inflateMenu(R.menu.repo_bottom_nav)
+        model.repo.observe(this) {
+            supportActionBar?.title = it.nameWithOwner
+        }
+        model.ref.observe(this) {
+            supportActionBar?.subtitle = it?.name
+        }
         showFragment(RepoFileFragment())
     }
 
@@ -113,9 +120,10 @@ class RepoActivity : ToolbarActivity() {
     }
 
     companion object {
-        fun launch(context: Context, repo: GitNameAndOwner) {
+        fun launch(context: Context, repo: GitNameAndOwner, ref: GitRef?) {
             context.startActivity<RepoActivity>(intentBuilder = {
                 putExtra(Args.repo, repo)
+                putExtra(Args.ref, ref)
             })
         }
     }

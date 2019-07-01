@@ -33,6 +33,6 @@ class StartActivity : BaseActivity() {
     )
 
     private suspend fun repoActivityTest() {
-        RepoActivity.launch(this@StartActivity, GitNameAndOwner("KAU", "AllanWang"))
+        RepoActivity.launch(this@StartActivity, GitNameAndOwner("KAU", "AllanWang"), null)
     }
 }

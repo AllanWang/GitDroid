@@ -26,6 +26,7 @@ class RepoViewModel : BaseViewModel() {
 
     override fun withBundle(bundle: Bundle) {
         repo.value = bundle.getParcelable(IntentActivity.Args.repo)!!
+        ref.value = bundle.getParcelable(IntentActivity.Args.ref)!!
     }
 
     /**
@@ -42,9 +43,4 @@ class RepoViewModel : BaseViewModel() {
             } ?: emptyList()
             result.sortedWith(GitComparators.treeEntryItem())
         })
-
-    fun setRepo(repo: GitNameAndOwner) {
-        this.repo.value = repo
-    }
-
 }
