@@ -29,7 +29,7 @@ dependencies {
     implementation "ca.allanwang.kau:core-ui:${KAU}"
     //noinspection GradleDependency
     implementation "ca.allanwang.kau:adapter:${KAU}"
-    implementation "androidx.core:core-ktx:${Versions.ktx}"
+    implementation kau.Dependencies.coreKtx
     implementation "androidx.browser:browser:${Versions.browser}"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
@@ -43,5 +43,5 @@ dependencies {
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt
 
-    implementation "com.mikepenz:fastadapter:${Versions.fastAdapter}"
+    implementation kau.Dependencies.fastAdapter
 }

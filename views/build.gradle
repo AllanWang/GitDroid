@@ -8,11 +8,12 @@ dependencies {
     implementation project(":data")
     implementation project(":codeview")
     implementation project(":ktx")
-    implementation "androidx.core:core-ktx:${Versions.ktx}"
+    api kau.Dependencies.swipeRefreshLayout
+    implementation kau.Dependencies.coreKtx
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt
-    implementation "com.mikepenz:fastadapter:${Versions.fastAdapter}"
-    implementation "com.mikepenz:fastadapter-extensions-diff:${Versions.fastAdapter}"
+    implementation kau.Dependencies.fastAdapter
+    implementation kau.Dependencies.fastAdapter("diff")
 
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 }

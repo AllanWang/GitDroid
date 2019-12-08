@@ -1,5 +1,5 @@
 dependencies {
-    implementation "androidx.core:core-ktx:${Versions.ktx}"
+    implementation kau.Dependencies.coreKtx
     implementation kau.Dependencies.glide
     implementation "androidx.browser:browser:${Versions.browser}"
 }
