@@ -32,10 +32,6 @@ apollo {
     useJavaBeansSemanticNaming = true
 }
 
-repositories {
-    maven { url "https://dl.bintray.com/apollographql/android" }
-}
-
 dependencies {
     implementation "com.apollographql.apollo:apollo-android-support:${Versions.apollo}"
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"

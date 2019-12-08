@@ -3,7 +3,6 @@ package ca.allanwang.gitdroid.utils
 import android.content.Context
 import ca.allanwang.gitdroid.data.TokenSupplier
 import ca.allanwang.kau.kpref.KPref
-import ca.allanwang.kau.kpref.kpref
 import org.koin.dsl.module
 
 class Prefs : KPref() {

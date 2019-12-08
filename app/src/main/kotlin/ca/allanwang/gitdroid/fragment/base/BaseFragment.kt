@@ -10,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.viewmodel.base.*
+import ca.allanwang.gitdroid.views.components.SwipeRefreshLayout
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import kotlinx.coroutines.Job

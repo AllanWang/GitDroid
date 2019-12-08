@@ -13,7 +13,7 @@ enum class RvAnimation(val animator: RecyclerView.ItemAnimator) {
         KauAnimator(
             addAnimator = SlideAnimatorAdd(KAU_BOTTOM, slideFactor = 2f),
             removeAnimator = FadeScaleAnimatorRemove(),
-            changeAnimator = NoAnimatorChange()
+            changeAnimator = NoAnimatorChange
         ).apply {
             addDuration = 500L
             interpolator = FastOutSlowInInterpolator()
@@ -22,14 +22,14 @@ enum class RvAnimation(val animator: RecyclerView.ItemAnimator) {
         KauAnimator(
             addAnimator = FadeScaleAnimatorAdd(itemDelayFactor = 0f),
             removeAnimator = FadeScaleAnimatorRemove(itemDelayFactor = 0f),
-            changeAnimator = NoAnimatorChange()
+            changeAnimator = NoAnimatorChange
         )
     ),
     INSTANT(
         KauAnimator(
             addAnimator = NoAnimatorAdd(),
             removeAnimator = NoAnimatorRemove(),
-            changeAnimator = NoAnimatorChange()
+            changeAnimator = NoAnimatorChange
         )
     );
 

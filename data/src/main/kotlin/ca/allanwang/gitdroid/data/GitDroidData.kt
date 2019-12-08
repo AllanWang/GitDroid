@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import github.type.CustomType
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import org.koin.core.qualifier.named
@@ -115,7 +116,7 @@ class GitDroidData : KoinComponent, GitGraphQl {
      */
     fun oauthUrl(): OAuthRequest {
         val state = BigInteger(130, SecureRandom()).toString(32)
-        val url = HttpUrl.parse(OAUTH_URL)!!.newBuilder()
+        val url = OAUTH_URL.toHttpUrlOrNull()!!.newBuilder()
             .addQueryParameter(Query.CLIENT_ID, BuildConfig.GITHUB_CLIENT_ID)
             .addQueryParameter(Query.REDIRECT_URI, REDIRECT_URL)
             .addQueryParameter(Query.STATE, state)

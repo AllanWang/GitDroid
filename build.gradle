@@ -6,7 +6,6 @@ buildscript {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
     dependencies {
         classpath kau.Plugins.android
@@ -24,13 +23,6 @@ buildscript {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        freeCompilerArgs = ['-XXLanguage:+InlineClasses']
-    }
 }
 
 subprojects {
@@ -73,7 +65,11 @@ subprojects {
             versionName androidGitVersion.name()
 
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        }
 
+        kotlinOptions {
+            jvmTarget = '1.8'
+            freeCompilerArgs = ['-XXLanguage:+InlineClasses']
         }
 
         lintOptions {
@@ -135,7 +131,7 @@ subprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url "https://dl.bintray.com/apollographql/android" }
     }
 
     dependencies {
