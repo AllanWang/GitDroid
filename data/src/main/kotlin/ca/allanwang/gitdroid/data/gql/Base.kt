@@ -29,11 +29,11 @@ data class GitResponse<T>(
 
 inline fun <T, R> Response<T>.fmap(action: (T?) -> R): GitResponse<R> =
     GitResponse(
-        operation = operation(),
-        data = action(data()),
-        errors = errors(),
-        dependentKeys = dependentKeys(),
-        fromCache = fromCache()
+        operation = operation,
+        data = action(data),
+        errors = errors ?: emptyList(),
+        dependentKeys = dependentKeys,
+        fromCache = fromCache
     )
 
 inline fun <T, R> GitResponse<T>.fmap(action: (T) -> R): GitResponse<R> =

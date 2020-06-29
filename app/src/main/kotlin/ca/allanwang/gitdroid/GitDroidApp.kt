@@ -27,7 +27,7 @@ class GitDroidApp : Application() {
             androidContext(this@GitDroidApp)
             modules(
                 listOf(
-                    Prefs.module(this@GitDroidApp, "${BuildConfig.APPLICATION_ID}.prefs"),
+                    Prefs.module(),
                     GitDroidData.module(this@GitDroidApp),
                     GitDb.module(AndroidSqliteDriver(Database.Schema, this@GitDroidApp, "gitdroid.db"))
                 )

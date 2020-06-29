@@ -1,8 +1,8 @@
 package ca.allanwang.gitdroid.data.helpers
 
 import ca.allanwang.gitdroid.data.GitObjectID
-import com.apollographql.apollo.response.CustomTypeAdapter
-import com.apollographql.apollo.response.CustomTypeValue
+import com.apollographql.apollo.api.CustomTypeAdapter
+import com.apollographql.apollo.api.CustomTypeValue
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,7 +14,7 @@ internal object UriApolloAdapter : CustomTypeAdapter<URI> {
 
 internal object ObjectApolloAdapter : CustomTypeAdapter<Any> {
     override fun encode(value: Any): CustomTypeValue<String> = CustomTypeValue.GraphQLString(value.toString())
-    override fun decode(value: CustomTypeValue<*>): Any = value.value
+    override fun decode(value: CustomTypeValue<*>): Any = value.value.toString() // TODO verify
 }
 
 internal object DateApolloAdapter : CustomTypeAdapter<Date> {

@@ -1,11 +1,14 @@
 package ca.allanwang.gitdroid.utils
 
 import android.content.Context
+import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.data.TokenSupplier
 import ca.allanwang.kau.kpref.KPref
+import ca.allanwang.kau.kpref.KPrefFactory
+import ca.allanwang.kau.kpref.KPrefFactoryAndroid
 import org.koin.dsl.module
 
-class Prefs : KPref() {
+class Prefs(factory: KPrefFactory) : KPref( "${BuildConfig.APPLICATION_ID}.prefs",  factory) {
 
     var versionCode: Int by kpref("version_code", -1)
 
@@ -20,11 +23,9 @@ class Prefs : KPref() {
     var token: String by kpref("token", "")
 
     companion object {
-        fun module(context: Context, name: String) = module {
+        fun module() = module {
             single {
-                val prefs = Prefs()
-                prefs.initialize(context, name)
-                prefs
+                Prefs(KPrefFactoryAndroid(get()))
             }
             single<TokenSupplier> {
                 val prefs: Prefs = get()
