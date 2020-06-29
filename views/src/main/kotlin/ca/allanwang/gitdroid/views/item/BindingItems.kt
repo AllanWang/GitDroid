@@ -10,6 +10,7 @@ import ca.allanwang.gitdroid.data.gitNameAndOwner
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.databinding.*
 import ca.allanwang.gitdroid.views.utils.*
+import ca.allanwang.kau.utils.drawable
 import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
 import github.fragment.*
@@ -37,14 +38,32 @@ abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val ty
 class IssueVhBinding(data: ShortIssueRowItem) :
     IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_issue) {
     override fun ViewIssueOrPrItemBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        iprAvatar.glideRound(data.avatarUrl)
+        iprLogin.text = data.login
+        iprDate.relativeDateText(data.createdAt)
+        iprTitle.text = data.title
+        iprDetails.text = "${data.nameWithOwner}#${data.number}"
+        iprLocked.goneFlag(!data.locked)
+        iprComments.apply {
+            compactNumberText(data.commentCount)
+            goneFlag(data.commentCount)
+        }
     }
 }
 
 class PullRequestVhBinding(data: ShortPullRequestRowItem) :
     IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_pr) {
     override fun ViewIssueOrPrItemBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        iprAvatar.glideRound(data.avatarUrl)
+        iprLogin.text = data.login
+        iprDate.relativeDateText(data.createdAt)
+        iprTitle.text = data.title
+        iprDetails.text = "${data.nameWithOwner}#${data.number}"
+        iprLocked.goneFlag(!data.locked)
+        iprComments.apply {
+            compactNumberText(data.commentCount)
+            goneFlag(data.commentCount)
+        }
     }
 }
 
@@ -97,7 +116,9 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
     ): ViewSlimEntryBinding = ViewSlimEntryBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewSlimEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        slimIcon.setImageResource(data.icon)
+        slimText.text = data.text
+        slimIndicator.goneFlag(data.onClick)
     }
 
     override fun ViewSlimEntryBinding.unbindView(holder: ViewHolder) {
@@ -120,7 +141,28 @@ class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
     ): ViewUserHeaderBinding = ViewUserHeaderBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewUserHeaderBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        userHeaderAvatar.glide(data.avatarUrl)
+        userHeaderFollowToggle.apply {
+            setImageResource(if (data.isViewerIsFollowing) R.drawable.ic_person_remove else R.drawable.ic_person_add)
+            goneFlag(!data.isViewerCanFollow)
+        }
+        userHeaderName.text = data.name ?: data.login
+        userHeaderEmail.apply {
+            text = data.email
+            goneFlag(data.email)
+        }
+        userHeaderWeb.apply {
+            text = data.websiteUrl?.toString()
+            goneFlag(data.websiteUrl)
+        }
+        userHeaderLocation.apply {
+            text = data.location
+            goneFlag(data.location)
+        }
+        userHeaderDesc.apply {
+            text = data.bio
+            goneFlag(data.bio)
+        }
     }
 
     override fun ViewUserHeaderBinding.unbindView(holder: ViewHolder) {
@@ -149,7 +191,7 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
         holder: ViewHolder,
         payloads: MutableList<Any>
     ) {
-        setModel(data.contributionsCollection.fragments.shortContributions)
+        userContributions.contributions = data.contributionsCollection.fragments.shortContributions
     }
 
     override fun ViewUserContributionsBinding.unbindView(holder: ViewHolder) {
@@ -193,7 +235,7 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
     ): ViewPathCrumbBinding = ViewPathCrumbBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewPathCrumbBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        pathText.text = data.segment
         val adapter =
             root.getTag(R.id.fastadapter_item_adapter) as? FastAdapter<PathCrumbVhBinding> ?: return
         val isLast = adapter.getPosition(this@PathCrumbVhBinding) == adapter.itemCount - 1
@@ -219,7 +261,9 @@ class TreeEntryVhBinding(override val data: TreeEntryItem) :
     ): ViewTreeEntryBinding = ViewTreeEntryBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewTreeEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        treeEntryIcon.setImageResource(if (data.obj is ObjectItem.AsBlob) R.drawable.ic_file else R.drawable.ic_folder)
+        treeEntryText.text = data.name
+        treeEntrySize.treeEntrySizeText(data)
     }
 
     override fun ViewTreeEntryBinding.unbindView(holder: ViewHolder) {
@@ -244,7 +288,12 @@ class IssueCommentVhBinding(override val data: ShortIssueComment) :
     ): ViewIssueCommentBinding = ViewIssueCommentBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewIssueCommentBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        avatar.glideRound(data.fragments.shortComment?.author?.fragments?.shortActor?.avatarUrl)
+        login.text = data.fragments.shortComment?.author?.fragments?.shortActor?.login
+        date.relativeDateText(data.fragments.shortComment?.updatedAt)
+        reaction.goneFlag(data.fragments.shortReaction?.isViewerCanReact != true)
+        label.authorAssociation(data.fragments.shortComment?.authorAssociation)
+        content.text = data.fragments.shortComment?.bodyText
     }
 
     override fun ViewIssueCommentBinding.unbindView(holder: ViewHolder) {
@@ -293,7 +342,10 @@ class RefEntryVhBinding(override val data: RefEntry) :
     ): ViewRefEntryBinding = ViewRefEntryBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewRefEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        setModel(data)
+        refText.apply {
+            setCompoundDrawablesRelative(context.drawable(data.icon), null, null, null)
+            text = data.ref.name
+        }
     }
 
     override fun ViewRefEntryBinding.unbindView(holder: ViewHolder) {
@@ -322,7 +374,8 @@ class RepoOverviewHeaderVhBinding(override val data: ShortRepoRowItem) :
         holder: ViewHolder,
         payloads: MutableList<Any>
     ) {
-        setModel(data)
+        repoTitle.repoHeaderText(data)
+        repoDesc.text = data.description
     }
 
     override fun ViewRepoOverviewHeaderBinding.unbindView(holder: ViewHolder) {
