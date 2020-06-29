@@ -50,7 +50,6 @@ subprojects {
 
     android {
         compileSdkVersion Versions.targetSdk
-        buildToolsVersion kau.Versions.buildTools
 
         androidGitVersion {
             codeFormat = 'MMNNPPXX'
