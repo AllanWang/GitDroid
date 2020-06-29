@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/code_item_line_num"
+        style="@style/CodeViewLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:textAlignment="textEnd"
+        tools:text="123" />
 
-        <TextView
-            android:id="@+id/code_item_line_num"
-            style="@style/CodeViewLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="textEnd"
-            tools:text="123" />
+    <TextView
+        android:id="@+id/code_item_line"
+        style="@style/CodeViewLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/lorem/random" />
 
-        <TextView
-            android:id="@+id/code_item_line"
-            style="@style/CodeViewLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@tools:sample/lorem/random" />
-
-    </LinearLayout>
-
-</layout>
+</LinearLayout>

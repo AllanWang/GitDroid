@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_white_borderless">
 
-    <FrameLayout
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_white_borderless">
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/kau_padding_small"
+        android:paddingEnd="@dimen/kau_padding_small"
+        android:src="@drawable/ic_home"
+        android:tint="@android:color/white"
+        android:tintMode="src_in" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingStart="@dimen/kau_padding_small"
-            android:paddingEnd="@dimen/kau_padding_small"
-            android:src="@drawable/ic_home"
-            android:tint="@android:color/white"
-            android:tintMode="src_in" />
+    <!--View below is just a filler to ensure that image height matches.-->
+    <!--Perhaps in the future we'll enforce a size?-->
 
-        <!--View below is just a filler to ensure that image height matches.-->
-        <!--Perhaps in the future we'll enforce a size?-->
-
-        <TextView
-            style="@style/PathCrumbText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:focusable="false" />
-    </FrameLayout>
-
-</layout>
+    <TextView
+        style="@style/PathCrumbText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false" />
+</FrameLayout>

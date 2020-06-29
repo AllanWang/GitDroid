@@ -1,56 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:windowBackground"
+    android:foreground="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/kau_activity_horizontal_margin"
+    android:paddingTop="@dimen/kau_padding_small"
+    android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+    android:paddingBottom="@dimen/kau_padding_small">
 
-    <data>
+    <ImageView
+        android:id="@+id/tree_entry_icon"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        tools:src="@drawable/ic_file" />
 
-        <variable
-            name="model"
-            type="github.fragment.TreeEntryItem" />
-
-        <import type="github.fragment.TreeEntryItem.AsBlob" />
-    </data>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tree_entry_text"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?android:windowBackground"
-        android:foreground="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/kau_activity_horizontal_margin"
-        android:paddingTop="@dimen/kau_padding_small"
-        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
-        android:paddingBottom="@dimen/kau_padding_small">
+        android:layout_marginStart="@dimen/kau_padding_normal"
+        android:layout_marginEnd="@dimen/kau_padding_normal"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:lines="1"
+        tools:text="@tools:sample/lorem" />
 
-        <ImageView
-            android:id="@+id/tree_entry_icon"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@{model.obj instanceof AsBlob ? @drawable/ic_file : @drawable/ic_folder}"
-            tools:src="@drawable/ic_file" />
+    <TextView
+        android:id="@+id/tree_entry_size"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/lorem" />
 
-        <TextView
-            android:id="@+id/tree_entry_text"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/kau_padding_normal"
-            android:layout_marginEnd="@dimen/kau_padding_normal"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="@{model.name}"
-            tools:text="@tools:sample/lorem" />
-
-        <TextView
-            android:id="@+id/tree_entry_size"
-            style="@style/TextAppearance.MaterialComponents.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:treeEntrySizeText="@{model}"
-            tools:text="@tools:sample/lorem" />
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

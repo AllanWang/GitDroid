@@ -1,97 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data />
+    <com.google.android.material.circularreveal.cardview.CircularRevealCardView
+        android:id="@+id/login_card"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/login_card_margin_horizontal"
+        android:layout_marginEnd="@dimen/login_card_margin_horizontal"
+        android:transitionName="@string/transition_login_password"
+        app:cardBackgroundColor="?colorBackgroundFloating"
+        app:cardCornerRadius="@dimen/login_corner_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="240dp"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.8">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/kau_activity_horizontal_margin"
+            android:paddingEnd="@dimen/kau_activity_horizontal_margin">
 
-        <com.google.android.material.circularreveal.cardview.CircularRevealCardView
-            android:id="@+id/login_card"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/login_card_margin_horizontal"
-            android:layout_marginEnd="@dimen/login_card_margin_horizontal"
-            android:transitionName="@string/transition_login_password"
-            app:cardBackgroundColor="?colorBackgroundFloating"
-            app:cardCornerRadius="@dimen/login_corner_radius"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_min="240dp"
-            app:layout_constraintHeight_percent="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.9"
-            app:layout_constraintWidth_max="wrap"
-            app:layout_constraintWidth_percent="0.8">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_user"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/kau_activity_horizontal_margin"
+                android:hint="@string/login_username"
+                app:layout_constraintBottom_toTopOf="@id/login_password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="@dimen/kau_activity_horizontal_margin"
-                android:paddingEnd="@dimen/kau_activity_horizontal_margin">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/login_user"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/kau_activity_horizontal_margin"
-                    android:hint="@string/login_username"
-                    app:layout_constraintBottom_toTopOf="@id/login_password"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="spread">
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
+                    android:imeOptions="actionNext"
+                    android:inputType="text|textNoSuggestions|textFilter"
+                    android:lines="1" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-"
-                        android:imeOptions="actionNext"
-                        android:inputType="text|textNoSuggestions|textFilter"
-                        android:lines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_password"
+                app:layout_constraintBottom_toTopOf="@id/login_send"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/login_user">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/login_password"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_password"
-                    app:layout_constraintBottom_toTopOf="@id/login_send"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/login_user">
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:lines="1" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:imeOptions="actionDone"
-                        android:inputType="textPassword"
-                        android:lines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/login_send"
-                    style="@style/Widget.MaterialComponents.FloatingActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/kau_activity_vertical_margin"
-                    android:tint="@android:color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/ic_send" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/login_send"
+                style="@style/Widget.MaterialComponents.FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/kau_activity_vertical_margin"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_send" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
+    </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>
