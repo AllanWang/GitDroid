@@ -172,7 +172,7 @@ class CombinePrefixPattern {
                 if (p == null) {
                     return@forEachIndexed
                 }
-                val ch0 = if (p.isNotEmpty()) p[0] else 0
+                val ch0: Char = if (p.isNotEmpty()) p[0] else 0.toChar()
                 if (p.length >= 2 && ch0 == '[') {
                     parts[i] = caseFoldCharset(p)
                 } else if (ch0 != '\\') {

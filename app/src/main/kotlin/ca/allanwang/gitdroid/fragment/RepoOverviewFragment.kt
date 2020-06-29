@@ -1,7 +1,9 @@
 package ca.allanwang.gitdroid.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
@@ -30,7 +32,13 @@ class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
         model = viewModel()
     }
 
-    override fun ViewRefreshRecyclerBinding.onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): ViewRefreshRecyclerBinding = ViewRefreshRecyclerBinding.inflate(inflater, container, false).also { it.init() }
+
+    private fun ViewRefreshRecyclerBinding.init() {
         recycler.apply {
             adapter = fastAdapter
             addItemDecoration(BottomNavDecoration(context))
@@ -45,8 +53,5 @@ class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
             }
         }
     }
-
-    override val layoutRes: Int
-        get() = R.layout.view_refresh_recycler
 
 }

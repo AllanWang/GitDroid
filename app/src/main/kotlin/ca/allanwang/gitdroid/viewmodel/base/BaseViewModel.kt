@@ -5,23 +5,22 @@ import androidx.annotation.CheckResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
+import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database
 import com.apollographql.apollo.api.Error
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
-@ExperimentalCoroutinesApi
 open class BaseViewModel : ViewModel(), KoinComponent {
 
     val db: Database by inject()
     val gdd: GitDroidData by inject()
+
     /**
      * Post error
      */
@@ -40,7 +39,10 @@ open class BaseViewModel : ViewModel(), KoinComponent {
     protected open fun withBundle(bundle: Bundle) {}
 
     @CheckResult(suggest = "Apply using execute")
-    protected fun <T> gitCallLaunch(liveData: LoadingLiveData<T>, call: GitCall<T>): GitCallExecutor =
+    protected fun <T> gitCallLaunch(
+        liveData: LoadingLiveData<T>,
+        call: GitCall<T>
+    ): GitCallExecutor =
         object : GitCallExecutor {
             override fun execute(forceRefresh: Boolean) {
                 liveData.value = Loading
@@ -74,7 +76,6 @@ open class BaseViewModel : ViewModel(), KoinComponent {
 interface GitCallExecutor {
     fun execute(forceRefresh: Boolean = false)
 }
-
 
 typealias LoadingLiveData<T> = MutableLiveDataKtx<LoadingData<T>>
 typealias LoadingListLiveData<T> = LoadingLiveData<List<T>>

@@ -16,7 +16,7 @@ import ca.allanwang.gitdroid.databinding.ViewBottomNavBinding
 import ca.allanwang.gitdroid.databinding.ViewBottomNavRecyclerBinding
 import ca.allanwang.gitdroid.databinding.ViewToolbarBinding
 import ca.allanwang.gitdroid.logger.L
-import ca.allanwang.gitdroid.views.item.GenericBindingItem
+import ca.allanwang.gitdroid.views.item.ViewBindingInflate
 import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
@@ -45,7 +45,7 @@ fun ActivityBaseToolbarBinding.addBottomNavBar(): BottomNavigationView {
 }
 
 
-fun <T : ViewBinding> ViewToolbarBinding.addAppBarView(inflater: (LayoutInflater, ViewGroup, Boolean) -> T): T {
+fun <T : ViewBinding> ViewToolbarBinding.addAppBarView(inflater: ViewBindingInflate<T>): T {
     val binding: T = inflater(LayoutInflater.from(appbar.context), appbar, false)
     addAppBarView(binding.root)
     return binding

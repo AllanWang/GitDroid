@@ -27,6 +27,7 @@ import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
+import ca.allanwang.gitdroid.views.item.ViewBindingInflate
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
@@ -46,8 +47,8 @@ abstract class BaseActivity : KauBaseActivity() {
     fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
         DataBindingUtil.setContentView(this, layoutRes)
 
-    fun <T : ViewBinding> bindContentView(inflater: (LayoutInflater) -> T): T {
-        val binding: T = inflater(layoutInflater)
+    fun <T : ViewBinding> bindContentView(inflater: ViewBindingInflate<T>): T {
+        val binding: T = inflater(layoutInflater, null, false)
         setContentView(binding.root)
         return binding
     }

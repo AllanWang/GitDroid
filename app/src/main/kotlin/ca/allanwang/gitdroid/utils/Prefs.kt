@@ -1,6 +1,5 @@
 package ca.allanwang.gitdroid.utils
 
-import android.content.Context
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.data.TokenSupplier
 import ca.allanwang.kau.kpref.KPref
@@ -8,7 +7,7 @@ import ca.allanwang.kau.kpref.KPrefFactory
 import ca.allanwang.kau.kpref.KPrefFactoryAndroid
 import org.koin.dsl.module
 
-class Prefs(factory: KPrefFactory) : KPref( "${BuildConfig.APPLICATION_ID}.prefs",  factory) {
+class Prefs(factory: KPrefFactory) : KPref("${BuildConfig.APPLICATION_ID}.prefs", factory) {
 
     var versionCode: Int by kpref("version_code", -1)
 

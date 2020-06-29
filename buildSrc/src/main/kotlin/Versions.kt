@@ -9,8 +9,6 @@ object Versions {
     const val apollo = "2.2.1"
     // https://github.com/square/okhttp/releases
     const val okhttp = "4.7.2"
-    // https://developer.android.com/jetpack/androidx/releases/room
-    const val room = "2.2.5"
     // http://robolectric.org/getting-started/
     const val roboelectric = "4.3"
     // https://mvnrepository.com/artifact/androidx.browser/browser?repo=google

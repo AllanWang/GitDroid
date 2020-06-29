@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.MainThread
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.viewbinding.ViewBinding
@@ -22,19 +19,23 @@ import kotlinx.coroutines.launch
 
 abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
 
-    val binding: Binding?
-        get() = view?.let { DataBindingUtil.getBinding(it) }
+    protected var _binding: Binding? = null
 
-    abstract val layoutRes: Int
-        @LayoutRes get
+    val binding: Binding get() = _binding!!
 
-    final override fun onCreateView(
+    abstract fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): Binding
+
+    override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding: Binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
-        return binding.root
+        _binding = createBinding(inflater, container, savedInstanceState)
+        return _binding?.root
     }
 
     @MainThread
@@ -94,26 +95,19 @@ abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
         }
     }
 
-    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory? = BaseViewModel.Factory(arguments)) =
-        ViewModelProviders.of(
-            activity ?: throw RuntimeException("Activity not created, cannot initiate viewmodel"),
-            factory
-        ).get(T::class.java)
+    inline fun <reified T : ViewModel> viewModel(
+        factory: ViewModelProvider.Factory? = BaseViewModel.Factory(
+            arguments
+        )
+    ) = ViewModelProviders.of(
+        activity ?: throw RuntimeException("Activity not created, cannot initiate viewmodel"),
+        factory
+    ).get(T::class.java)
 
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        DataBindingUtil.getBinding<Binding>(view)?.onViewCreated(view, savedInstanceState)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    open fun Binding.onViewCreated(view: View, savedInstanceState: Bundle?) {}
-
-
-    final override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        binding?.onActivityCreated(savedInstanceState)
-    }
-
-    open fun Binding.onActivityCreated(savedInstanceState: Bundle?) {}
 
     /**
      * Called when a back press event is received.
