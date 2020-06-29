@@ -11,13 +11,13 @@ import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.lazyUi
+import ca.allanwang.kau.adapters.SingleFastAdapter
 
 class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
 
-    private val fastAdapter: FastBindingAdapter by lazyUi {
-        FastBindingAdapter().apply {
+    private val fastAdapter: SingleFastAdapter by lazyUi {
+        SingleFastAdapter().apply {
             addEventHook(RepoVhBinding.clickHook())
             addEventHook(SlimEntryVhBinding.clickHook())
         }

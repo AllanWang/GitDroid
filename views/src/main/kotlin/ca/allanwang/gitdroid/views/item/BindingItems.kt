@@ -1,8 +1,12 @@
 package ca.allanwang.gitdroid.views.item
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.annotation.StringRes
-import androidx.databinding.ViewDataBinding
+import ca.allanwang.fastadapter.viewbinding.BindingItem
+import ca.allanwang.fastadapter.viewbinding.BindingLayout
 import ca.allanwang.gitdroid.data.GitObjectID
+import ca.allanwang.gitdroid.data.gitNameAndOwner
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.databinding.*
 import ca.allanwang.gitdroid.views.utils.*
@@ -10,13 +14,14 @@ import com.mikepenz.fastadapter.FastAdapter
 import github.GetProfileQuery
 import github.fragment.*
 
-open class BlankViewHolderBinding(override val layoutRes: Int) : BindingItem<ViewDataBinding>(Unit) {
-    final override fun ViewDataBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {}
-    final override fun ViewDataBinding.unbindView(holder: ViewHolder) {}
-}
-
 abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val type: Int) :
-    BindingItem<ViewIssueOrPrItemBinding>(data), BindingLayout<ViewIssueOrPrItemBinding> by Companion {
+    BindingItem<ViewIssueOrPrItemBinding>(data),
+    BindingLayout<ViewIssueOrPrItemBinding> by Companion {
+
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewIssueOrPrItemBinding = ViewIssueOrPrItemBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewIssueOrPrItemBinding.unbindView(holder: ViewHolder) {
         unbindGlide(iprAvatar)
@@ -30,29 +35,51 @@ abstract class IssuePrVhBinding(override val data: GitIssueOrPr, override val ty
 }
 
 class IssueVhBinding(data: ShortIssueRowItem) :
-    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_issue)
+    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_issue) {
+    override fun ViewIssueOrPrItemBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
+}
 
 class PullRequestVhBinding(data: ShortPullRequestRowItem) :
-    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_pr)
+    IssuePrVhBinding(data.issueOrPr(), R.id.git_vh_pr) {
+    override fun ViewIssueOrPrItemBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
+}
 
 
 class RepoVhBinding(override val data: ShortRepoRowItem) :
     BindingItem<ViewRepoBinding>(data), BindingLayout<ViewRepoBinding> by Companion {
 
-//    override fun ViewRepoBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-//        repoName.text = data.nameAndOwner().name
-//        repoDesc.text = data.description
-//        repoDesc.goneFlag(data.description)
-//        repoStars.compactNumberText(data.stargazers.totalCount)
-//        repoForks.compactNumberText(data.forks.totalCount)
-//        repoPrs.compactNumberText(data.pullRequests.totalCount)
-//        repoLanguage.text = data.primaryLanguage?.name
-//        repoLanguage.languageColor(data.primaryLanguage?.color)
-//        repoDate.relativeDateText(data.pushedAt)
-//    }
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewRepoBinding = ViewRepoBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewRepoBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        repoName.text = data.gitNameAndOwner().name
+        repoDesc.text = data.description
+        repoDesc.goneFlag(data.description)
+        repoStars.compactNumberText(data.stargazers.totalCount)
+        repoForks.compactNumberText(data.forks.totalCount)
+        repoPrs.compactNumberText(data.pullRequests.totalCount)
+        repoLanguage.text = data.primaryLanguage?.name
+        repoLanguage.languageColor(data.primaryLanguage?.color)
+        repoDate.relativeDateText(data.pushedAt)
+    }
 
     override fun ViewRepoBinding.unbindView(holder: ViewHolder) {
-        unbind(repoName, repoDesc, repoStars, repoForks, repoIssues, repoPrs, repoLanguage, repoDate)
+        unbind(
+            repoName,
+            repoDesc,
+            repoStars,
+            repoForks,
+            repoIssues,
+            repoPrs,
+            repoLanguage,
+            repoDate
+        )
     }
 
     companion object : BindingLayout<ViewRepoBinding> {
@@ -63,6 +90,15 @@ class RepoVhBinding(override val data: ShortRepoRowItem) :
 
 class SlimEntryVhBinding(override val data: SlimEntry) :
     BindingItem<ViewSlimEntryBinding>(data), BindingLayout<ViewSlimEntryBinding> by Companion {
+
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewSlimEntryBinding = ViewSlimEntryBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewSlimEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
 
     override fun ViewSlimEntryBinding.unbindView(holder: ViewHolder) {
         unbind(slimIcon)
@@ -78,6 +114,15 @@ class SlimEntryVhBinding(override val data: SlimEntry) :
 class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
     BindingItem<ViewUserHeaderBinding>(data), BindingLayout<ViewUserHeaderBinding> by Companion {
 
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewUserHeaderBinding = ViewUserHeaderBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewUserHeaderBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
+
     override fun ViewUserHeaderBinding.unbindView(holder: ViewHolder) {
         unbindGlide(userHeaderAvatar)
         unbind(userHeaderFollowToggle)
@@ -91,10 +136,20 @@ class UserHeaderVhBinding(override val data: GetProfileQuery.User) :
 }
 
 class UserContributionVhBinding(override val data: GetProfileQuery.User) :
-    BindingItem<ViewUserContributionsBinding>(data), BindingLayout<ViewUserContributionsBinding> by Companion {
+    BindingItem<ViewUserContributionsBinding>(data),
+    BindingLayout<ViewUserContributionsBinding> by Companion {
 
-    override fun ViewUserContributionsBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        model = data.contributionsCollection.fragments.shortContributions
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewUserContributionsBinding =
+        ViewUserContributionsBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewUserContributionsBinding.bindView(
+        holder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        setModel(data.contributionsCollection.fragments.shortContributions)
     }
 
     override fun ViewUserContributionsBinding.unbindView(holder: ViewHolder) {
@@ -108,14 +163,39 @@ class UserContributionVhBinding(override val data: GetProfileQuery.User) :
 
 }
 
-class PathCrumbHomeVhBinding(override val data: GitObjectID?) : BlankViewHolderBinding(R.layout.view_path_crumb_home)
+class PathCrumbHomeVhBinding(override val data: GitObjectID?) :
+    BindingItem<ViewPathCrumbBinding>(data), BindingLayout<ViewPathCrumbBinding> by Companion {
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewPathCrumbBinding = ViewPathCrumbBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewPathCrumbBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        // noop
+    }
+
+    override fun ViewPathCrumbBinding.unbindView(holder: ViewHolder) {
+        // noop
+    }
+
+    companion object : BindingLayout<ViewPathCrumbBinding> {
+        override val layoutRes: Int
+            get() = R.layout.view_path_crumb
+    }
+}
 
 class PathCrumbVhBinding(override val data: PathCrumb) :
     BindingItem<ViewPathCrumbBinding>(data), BindingLayout<ViewPathCrumbBinding> by Companion {
 
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewPathCrumbBinding = ViewPathCrumbBinding.inflate(layoutInflater, parent, false)
+
     override fun ViewPathCrumbBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
-        model = data
-        val adapter = root.getTag(R.id.fastadapter_item_adapter) as? FastAdapter<PathCrumbVhBinding> ?: return
+        setModel(data)
+        val adapter =
+            root.getTag(R.id.fastadapter_item_adapter) as? FastAdapter<PathCrumbVhBinding> ?: return
         val isLast = adapter.getPosition(this@PathCrumbVhBinding) == adapter.itemCount - 1
         pathText.alpha = if (isLast) 1f else 0.7f
     }
@@ -133,6 +213,15 @@ class PathCrumbVhBinding(override val data: PathCrumb) :
 class TreeEntryVhBinding(override val data: TreeEntryItem) :
     BindingItem<ViewTreeEntryBinding>(data), BindingLayout<ViewTreeEntryBinding> by Companion {
 
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewTreeEntryBinding = ViewTreeEntryBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewTreeEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
+
     override fun ViewTreeEntryBinding.unbindView(holder: ViewHolder) {
         unbind(treeEntryIcon)
         unbind(treeEntryText, treeEntrySize)
@@ -146,7 +235,17 @@ class TreeEntryVhBinding(override val data: TreeEntryItem) :
 }
 
 class IssueCommentVhBinding(override val data: ShortIssueComment) :
-    BindingItem<ViewIssueCommentBinding>(data), BindingLayout<ViewIssueCommentBinding> by Companion {
+    BindingItem<ViewIssueCommentBinding>(data),
+    BindingLayout<ViewIssueCommentBinding> by Companion {
+
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewIssueCommentBinding = ViewIssueCommentBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewIssueCommentBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
 
     override fun ViewIssueCommentBinding.unbindView(holder: ViewHolder) {
         unbind(avatar)
@@ -163,6 +262,11 @@ class IssueCommentVhBinding(override val data: ShortIssueComment) :
 
 class PlaceholderVhBinding(@StringRes override val data: Int) :
     BindingItem<ViewPlaceholderBinding>(data), BindingLayout<ViewPlaceholderBinding> by Companion {
+
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewPlaceholderBinding = ViewPlaceholderBinding.inflate(layoutInflater, parent, false)
 
     override fun ViewPlaceholderBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
         placeholderText.setText(data)
@@ -183,6 +287,15 @@ class PlaceholderVhBinding(@StringRes override val data: Int) :
 class RefEntryVhBinding(override val data: RefEntry) :
     BindingItem<ViewRefEntryBinding>(data), BindingLayout<ViewRefEntryBinding> by Companion {
 
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewRefEntryBinding = ViewRefEntryBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewRefEntryBinding.bindView(holder: ViewHolder, payloads: MutableList<Any>) {
+        setModel(data)
+    }
+
     override fun ViewRefEntryBinding.unbindView(holder: ViewHolder) {
         unbind(refText)
     }
@@ -196,7 +309,21 @@ class RefEntryVhBinding(override val data: RefEntry) :
 }
 
 class RepoOverviewHeaderVhBinding(override val data: ShortRepoRowItem) :
-    BindingItem<ViewRepoOverviewHeaderBinding>(data), BindingLayout<ViewRepoOverviewHeaderBinding> by Companion {
+    BindingItem<ViewRepoOverviewHeaderBinding>(data),
+    BindingLayout<ViewRepoOverviewHeaderBinding> by Companion {
+
+    override fun createBinding(
+        layoutInflater: LayoutInflater,
+        parent: ViewGroup?
+    ): ViewRepoOverviewHeaderBinding =
+        ViewRepoOverviewHeaderBinding.inflate(layoutInflater, parent, false)
+
+    override fun ViewRepoOverviewHeaderBinding.bindView(
+        holder: ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        setModel(data)
+    }
 
     override fun ViewRepoOverviewHeaderBinding.unbindView(holder: ViewHolder) {
         unbind(repoTitle, repoDesc)

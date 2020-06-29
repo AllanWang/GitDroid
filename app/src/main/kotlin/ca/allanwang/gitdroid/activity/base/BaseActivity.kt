@@ -3,6 +3,7 @@ package ca.allanwang.gitdroid.activity.base
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
@@ -43,6 +45,12 @@ abstract class BaseActivity : KauBaseActivity() {
 
     fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
         DataBindingUtil.setContentView(this, layoutRes)
+
+    fun <T : ViewBinding> bindContentView(inflater: (LayoutInflater) -> T): T {
+        val binding: T = inflater(layoutInflater)
+        setContentView(binding.root)
+        return binding
+    }
 
     /**
      * Returns current user based on token

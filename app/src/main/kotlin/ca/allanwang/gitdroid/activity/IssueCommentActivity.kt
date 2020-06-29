@@ -15,7 +15,7 @@ import ca.allanwang.gitdroid.utils.addAppBarView
 import ca.allanwang.gitdroid.views.item.IssueCommentVhBinding
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.vh
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.startActivity
 import ca.allanwang.kau.utils.string
 import ca.allanwang.kau.utils.withSceneTransitionAnimation
@@ -31,12 +31,12 @@ class IssueCommentActivity : ToolbarActivity() {
 
     private val issueName by stringExtra { name }
 
-    private val fastAdapter: FastBindingAdapter =
-        FastBindingAdapter()
+    private val fastAdapter: SingleFastAdapter =
+        SingleFastAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = bindContent(R.layout.view_refresh_recycler)
+        binding = ViewRefreshRecyclerBinding.inflate(layoutInflater, contentRoot, true)
 
         binding.recycler.also {
             it.adapter = fastAdapter
@@ -49,7 +49,7 @@ class IssueCommentActivity : ToolbarActivity() {
             it.subtitle = repo.nameWithOwner
         }
         val headerBinding: HeaderIssueCommentBinding =
-            toolbarBinding.viewToolbar.addAppBarView(R.layout.header_issue_comment)
+            toolbarBinding.viewToolbar.addAppBarView(HeaderIssueCommentBinding::inflate)
         headerBinding.title.text = issueName
         binding.refresh.setOnRefreshListener {
             fastAdapter.clear()

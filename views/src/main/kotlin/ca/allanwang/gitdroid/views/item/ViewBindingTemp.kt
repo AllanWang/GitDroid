@@ -43,8 +43,8 @@ fun ViewRepoOrigBinding.setModel(model: ShortRepoRowItem) {
     repoIssues.compactNumberText(model.issues.totalCount)
     repoPrs.compactNumberText(model.pullRequests.totalCount)
     repoLanguage.apply {
-        text = model.primaryLanguage.name
-        languageColor(model.primaryLanguage.color)
+        text = model.primaryLanguage?.name
+        languageColor(model.primaryLanguage?.color)
     }
     repoDate.relativeDateText(model.pushedAt)
 }
@@ -64,9 +64,9 @@ fun ViewRepoBinding.setModel(model: ShortRepoRowItem) {
     repoIssues.compactNumberText(model.issues.totalCount)
     repoPrs.compactNumberText(model.pullRequests.totalCount)
     repoLanguage.apply {
-        text = model.primaryLanguage.name
-        invisibleFlag(model.primaryLanguage.name)
-        languageColor(model.primaryLanguage.color)
+        text = model.primaryLanguage?.name
+        invisibleFlag(model.primaryLanguage?.name)
+        languageColor(model.primaryLanguage?.color)
     }
     repoDate.relativeDateText(model.pushedAt)
 }

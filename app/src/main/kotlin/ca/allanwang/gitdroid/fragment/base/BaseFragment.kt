@@ -10,16 +10,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.viewmodel.base.*
 import ca.allanwang.gitdroid.views.components.SwipeRefreshLayout
 import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-abstract class BaseFragment<Binding : ViewDataBinding> : Fragment() {
+abstract class BaseFragment<Binding : ViewBinding> : Fragment() {
 
     val binding: Binding?
         get() = view?.let { DataBindingUtil.getBinding(it) }
@@ -77,7 +78,7 @@ abstract class BaseFragment<Binding : ViewDataBinding> : Fragment() {
 
     @MainThread
     fun <T> LoadingLiveData<T>.observeAdapter(
-        adapter: FastBindingAdapter,
+        adapter: SingleFastAdapter,
         onLoad: (data: T) -> Unit
     ): Observer<LoadingData<T>> {
         return observe(viewLifecycleOwner) { result ->

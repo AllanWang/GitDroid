@@ -23,12 +23,12 @@ dependencies {
     implementation project(':views')
     implementation project(':sql')
 
-    //noinspection GradleDependency
-    implementation "ca.allanwang.kau:core:${KAU}"
-    //noinspection GradleDependency
-    implementation "ca.allanwang.kau:core-ui:${KAU}"
-    //noinspection GradleDependency
-    implementation "ca.allanwang.kau:adapter:${KAU}"
+    implementation kau.Dependencies.kauCore(KAU)
+    implementation kau.Dependencies.kauCoreUi(KAU)
+    implementation kau.Dependencies.kauAdapter(KAU)
+    implementation kau.Dependencies.kauFastAdapter(KAU)
+    implementation kau.Dependencies.kauFastAdapterViewBinding(KAU)
+
     implementation kau.Dependencies.coreKtx
     implementation "androidx.browser:browser:${Versions.browser}"
     implementation "com.squareup.retrofit2:retrofit:${Versions.retrofit}"

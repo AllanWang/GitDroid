@@ -5,13 +5,16 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.core.view.get
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.transition.*
 import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
 import androidx.transition.TransitionSet.ORDERING_TOGETHER
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitDroidData
@@ -43,7 +46,8 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gitState = null
-        sceneRoot = bindContentView(R.layout.view_login_container)
+        sceneRoot = ViewLoginContainerBinding.inflate(layoutInflater)
+        setContentView(sceneRoot.root)
         showSelectorScene(false)
     }
 
@@ -122,23 +126,20 @@ class LoginActivity : BaseActivity() {
      * ------------------------------------------------------------
      */
 
-    private fun <T : ViewDataBinding> currentSubBinding(): T? {
+    private fun <T : ViewBinding> inflateSubBinding(inflater: (LayoutInflater, ViewGroup?, Boolean) -> T): T =
+        inflater(layoutInflater, sceneRoot.loginContainerScene, false)
+
+    private fun <T : ViewBinding> bindSubBinding(binder: (View) -> T): T? {
         if (sceneRoot.loginContainerScene.childCount == 0) {
             return null
         }
-        return DataBindingUtil.getBinding(sceneRoot.loginContainerScene.getChildAt(0))
-    }
-
-    private fun <T : ViewDataBinding> inflateSubBinding(layoutRes: Int): T {
-        return DataBindingUtil.inflate(
-            layoutInflater,
-            layoutRes, sceneRoot.loginContainerScene, false
-        )
+        return binder(sceneRoot.loginContainerScene[0])
     }
 
     private fun showSelectorScene(animate: Boolean = true) {
         loginPasswordPage = false
-        val view: ViewLoginSelectionBinding = inflateSubBinding(R.layout.view_login_selection)
+        inflateSubBinding(ViewLoginSelectionBinding::inflate)
+        val view: ViewLoginSelectionBinding = inflateSubBinding(ViewLoginSelectionBinding::inflate)
         view.loginSelectPassword.setOnClickListener {
             showPasswordScene()
         }
@@ -147,7 +148,7 @@ class LoginActivity : BaseActivity() {
             gitState = request.state
             launchUrl(Uri.parse(request.url))
         }
-        val oldView: ViewLoginBinding? = currentSubBinding()
+        val oldView: ViewLoginBinding? = bindSubBinding(ViewLoginBinding::bind)
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
         val transition = if (animate) selectorSceneTransition(oldView, view) else null
         TransitionManager.go(scene, transition)
@@ -211,11 +212,11 @@ class LoginActivity : BaseActivity() {
 
     private fun showPasswordScene(animate: Boolean = true) {
         loginPasswordPage = true
-        val view: ViewLoginBinding = inflateSubBinding(R.layout.view_login)
+        val view: ViewLoginBinding = inflateSubBinding(ViewLoginBinding::inflate)
         view.loginSend.setOnClickListener {
             showSelectorScene()
         }
-        val oldView: ViewLoginSelectionBinding? = currentSubBinding()
+        val oldView: ViewLoginSelectionBinding? = bindSubBinding(ViewLoginSelectionBinding::bind)
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
         val transition = if (animate) passwordSceneTransition(oldView, view) else null
         TransitionManager.go(scene, transition)

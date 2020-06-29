@@ -2,12 +2,12 @@ package ca.allanwang.gitdroid.utils
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.GitCallVhList
 import ca.allanwang.gitdroid.activity.base.BaseActivity
@@ -17,11 +17,12 @@ import ca.allanwang.gitdroid.databinding.ViewBottomNavRecyclerBinding
 import ca.allanwang.gitdroid.databinding.ViewToolbarBinding
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.item.GenericBindingItem
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mikepenz.fastadapter.GenericItem
 import kotlinx.coroutines.CancellationException
 
 fun View.setCoordinatorLayoutScrollingBehaviour() {
@@ -44,8 +45,8 @@ fun ActivityBaseToolbarBinding.addBottomNavBar(): BottomNavigationView {
 }
 
 
-fun <T : ViewDataBinding> ViewToolbarBinding.addAppBarView(layoutRes: Int): T {
-    val binding: T = DataBindingUtil.inflate(LayoutInflater.from(appbar.context), layoutRes, appbar, false)
+fun <T : ViewBinding> ViewToolbarBinding.addAppBarView(inflater: (LayoutInflater, ViewGroup, Boolean) -> T): T {
+    val binding: T = inflater(LayoutInflater.from(appbar.context), appbar, false)
     addAppBarView(binding.root)
     return binding
 }
@@ -71,7 +72,7 @@ interface ViewBottomNavRecyclerConfig {
 
     val activity: BaseActivity
 
-    val adapter: FastBindingAdapter
+    val adapter: SingleFastAdapter
 }
 
 interface ViewBottomNavRecyclerLoader {
@@ -91,7 +92,7 @@ fun ViewBottomNavRecyclerBinding.setLoader(config: ViewBottomNavRecyclerConfig):
 
     bottomNavigation.verifyLoaders(loaders.keys)
 
-    val cache = mutableMapOf<Int, List<GenericBindingItem>>()
+    val cache = mutableMapOf<Int, List<GenericItem>>()
 
     val pending = mutableSetOf<Int>()
 

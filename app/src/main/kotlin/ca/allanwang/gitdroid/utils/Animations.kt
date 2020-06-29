@@ -2,8 +2,8 @@ package ca.allanwang.gitdroid.utils
 
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.fastAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.animators.*
 import ca.allanwang.kau.utils.KAU_BOTTOM
 
@@ -42,7 +42,7 @@ enum class RvAnimation(val animator: RecyclerView.ItemAnimator) {
     companion object {
         const val THRESHOLD = 300L
 
-        fun set(recyclerView: RecyclerView, adapter: FastBindingAdapter = recyclerView.fastAdapter) {
+        fun set(recyclerView: RecyclerView, adapter: SingleFastAdapter = recyclerView.fastAdapter) {
             val anim = if (System.currentTimeMillis() - adapter.lastClearTime > THRESHOLD) SMOOTH else FAST
             anim.set(recyclerView)
         }

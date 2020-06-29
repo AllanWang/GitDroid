@@ -1,6 +1,7 @@
 package ca.allanwang.gitdroid.activity.base
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.ViewDataBinding
 import ca.allanwang.gitdroid.R
@@ -12,7 +13,8 @@ abstract class ToolbarActivity : IntentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        toolbarBinding = bindContentView(R.layout.activity_base_toolbar)
+        toolbarBinding = ActivityBaseToolbarBinding.inflate(layoutInflater)
+        setContentView(toolbarBinding.root)
         setSupportActionBar(toolbarBinding.viewToolbar.toolbar)
         supportActionBar?.also {
             it.setDisplayShowHomeEnabled(true)
@@ -20,7 +22,6 @@ abstract class ToolbarActivity : IntentActivity() {
         }
     }
 
-    fun <T : ViewDataBinding> bindContent(@LayoutRes layoutRes: Int): T =
-        bindView(toolbarBinding.contentContainer, layoutRes, true)
+    protected val contentRoot: ViewGroup get() = toolbarBinding.contentContainer
 
 }

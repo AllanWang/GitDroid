@@ -23,7 +23,7 @@ class BlobActivity : ToolbarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = bindContent(R.layout.view_blob)
+        binding = ViewBlobBinding.inflate(layoutInflater, contentRoot, true)
         supportActionBar?.also {
             it.title = fileName
         }

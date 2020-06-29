@@ -14,16 +14,16 @@ import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.utils.ViewBottomNavRecyclerConfig
 import ca.allanwang.gitdroid.utils.setLoader
-import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
+import com.mikepenz.fastadapter.GenericItem
 
-typealias GitCallVhList = GitCall<List<GenericBindingItem>>
+typealias GitCallVhList = GitCall<List<GenericItem>>
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,7 +31,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = bindContentView(R.layout.activity_main)
+        bindings = bindContentView(ActivityMainBinding::inflate)
         bindings.bind()
         bindLoader()
     }
@@ -63,7 +63,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 R.id.nav_bottom_prs to ::loadPullRequests
             )
             override val activity: BaseActivity = this@MainActivity
-            override val adapter = FastBindingAdapter().apply {
+            override val adapter = SingleFastAdapter().apply {
                 addEventHook(RepoVhBinding.clickHook())
                 addEventHook(IssuePrVhBinding.clickHook())
             }

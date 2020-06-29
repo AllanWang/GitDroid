@@ -12,17 +12,17 @@ import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.PathCrumb
 import ca.allanwang.gitdroid.views.utils.lazyUi
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import github.fragment.TreeEntryItem
 
 class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
     override val layoutRes: Int
         get() = R.layout.view_repo_files
 
-    private val fastAdapter: FastBindingAdapter by lazyUi {
-        FastBindingAdapter().apply {
+    private val fastAdapter: SingleFastAdapter by lazyUi {
+        SingleFastAdapter().apply {
             onClickListener = { _, _, item, _ ->
                 if (item is TreeEntryVhBinding) {
                     onClick(item.data)
