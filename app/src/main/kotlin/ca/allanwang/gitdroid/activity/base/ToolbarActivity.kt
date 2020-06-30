@@ -2,9 +2,6 @@ package ca.allanwang.gitdroid.activity.base
 
 import android.os.Bundle
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.ViewDataBinding
-import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.databinding.ActivityBaseToolbarBinding
 
 abstract class ToolbarActivity : IntentActivity() {
