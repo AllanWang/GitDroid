@@ -3,5 +3,5 @@
 
     <application
         android:supportsRtl="true"
-        android:theme="@style/Theme.GitDroid" />
+        android:theme="@style/Theme.GitDroid.DayNight" />
 </manifest>

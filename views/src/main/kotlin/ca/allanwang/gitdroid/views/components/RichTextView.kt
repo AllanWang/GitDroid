@@ -30,10 +30,17 @@ class RichTextView @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(attrs, R.styleable.RichTextView, 0, 0)
             .apply {
                 try {
-                    compoundDrawableSize = getDimensionPixelSize(R.styleable.RichTextView_compoundDrawableSize, -1)
-                    compoundDrawableGravity = getInt(R.styleable.RichTextView_compoundDrawableGravity, 0)
+                    compoundDrawableSize =
+                        getDimensionPixelSize(R.styleable.RichTextView_compoundDrawableSize, -1)
+                    compoundDrawableGravity =
+                        getInt(R.styleable.RichTextView_compoundDrawableGravity, 0)
                     compoundDrawableBounds =
-                        if (compoundDrawableSize == -1) null else Rect(0, 0, compoundDrawableSize, compoundDrawableSize)
+                        if (compoundDrawableSize == -1) null else Rect(
+                            0,
+                            0,
+                            compoundDrawableSize,
+                            compoundDrawableSize
+                        )
                 } finally {
                     recycle()
                 }
@@ -102,7 +109,8 @@ class RichTextView @JvmOverloads constructor(
         }
     }
 
-    private class TopDrawable(drawable: Drawable, val paint: TextPaint) : DrawableWrapper(drawable) {
+    private class TopDrawable(drawable: Drawable, val paint: TextPaint) :
+        DrawableWrapper(drawable) {
 
         @SuppressLint("CanvasSize")
         override fun draw(canvas: Canvas) {
@@ -129,11 +137,30 @@ class RichTextView @JvmOverloads constructor(
         return d
     }
 
-    override fun setCompoundDrawables(left: Drawable?, top: Drawable?, right: Drawable?, bottom: Drawable?) {
+    override fun setCompoundDrawables(
+        left: Drawable?,
+        top: Drawable?,
+        right: Drawable?,
+        bottom: Drawable?
+    ) {
         super.setCompoundDrawables(
             left?.let(this::update),
             top?.let(this::update),
             right?.let(this::update),
+            bottom?.let(this::update)
+        )
+    }
+
+    override fun setCompoundDrawablesRelative(
+        start: Drawable?,
+        top: Drawable?,
+        end: Drawable?,
+        bottom: Drawable?
+    ) {
+        super.setCompoundDrawablesRelative(
+            start?.let(this::update),
+            top?.let(this::update),
+            end?.let(this::update),
             bottom?.let(this::update)
         )
     }

@@ -349,6 +349,7 @@ class RefEntryVhBinding(override val data: RefEntry) :
     }
 
     override fun ViewRefEntryBinding.unbindView(holder: ViewHolder) {
+        refText.setCompoundDrawablesRelative(null, null, null, null)
         unbind(refText)
     }
 

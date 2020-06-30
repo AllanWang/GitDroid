@@ -63,7 +63,11 @@ fun ShortPullRequestRowItem.issueOrPr(): GitIssueOrPr =
         locked = isLocked
     )
 
-data class SlimEntry(@DrawableRes val icon: Int, val text: String, val onClick: ((View) -> Unit)? = null)
+data class SlimEntry(
+    @DrawableRes val icon: Int,
+    val text: String,
+    val onClick: ((View) -> Unit)? = null
+)
 
 @Parcelize
 data class PathCrumb(val segment: String, val oid: GitObjectID) : Parcelable
@@ -77,11 +81,10 @@ fun GitRefs.entries(selected: GitObjectID? = null): List<RefEntry> =
             ref,
             ref.target.oid == selected
         )
-    } +
-            tagRefs.map { ref ->
-                RefEntry(
-                    R.drawable.ic_label,
-                    ref,
-                    ref.target.oid == selected
-                )
-            }
+    } + tagRefs.map { ref ->
+        RefEntry(
+            R.drawable.ic_label,
+            ref,
+            ref.target.oid == selected
+        )
+    }
