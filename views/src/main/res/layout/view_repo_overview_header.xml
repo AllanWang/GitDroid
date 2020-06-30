@@ -1,44 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/kau_activity_horizontal_margin"
+    android:paddingTop="@dimen/kau_padding_small"
+    android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+    android:paddingBottom="@dimen/kau_padding_small">
 
-    <data>
-
-        <variable
-            name="model"
-            type="github.fragment.ShortRepoRowItem" />
-    </data>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/repo_title"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/kau_activity_horizontal_margin"
-        android:paddingTop="@dimen/kau_padding_small"
-        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
-        android:paddingBottom="@dimen/kau_padding_small">
+        android:clickable="true"
+        android:focusable="true"
+        tools:text="@tools:sample/full_names" />
 
-        <TextView
-            android:id="@+id/repo_title"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            app:repoHeaderText="@{model}"
-            tools:text="@tools:sample/full_names" />
-
-        <TextView
-            android:id="@+id/repo_desc"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="@{model.description}"
-            tools:text="@tools:sample/lorem/random" />
-    </LinearLayout>
-
-
-</layout>
+    <TextView
+        android:id="@+id/repo_desc"
+        style="@style/TextAppearance.AppCompat.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="3"
+        tools:text="@tools:sample/lorem/random" />
+</LinearLayout>

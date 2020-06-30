@@ -1,6 +1,6 @@
 android {
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -14,6 +14,8 @@ dependencies {
     kapt kau.Dependencies.glideKapt
     implementation kau.Dependencies.fastAdapter
     implementation kau.Dependencies.fastAdapter("diff")
+    implementation kau.Dependencies.kauFastAdapter(KAU)
+    implementation kau.Dependencies.kauFastAdapterViewBinding(KAU)
 
     implementation "com.apollographql.apollo:apollo-runtime:${Versions.apollo}"
 }

@@ -1,7 +1,9 @@
 package ca.allanwang.gitdroid.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.databinding.ViewRefreshRecyclerBinding
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
@@ -11,13 +13,13 @@ import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.lazyUi
+import ca.allanwang.kau.adapters.SingleFastAdapter
 
 class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
 
-    private val fastAdapter: FastBindingAdapter by lazyUi {
-        FastBindingAdapter().apply {
+    private val fastAdapter: SingleFastAdapter by lazyUi {
+        SingleFastAdapter().apply {
             addEventHook(RepoVhBinding.clickHook())
             addEventHook(SlimEntryVhBinding.clickHook())
         }
@@ -30,7 +32,13 @@ class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
         model = viewModel()
     }
 
-    override fun ViewRefreshRecyclerBinding.onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): ViewRefreshRecyclerBinding = ViewRefreshRecyclerBinding.inflate(inflater, container, false).also { it.init() }
+
+    private fun ViewRefreshRecyclerBinding.init() {
         recycler.apply {
             adapter = fastAdapter
             addItemDecoration(BottomNavDecoration(context))
@@ -45,8 +53,5 @@ class RepoOverviewFragment : BaseFragment<ViewRefreshRecyclerBinding>() {
             }
         }
     }
-
-    override val layoutRes: Int
-        get() = R.layout.view_refresh_recycler
 
 }

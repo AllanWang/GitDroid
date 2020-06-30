@@ -3,19 +3,20 @@ package ca.allanwang.gitdroid.views.item
 import android.content.Context
 import ca.allanwang.gitdroid.views.R
 import ca.allanwang.gitdroid.views.utils.*
+import com.mikepenz.fastadapter.GenericItem
 import github.GetProfileQuery
 import github.fragment.*
 import java.util.*
 
-fun ShortIssueRowItem.vh(): GenericBindingItem = IssueVhBinding(this)
-fun ShortPullRequestRowItem.vh(): GenericBindingItem =
+fun ShortIssueRowItem.vh(): GenericItem = IssueVhBinding(this)
+fun ShortPullRequestRowItem.vh(): GenericItem =
     PullRequestVhBinding(this)
 
-fun ShortRepoRowItem.vh(): GenericBindingItem = RepoVhBinding(this)
-fun SlimEntry.vh(): GenericBindingItem =
+fun ShortRepoRowItem.vh(): GenericItem = RepoVhBinding(this)
+fun SlimEntry.vh(): GenericItem =
     SlimEntryVhBinding(this)
 
-fun GetProfileQuery.User.vhFull(context: Context): List<GenericBindingItem> {
+fun GetProfileQuery.User.vhFull(context: Context): List<GenericItem> {
     val dateFormat = Locale.getDefault().bestDateFormat("yyyyMMMdd")
     val slimModels = listOf(
         SlimEntry(
@@ -39,7 +40,7 @@ fun GetProfileQuery.User.vhFull(context: Context): List<GenericBindingItem> {
             context.quantityN(R.plurals.gists_n, gists.totalCount)
         )
     )
-    return mutableListOf<GenericBindingItem>().apply {
+    return mutableListOf<GenericItem>().apply {
         add(vhHeader())
         addAll(slimModels.map { it.vh() })
         add(vhContribution())
@@ -47,32 +48,32 @@ fun GetProfileQuery.User.vhFull(context: Context): List<GenericBindingItem> {
     }
 }
 
-fun GetProfileQuery.PinnedItems.vhList(): List<GenericBindingItem> = pinnedItems?.mapNotNull { item ->
+fun GetProfileQuery.PinnedItems.vhList(): List<GenericItem> = pinnedItems?.mapNotNull { item ->
     when (item) {
         is GetProfileQuery.AsPinnableItem -> item.fragments.shortRepoRowItem?.vh()
         else -> throw RuntimeException("Invalid pinned item type ${item.__typename} ${item::class.java.simpleName}")
     }
 } ?: emptyList()
 
-fun GetProfileQuery.User.vhHeader(): GenericBindingItem =
+fun GetProfileQuery.User.vhHeader(): GenericItem =
     UserHeaderVhBinding(this)
 
 
-fun GetProfileQuery.User.vhContribution(): GenericBindingItem =
+fun GetProfileQuery.User.vhContribution(): GenericItem =
     UserContributionVhBinding(this)
 
-fun PathCrumb.vh(): GenericBindingItem =
+fun PathCrumb.vh(): GenericItem =
     PathCrumbVhBinding(this)
 
-fun TreeEntryItem.vh(): GenericBindingItem = TreeEntryVhBinding(this)
+fun TreeEntryItem.vh(): GenericItem = TreeEntryVhBinding(this)
 
-fun ShortIssueComment.vh(): GenericBindingItem = IssueCommentVhBinding(this)
+fun ShortIssueComment.vh(): GenericItem = IssueCommentVhBinding(this)
 
-fun RefEntry.vh(): GenericBindingItem = RefEntryVhBinding(this)
+fun RefEntry.vh(): GenericItem = RefEntryVhBinding(this)
 
-fun ShortRepoRowItem.vhHeader(): GenericBindingItem = RepoOverviewHeaderVhBinding(this)
+fun ShortRepoRowItem.vhHeader(): GenericItem = RepoOverviewHeaderVhBinding(this)
 
-fun FullRepo.vhFull(context: Context): List<GenericBindingItem> {
+fun FullRepo.vhFull(context: Context): List<GenericItem> {
     val slimModels = with(fragments.shortRepoRowItem) {
         listOf(
             SlimEntry(
@@ -101,7 +102,7 @@ fun FullRepo.vhFull(context: Context): List<GenericBindingItem> {
             )
         )
     }
-    return mutableListOf<GenericBindingItem>().apply {
+    return mutableListOf<GenericItem>().apply {
         add(fragments.shortRepoRowItem.vhHeader())
         addAll(slimModels.map { it.vh() })
     }

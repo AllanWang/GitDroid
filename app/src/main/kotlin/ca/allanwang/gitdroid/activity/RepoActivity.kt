@@ -20,9 +20,9 @@ import ca.allanwang.gitdroid.utils.verifyLoaders
 import ca.allanwang.gitdroid.viewmodel.RepoViewModel
 import ca.allanwang.gitdroid.views.item.RefEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.entries
 import ca.allanwang.gitdroid.views.utils.lazyUi
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.startActivity
 import com.afollestad.materialdialogs.MaterialDialog
@@ -40,8 +40,8 @@ class RepoActivity : ToolbarActivity() {
 
     private var currentRef: GitRef? = null
 
-    private val refAdapter: FastBindingAdapter by lazyUi {
-        FastBindingAdapter().apply {
+    private val refAdapter: SingleFastAdapter by lazyUi {
+        SingleFastAdapter().apply {
             onClickListener = { _, _, item, _ ->
                 if (item is RefEntryVhBinding) {
                     if (!item.data.current) {

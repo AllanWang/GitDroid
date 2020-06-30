@@ -6,12 +6,12 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import androidx.cardview.widget.CardView
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.core.view.get
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.transition.*
 import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
 import androidx.transition.TransitionSet.ORDERING_TOGETHER
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.data.GitDroidData
@@ -27,6 +27,8 @@ import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.views.databinding.ViewLoginBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginContainerBinding
 import ca.allanwang.gitdroid.views.databinding.ViewLoginSelectionBinding
+import ca.allanwang.gitdroid.views.item.ViewBindingBind
+import ca.allanwang.gitdroid.views.item.ViewBindingInflate
 import ca.allanwang.kau.utils.resolveColor
 import ca.allanwang.kau.utils.snackbar
 import ca.allanwang.kau.utils.startActivity
@@ -43,7 +45,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gitState = null
-        sceneRoot = bindContentView(R.layout.view_login_container)
+        sceneRoot = bindContentView(ViewLoginContainerBinding::inflate)
         showSelectorScene(false)
     }
 
@@ -122,23 +124,20 @@ class LoginActivity : BaseActivity() {
      * ------------------------------------------------------------
      */
 
-    private fun <T : ViewDataBinding> currentSubBinding(): T? {
+    private fun <T : ViewBinding> inflateSubBinding(inflater: ViewBindingInflate<T>): T =
+        inflater(layoutInflater, sceneRoot.loginContainerScene, false)
+
+    private fun <T : ViewBinding> bindSubBinding(binder: ViewBindingBind<T>): T? {
         if (sceneRoot.loginContainerScene.childCount == 0) {
             return null
         }
-        return DataBindingUtil.getBinding(sceneRoot.loginContainerScene.getChildAt(0))
-    }
-
-    private fun <T : ViewDataBinding> inflateSubBinding(layoutRes: Int): T {
-        return DataBindingUtil.inflate(
-            layoutInflater,
-            layoutRes, sceneRoot.loginContainerScene, false
-        )
+        return binder(sceneRoot.loginContainerScene[0])
     }
 
     private fun showSelectorScene(animate: Boolean = true) {
         loginPasswordPage = false
-        val view: ViewLoginSelectionBinding = inflateSubBinding(R.layout.view_login_selection)
+        inflateSubBinding(ViewLoginSelectionBinding::inflate)
+        val view: ViewLoginSelectionBinding = inflateSubBinding(ViewLoginSelectionBinding::inflate)
         view.loginSelectPassword.setOnClickListener {
             showPasswordScene()
         }
@@ -147,13 +146,16 @@ class LoginActivity : BaseActivity() {
             gitState = request.state
             launchUrl(Uri.parse(request.url))
         }
-        val oldView: ViewLoginBinding? = currentSubBinding()
+        val oldView: ViewLoginBinding? = bindSubBinding(ViewLoginBinding::bind)
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
         val transition = if (animate) selectorSceneTransition(oldView, view) else null
         TransitionManager.go(scene, transition)
     }
 
-    private fun selectorSceneTransition(oldView: ViewLoginBinding?, view: ViewLoginSelectionBinding): Transition =
+    private fun selectorSceneTransition(
+        oldView: ViewLoginBinding?,
+        view: ViewLoginSelectionBinding
+    ): Transition =
         transitionSet {
             val fosi = FastOutSlowInInterpolator()
             add(Fade(Visibility.MODE_IN), R.id.login_select_oauth) {
@@ -161,7 +163,12 @@ class LoginActivity : BaseActivity() {
                 startDelay = 300L
             }
             add(TransitionSet()) {
-                add(Fade(Visibility.MODE_OUT), R.id.login_user, R.id.login_password, R.id.login_send) {
+                add(
+                    Fade(Visibility.MODE_OUT),
+                    R.id.login_user,
+                    R.id.login_password,
+                    R.id.login_send
+                ) {
                     duration = 100L
                 }
                 add(TransitionSet()) {
@@ -177,7 +184,8 @@ class LoginActivity : BaseActivity() {
                             startColor = cardColor,
                             endColor = accentColor,
                             setter = { v, c ->
-                                (v as? MaterialButton)?.backgroundTintList = ColorStateList.valueOf(c)
+                                (v as? MaterialButton)?.backgroundTintList =
+                                    ColorStateList.valueOf(c)
                             }),
                         R.id.login_select_password
                     ) {
@@ -211,17 +219,20 @@ class LoginActivity : BaseActivity() {
 
     private fun showPasswordScene(animate: Boolean = true) {
         loginPasswordPage = true
-        val view: ViewLoginBinding = inflateSubBinding(R.layout.view_login)
+        val view: ViewLoginBinding = inflateSubBinding(ViewLoginBinding::inflate)
         view.loginSend.setOnClickListener {
             showSelectorScene()
         }
-        val oldView: ViewLoginSelectionBinding? = currentSubBinding()
+        val oldView: ViewLoginSelectionBinding? = bindSubBinding(ViewLoginSelectionBinding::bind)
         val scene = Scene(sceneRoot.loginContainerScene, view.root)
         val transition = if (animate) passwordSceneTransition(oldView, view) else null
         TransitionManager.go(scene, transition)
     }
 
-    private fun passwordSceneTransition(oldView: ViewLoginSelectionBinding?, view: ViewLoginBinding): Transition =
+    private fun passwordSceneTransition(
+        oldView: ViewLoginSelectionBinding?,
+        view: ViewLoginBinding
+    ): Transition =
         transitionSet {
             val fosi = FastOutSlowInInterpolator()
             add(Fade(Visibility.MODE_OUT), R.id.login_select_oauth) {

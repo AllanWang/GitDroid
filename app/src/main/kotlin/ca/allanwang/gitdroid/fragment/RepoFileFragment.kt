@@ -1,7 +1,8 @@
 package ca.allanwang.gitdroid.fragment
 
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.BlobActivity
 import ca.allanwang.gitdroid.fragment.base.BaseFragment
@@ -12,17 +13,15 @@ import ca.allanwang.gitdroid.views.item.PlaceholderVhBinding
 import ca.allanwang.gitdroid.views.item.TreeEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.PathCrumb
 import ca.allanwang.gitdroid.views.utils.lazyUi
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import github.fragment.TreeEntryItem
 
 class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
-    override val layoutRes: Int
-        get() = R.layout.view_repo_files
 
-    private val fastAdapter: FastBindingAdapter by lazyUi {
-        FastBindingAdapter().apply {
+    private val fastAdapter: SingleFastAdapter by lazyUi {
+        SingleFastAdapter().apply {
             onClickListener = { _, _, item, _ ->
                 if (item is TreeEntryVhBinding) {
                     onClick(item.data)
@@ -41,7 +40,14 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
         model = viewModel()
     }
 
-    override fun ViewRepoFilesBinding.onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): ViewRepoFilesBinding =
+        ViewRepoFilesBinding.inflate(inflater, container, false).also { it.init() }
+
+    private fun ViewRepoFilesBinding.init() {
         repoRecycler.apply {
             adapter = fastAdapter
             addItemDecoration(BottomNavDecoration(context))
@@ -76,9 +82,6 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
                 }
             }
         }
-    }
-
-    override fun ViewRepoFilesBinding.onActivityCreated(savedInstanceState: Bundle?) {
     }
 
     override fun onDestroyView() {
@@ -127,10 +130,10 @@ class RepoFileFragment : BaseFragment<ViewRepoFilesBinding>() {
                 }
             }
         } else {
-            binding?.repoPathCrumbs?.addCrumb(PathCrumb(data.name, data.oid))
+            _binding?.repoPathCrumbs?.addCrumb(PathCrumb(data.name, data.oid))
             model.entryLoader(data.oid).execute()
         }
     }
 
-    override fun onBackPressed(): Boolean = binding?.repoPathCrumbs?.onBackPressed() ?: false
+    override fun onBackPressed(): Boolean = _binding?.repoPathCrumbs?.onBackPressed() ?: false
 }

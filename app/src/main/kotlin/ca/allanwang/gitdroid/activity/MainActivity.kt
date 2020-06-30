@@ -14,29 +14,29 @@ import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.item.clickHook
 import ca.allanwang.gitdroid.utils.ViewBottomNavRecyclerConfig
 import ca.allanwang.gitdroid.utils.setLoader
-import ca.allanwang.gitdroid.views.item.GenericBindingItem
 import ca.allanwang.gitdroid.views.item.IssuePrVhBinding
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.BottomNavDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.snackbar
 import com.google.android.material.navigation.NavigationView
+import com.mikepenz.fastadapter.GenericItem
 
-typealias GitCallVhList = GitCall<List<GenericBindingItem>>
+typealias GitCallVhList = GitCall<List<GenericItem>>
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    lateinit var bindings: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = bindContentView(R.layout.activity_main)
-        bindings.bind()
+        binding = bindContentView(ActivityMainBinding::inflate)
+        binding.init()
         bindLoader()
     }
 
-    private fun ActivityMainBinding.bind() {
+    private fun ActivityMainBinding.init() {
         setSupportActionBar(viewToolbar.toolbar)
         val toggle = ActionBarDrawerToggle(
             this@MainActivity, drawerLayout, viewToolbar.toolbar,
@@ -63,22 +63,22 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 R.id.nav_bottom_prs to ::loadPullRequests
             )
             override val activity: BaseActivity = this@MainActivity
-            override val adapter = FastBindingAdapter().apply {
+            override val adapter = SingleFastAdapter().apply {
                 addEventHook(RepoVhBinding.clickHook())
                 addEventHook(IssuePrVhBinding.clickHook())
             }
 
         }
-        bindings.viewBottomNavRecycler.recycler.apply {
+        binding.viewRecycler.recycler.apply {
             recycledViewPool.setMaxRecycledViews(RepoVhBinding.layoutRes, 20)
             addItemDecoration(BottomNavDecoration(this@MainActivity))
         }
-        bindings.viewBottomNavRecycler.setLoader(config)
+        binding.setLoader(config)
     }
 
     override fun onBackPressed() {
-        if (bindings.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            bindings.drawerLayout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -108,7 +108,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             else -> snackbar("Coming soon!")
         }
-        bindings.drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }

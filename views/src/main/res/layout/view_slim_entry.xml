@@ -1,55 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/kau_activity_horizontal_margin"
+    android:paddingTop="@dimen/kau_padding_small"
+    android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+    android:paddingBottom="@dimen/kau_padding_small">
 
-    <data>
+    <ImageView
+        android:id="@+id/slim_icon"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:tint="?android:textColorTertiary"
+        android:tintMode="src_in"
+        tools:src="@drawable/ic_star" />
 
-        <variable
-            name="model"
-            type="ca.allanwang.gitdroid.views.utils.SlimEntry" />
-    </data>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/slim_text"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/kau_activity_horizontal_margin"
-        android:paddingTop="@dimen/kau_padding_small"
-        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
-        android:paddingBottom="@dimen/kau_padding_small"
-        android:foreground="?selectableItemBackground"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginStart="@dimen/kau_padding_small"
+        android:layout_marginEnd="@dimen/kau_padding_small"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="?android:textColorPrimary"
+        tools:text="@tools:sample/lorem/random" />
 
-        <ImageView
-            android:id="@+id/slim_icon"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@{model.icon}"
-            android:tint="?android:textColorTertiary"
-            android:tintMode="src_in"
-            tools:src="@drawable/ic_star" />
-
-        <TextView
-            android:id="@+id/slim_text"
-            style="@style/TextAppearance.MaterialComponents.Caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/kau_padding_small"
-            android:layout_marginEnd="@dimen/kau_padding_small"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="@{model.text}"
-            android:textColor="?android:textColorPrimary"
-            tools:text="@tools:sample/lorem/random" />
-
-        <ImageView
-            android:id="@+id/slim_indicator"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/ic_chevron_right"
-            android:tint="?android:textColorTertiary"
-            app:goneFlag="@{model.onClick}" />
-    </LinearLayout>
-</layout>
+    <ImageView
+        android:id="@+id/slim_indicator"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:src="@drawable/ic_chevron_right"
+        android:tint="?android:textColorTertiary" />
+</LinearLayout>

@@ -13,8 +13,8 @@ import ca.allanwang.gitdroid.views.item.PathCrumbHomeVhBinding
 import ca.allanwang.gitdroid.views.item.PathCrumbVhBinding
 import ca.allanwang.gitdroid.views.item.vh
 import ca.allanwang.gitdroid.views.itemdecoration.SquareDecoration
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
 import ca.allanwang.gitdroid.views.utils.PathCrumb
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.drawable
 import ca.allanwang.kau.utils.tint
 import ca.allanwang.kau.utils.withAlpha
@@ -31,7 +31,7 @@ class PathCrumbsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-    private val fastAdapter = FastBindingAdapter()
+    private val fastAdapter = SingleFastAdapter()
 
     var callback: PathCrumbsCallback? = null
 
@@ -85,7 +85,8 @@ class PathCrumbsView @JvmOverloads constructor(
     }
 
     fun setCrumbs(rootOid: GitObjectID?, crumbs: List<PathCrumb>) {
-        val crumbsVh = listOf(PathCrumbHomeVhBinding(rootOid)) + crumbs.map { PathCrumbVhBinding(it) }
+        val crumbsVh =
+            listOf(PathCrumbHomeVhBinding(rootOid)) + crumbs.map { PathCrumbVhBinding(it) }
         fastAdapter.setWithDiff(crumbsVh, false)
         postDelayed(100)
         {
@@ -96,9 +97,11 @@ class PathCrumbsView @JvmOverloads constructor(
     val crumbCount: Int
         get() = fastAdapter.adapterItemCount
 
-    fun getCrumbs(): List<PathCrumb> = fastAdapter.adapterItems.mapNotNull { (it as? PathCrumbVhBinding)?.data }
+    fun getCrumbs(): List<PathCrumb> =
+        fastAdapter.adapterItems.mapNotNull { (it as? PathCrumbVhBinding)?.data }
 
-    fun getCurrentCrumb(): PathCrumb? = (fastAdapter.adapterItems.last() as? PathCrumbVhBinding)?.data
+    fun getCurrentCrumb(): PathCrumb? =
+        (fastAdapter.adapterItems.last() as? PathCrumbVhBinding)?.data
 
     fun reset() {
         fastAdapter.removeRange(1, fastAdapter.adapterItemCount - 1)

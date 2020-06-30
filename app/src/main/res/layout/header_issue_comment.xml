@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <TextView
-        android:id="@+id/title"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/kau_activity_horizontal_margin"
-        android:paddingRight="@dimen/kau_activity_horizontal_margin"
-        android:textColor="@android:color/white" />
-
-</layout>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/title"
+    style="@style/TextAppearance.AppCompat.Title"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:ellipsize="end"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/kau_activity_horizontal_margin"
+    android:paddingRight="@dimen/kau_activity_horizontal_margin"
+    android:textColor="@android:color/white"
+    tools:ignore="Overdraw" />

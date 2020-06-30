@@ -5,26 +5,24 @@ import android.graphics.Color
 import android.os.Build
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.core.view.forEach
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewbinding.ViewBinding
 import ca.allanwang.gitdroid.BuildConfig
 import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.LoginActivity
 import ca.allanwang.gitdroid.activity.MainActivity
-import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.data.GitDroidData
+import ca.allanwang.gitdroid.data.gql.GitCall
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.sql.Database
 import ca.allanwang.gitdroid.sql.awaitOptional
 import ca.allanwang.gitdroid.utils.Prefs
 import ca.allanwang.gitdroid.viewmodel.base.BaseViewModel
+import ca.allanwang.gitdroid.views.item.ViewBindingInflate
 import ca.allanwang.kau.internal.KauBaseActivity
 import ca.allanwang.kau.utils.materialDialog
 import ca.allanwang.kau.utils.snackbar
@@ -41,8 +39,11 @@ abstract class BaseActivity : KauBaseActivity() {
     val db: Database by inject()
     val gdd: GitDroidData by inject()
 
-    fun <T : ViewDataBinding> bindContentView(@LayoutRes layoutRes: Int): T =
-        DataBindingUtil.setContentView(this, layoutRes)
+    fun <T : ViewBinding> bindContentView(inflater: ViewBindingInflate<T>): T {
+        val binding: T = inflater(layoutInflater, null, false)
+        setContentView(binding.root)
+        return binding
+    }
 
     /**
      * Returns current user based on token
@@ -94,18 +95,11 @@ abstract class BaseActivity : KauBaseActivity() {
         }
     }
 
-    fun <T : ViewDataBinding> bindView(
-        parent: ViewGroup,
-        layoutRes: Int,
-        attachToParent: Boolean = true,
-        action: T.() -> Unit = {}
-    ): T {
-        val binding: T = DataBindingUtil.inflate(layoutInflater, layoutRes, parent, attachToParent)
-        binding.action()
-        return binding
-    }
-
-    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory? = BaseViewModel.Factory(intent.extras)) =
+    inline fun <reified T : ViewModel> viewModel(
+        factory: ViewModelProvider.Factory? = BaseViewModel.Factory(
+            intent.extras
+        )
+    ) =
         ViewModelProviders.of(this, factory).get(T::class.java)
 
     fun inflateMenu(@MenuRes menuRes: Int, menu: Menu) {

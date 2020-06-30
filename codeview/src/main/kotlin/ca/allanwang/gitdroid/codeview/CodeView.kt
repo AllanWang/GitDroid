@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.getSystemService
-import androidx.databinding.DataBindingUtil
 import ca.allanwang.gitdroid.codeview.databinding.ViewCodeFrameBinding
 import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.*
@@ -32,11 +31,11 @@ class CodeView @JvmOverloads constructor(
     private val defaultTheme: CodeTheme
 
     init {
-        val inflater = context.getSystemService<LayoutInflater>() ?: throw RuntimeException("No layout inflater")
+        val inflater = context.getSystemService<LayoutInflater>()
+            ?: throw RuntimeException("No layout inflater")
 
-        val scrap: ViewItemCodeBinding = DataBindingUtil.inflate(inflater, R.layout.view_item_code, this, false)
+        val scrap: ViewItemCodeBinding = ViewItemCodeBinding.inflate(inflater, this, false)
         val textPaint = scrap.codeItemLine.paint
-        scrap.unbind()
         val codeLayoutManager = CodeLayoutManager(context).apply {
             initialPrefetchItemCount = 10
         }
@@ -46,7 +45,7 @@ class CodeView @JvmOverloads constructor(
         codeAdapter = CodeAdapter(context)
         codeAdapter.bind(textPaint, codeLayoutManager, defaultTheme)
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.view_code_frame, this, true)
+        binding = ViewCodeFrameBinding.inflate(inflater, this, true)
         binding.codeViewRecycler.apply {
             layoutManager = codeLayoutManager
             adapter = codeAdapter
@@ -83,8 +82,13 @@ class CodeView @JvmOverloads constructor(
         withContext(coroutineContext) {
             val trueTheme = theme ?: defaultTheme
             val decorations = lexer.decorate(content)
-            val result = CodeHighlighter.highlight(content, decorations, SpannableStringHighlightBuilder(trueTheme))
-            val lines = result.splitCharSequence('\n').mapIndexed { i, line -> CodeLine(i + 1, line) }
+            val result = CodeHighlighter.highlight(
+                content,
+                decorations,
+                SpannableStringHighlightBuilder(trueTheme)
+            )
+            val lines =
+                result.splitCharSequence('\n').mapIndexed { i, line -> CodeLine(i + 1, line) }
             val data = CodeViewData(lines, lines.size)
             codeAdapter.setData(data, trueTheme)
         }

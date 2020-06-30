@@ -11,7 +11,7 @@ import ca.allanwang.gitdroid.utils.RvAnimation
 import ca.allanwang.gitdroid.views.item.RepoVhBinding
 import ca.allanwang.gitdroid.views.item.SlimEntryVhBinding
 import ca.allanwang.gitdroid.views.item.vhFull
-import ca.allanwang.gitdroid.views.utils.FastBindingAdapter
+import ca.allanwang.kau.adapters.SingleFastAdapter
 import ca.allanwang.kau.utils.launchMain
 import ca.allanwang.kau.utils.startActivity
 import ca.allanwang.kau.utils.string
@@ -23,11 +23,11 @@ class UserActivity : ToolbarActivity() {
 
     private val login by stringExtra { login }
 
-    private val fastAdapter = FastBindingAdapter()
+    private val fastAdapter = SingleFastAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = bindContent(R.layout.view_refresh_recycler)
+        binding = ViewRefreshRecyclerBinding.inflate(layoutInflater, contentRoot, true)
         supportActionBar?.also {
             it.title = login
         }

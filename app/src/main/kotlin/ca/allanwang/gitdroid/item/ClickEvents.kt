@@ -2,6 +2,7 @@ package ca.allanwang.gitdroid.item
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import ca.allanwang.fastadapter.viewbinding.BindingClickEventHook
 import ca.allanwang.gitdroid.activity.IssueCommentActivity
 import ca.allanwang.gitdroid.activity.RepoActivity
 import ca.allanwang.gitdroid.activity.UserActivity

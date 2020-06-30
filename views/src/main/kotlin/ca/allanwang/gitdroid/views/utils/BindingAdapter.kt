@@ -2,7 +2,6 @@ package ca.allanwang.gitdroid.views.utils
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
@@ -12,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
-import androidx.databinding.BindingAdapter
 import ca.allanwang.gitdroid.data.gitNameAndOwner
 import ca.allanwang.gitdroid.ktx.browser.launchUrl
 import ca.allanwang.gitdroid.views.R
@@ -36,17 +34,14 @@ private fun notVisible(value: Any?): Boolean = when (value) {
     else -> false
 }
 
-@BindingAdapter("goneFlag")
 fun View.goneFlag(value: Any?) {
     goneIf(notVisible(value))
 }
 
-@BindingAdapter("invisibleFlag")
 fun View.invisibleFlag(value: Any?) {
     invisibleIf(notVisible(value))
 }
 
-@BindingAdapter("repoHeaderText")
 fun TextView.repoHeaderText(repo: ShortRepoRowItem) {
     val ownerClick = object : ClickableSpan() {
         override fun onClick(widget: View) {
@@ -65,7 +60,6 @@ fun TextView.repoHeaderText(repo: ShortRepoRowItem) {
     }
 }
 
-@BindingAdapter("languageColor")
 fun TextView.languageColor(color: String?) {
     color ?: return
     val c = ColorStateList.valueOf(Color.parseColor(color))
@@ -73,7 +67,6 @@ fun TextView.languageColor(color: String?) {
     setTextColor(c)
 }
 
-@BindingAdapter("relativeDateText")
 fun TextView.relativeDateText(date: Date?) {
     if (date == null) {
         text = null
@@ -91,7 +84,6 @@ private fun glideModel(model: Any?): Any? = when {
     else -> model
 }
 
-@BindingAdapter("glide")
 fun ImageView.glide(model: Any?) {
     if (model == null) {
         Glide.with(this).clear(this)
@@ -107,7 +99,6 @@ fun ImageView.glide(model: Any?) {
  *
  * Currently, multi param binding adapters don't seem to work; this is the workaround
  */
-@BindingAdapter("glideRound")
 fun ImageView.glideRound(model: Any?) {
     if (model == null) {
         Glide.with(this).clear(this)
@@ -119,19 +110,6 @@ fun ImageView.glideRound(model: Any?) {
     }
 }
 
-@BindingAdapter("android:src")
-fun ImageView.setImageViewResource(resource: Int) {
-    setImageResource(resource)
-}
-
-@BindingAdapter(value = ["android:drawableStart", "android:drawableEnd"], requireAll = false)
-fun TextView.compoundDrawables(drawableResStart: Int, drawableResEnd: Int) {
-    fun drawable(res: Int): Drawable? = if (res == 0) null else context.getDrawable(res)
-    // TODO LTR support
-    setCompoundDrawables(drawable(drawableResStart), null, drawable(drawableResEnd), null)
-}
-
-@BindingAdapter("treeEntrySizeText")
 fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
     val blob = obj?.obj as? TreeEntryItem.AsBlob
     if (blob == null) {
@@ -141,7 +119,6 @@ fun TextView.treeEntrySizeText(obj: TreeEntryItem?) {
     }
 }
 
-@BindingAdapter("compactNumberText")
 fun TextView.compactNumberText(count: Int) {
     fun compact(divisor: Float, suffix: Char): String {
         return "${(count / divisor).round(1)}$suffix"
@@ -158,12 +135,10 @@ fun TextView.compactNumberText(count: Int) {
     text = compactText
 }
 
-@BindingAdapter("memberSinceText")
 fun TextView.memberSinceText(date: Date) {
     context.getString(R.string.member_since_s, date.toString())
 }
 
-@BindingAdapter("authorAssociation")
 fun TextView.authorAssociation(association: CommentAuthorAssociation?) {
     val textRes = when (association) {
         CommentAuthorAssociation.OWNER -> R.string.author_owner

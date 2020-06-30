@@ -7,11 +7,9 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.getColorOrThrow
-import androidx.databinding.BindingAdapter
 import ca.allanwang.gitdroid.views.R
 import github.fragment.ShortContributions
 
-@BindingAdapter("contributions")
 fun ContributionsView.contributions(data: ShortContributions?) {
     contributions = data
 }

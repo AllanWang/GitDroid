@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.GitDroid.DayNight" parent="Theme.GitDroid.Light" />
+
+    <style name="Theme.GitDroid.Splash.DayNight" parent="Theme.GitDroid.Light.Splash" />
+
     <style name="Theme.GitDroid.Light" parent="Theme.MaterialComponents.Light">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -5,8 +5,6 @@ import android.text.TextPaint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnNextLayout
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import ca.allanwang.gitdroid.codeview.CodeViewData
 import ca.allanwang.gitdroid.codeview.R
@@ -14,7 +12,6 @@ import ca.allanwang.gitdroid.codeview.databinding.ViewItemCodeBinding
 import ca.allanwang.gitdroid.codeview.highlighter.CodeTheme
 import ca.allanwang.gitdroid.codeview.utils.CodeViewUtils
 import ca.allanwang.gitdroid.codeview.utils.ceilInt
-import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.kau.utils.dimen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,7 +24,8 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
 
     private var lineNumWidth: Int = 0
     private var lineCodeWidth: Int = 0
-    private val lineMargins: Int = (context.dimen(R.dimen.code_line_horizontal_margins) * 2f).ceilInt()
+    private val lineMargins: Int =
+        (context.dimen(R.dimen.code_line_horizontal_margins) * 2f).ceilInt()
 
     internal lateinit var theme: CodeTheme
     private lateinit var textPaint: TextPaint
@@ -83,13 +81,11 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CodeViewHolder {
         val binding: ViewItemCodeBinding =
-            DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                R.layout.view_item_code, parent, false
-            )
+            ViewItemCodeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = CodeViewHolder(binding.root)
         holder.itemView.setOnClickListener {
-            val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION } ?: return@setOnClickListener
+            val pos = holder.adapterPosition.takeIf { p -> p != RecyclerView.NO_POSITION }
+                ?: return@setOnClickListener
             val data = it.getTag(R.id.code_view_item_data) as? CodeLine
                 ?: return@setOnClickListener
             onClick(it, data, pos)
@@ -105,9 +101,13 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
         onBindViewHolder(holder, position, Collections.emptyList())
     }
 
-    override fun onBindViewHolder(holder: CodeViewHolder, position: Int, payloads: MutableList<Any>) {
+    override fun onBindViewHolder(
+        holder: CodeViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
         val item: CodeLine = data.getOrNull(position) ?: return
-        val binding: ViewItemCodeBinding = DataBindingUtil.getBinding(holder.itemView) ?: return
+        val binding: ViewItemCodeBinding = ViewItemCodeBinding.bind(holder.itemView)
 
         // Unfortunately width modification doesn't work during onCreateViewHolder
         // Requesting a layout then causes the width to reset, as it isn't bound
@@ -128,16 +128,14 @@ class CodeAdapter(context: Context) : RecyclerView.Adapter<CodeViewHolder>() {
     override fun onViewRecycled(holder: CodeViewHolder) {
         super.onViewRecycled(holder)
         holder.itemView.setTag(R.id.code_view_item_data, null)
-        val binding: ViewItemCodeBinding = DataBindingUtil.getBinding(holder.itemView) ?: return
+        val binding: ViewItemCodeBinding = ViewItemCodeBinding.bind(holder.itemView)
         binding.codeItemLineNum.text = null
         binding.codeItemLine.text = null
-        binding.unbind()
     }
 
     override fun getItemCount(): Int = data.size
 }
 
 data class CodeLine(val lineNumber: Int?, val code: CharSequence)
-
 
 class CodeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

@@ -55,10 +55,10 @@ fragment ShortRepoRowItem on Repository {
     defaultBranchRef {
         ... ShortRef
     }
-    issues(first: 0, states: OPEN) {
+    issues(first: 0, states: [OPEN]) {
         totalCount
     }
-    pullRequests(first: 0, states: OPEN) {
+    pullRequests(first: 0, states: [OPEN]) {
         totalCount
     }
     forks(first: 0) {
@@ -87,10 +87,10 @@ fragment RepoMainInfo on Repository {
         color
         name
     }
-    issues(first: 20, states: OPEN) {
+    issues(first: 20, states: [OPEN]) {
         totalCount
     }
-    pullRequests(first: 20, states: OPEN) {
+    pullRequests(first: 20, states: [OPEN]) {
         totalCount
     }
     forks(first: 20) {

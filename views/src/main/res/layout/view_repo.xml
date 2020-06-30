@@ -1,121 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:windowBackground"
+    android:foreground="?selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/kau_activity_horizontal_margin"
+    android:paddingTop="@dimen/kau_padding_small"
+    android:paddingEnd="@dimen/kau_activity_horizontal_margin"
+    android:paddingBottom="@dimen/kau_padding_small">
 
-    <data>
+    <TextView
+        android:id="@+id/repo_name"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?android:textColorPrimary"
+        tools:text="@tools:sample/full_names" />
 
-        <variable
-            name="model"
-            type="github.fragment.ShortRepoRowItem" />
-    </data>
+    <TextView
+        android:id="@+id/repo_desc"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="?android:textColorSecondary"
+        tools:text="@tools:sample/lorem/random" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:windowBackground"
-        android:foreground="?selectableItemBackground"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/kau_activity_horizontal_margin"
-        android:paddingTop="@dimen/kau_padding_small"
-        android:paddingEnd="@dimen/kau_activity_horizontal_margin"
-        android:paddingBottom="@dimen/kau_padding_small">
+        android:gravity="top"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/repo_name"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.fragments.repoNameAndOwner.name}"
-            android:textColor="?android:textColorPrimary"
-            tools:text="@tools:sample/full_names" />
 
-        <TextView
-            android:id="@+id/repo_desc"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="match_parent"
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_stars"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:drawableStart="@drawable/ic_star_border"
+            android:drawablePadding="4dp"
+            tools:text="123" />
+
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_forks"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:drawableStart="@drawable/ic_fork"
+            tools:text="123" />
+
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_issues"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:drawableStart="@drawable/ic_issue"
+            tools:text="1.5k" />
+
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_prs"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:drawableStart="@drawable/ic_pull_request"
+            tools:text="123" />
+
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_language"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:drawableStart="@drawable/ic_language"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:text="@{model.description}"
-            android:textColor="?android:textColorSecondary"
-            app:goneFlag="@{model.description}"
-            tools:text="@tools:sample/lorem/random" />
+            tools:text="Jupyter Notebook" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ca.allanwang.gitdroid.views.components.RichTextView
+            android:id="@+id/repo_date"
+            style="@style/RepoBadge"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="top"
-            android:orientation="horizontal">
-
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_stars"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_star_border"
-                android:drawablePadding="4dp"
-                app:compactNumberText="@{model.stargazers.totalCount}"
-                tools:text="123" />
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_forks"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_fork"
-                app:compactNumberText="@{model.forkCount}"
-                tools:text="123" />
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_issues"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_issue"
-                app:compactNumberText="@{model.issues.totalCount}"
-                tools:text="1.5k" />
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_prs"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.12"
-                android:drawableStart="@drawable/ic_pull_request"
-                app:compactNumberText="@{model.pullRequests.totalCount}"
-                tools:text="123" />
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_language"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:drawableStart="@drawable/ic_language"
-                android:ellipsize="end"
-                android:text="@{model.primaryLanguage.name}"
-                app:invisibleFlag="@{model.primaryLanguage.name}"
-                app:languageColor="@{model.primaryLanguage.color}"
-                tools:text="Jupyter Notebook" />
-
-            <ca.allanwang.gitdroid.views.components.RichTextView
-                android:id="@+id/repo_date"
-                style="@style/RepoBadge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:drawableStart="@drawable/ic_time"
-                app:relativeDateText="@{model.pushedAt}"
-                app:textStartPadding="4dp"
-                tools:text="@tools:sample/date/mmddyy" />
-
-        </LinearLayout>
-
+            android:layout_weight="0.27"
+            android:drawableStart="@drawable/ic_time"
+            app:textStartPadding="4dp"
+            tools:text="@tools:sample/date/mmddyy" />
 
     </LinearLayout>
-</layout>
+
+</LinearLayout>

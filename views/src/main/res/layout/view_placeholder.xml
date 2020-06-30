@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <TextView
-        android:id="@+id/placeholder_text"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/kau_padding_large"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="?android:textColorTertiary"
-        tools:text="@tools:sample/lorem" />
-</layout>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/placeholder_text"
+    style="@style/TextAppearance.AppCompat.Medium"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/kau_padding_large"
+    android:gravity="center"
+    android:textAlignment="center"
+    android:textColor="?android:textColorTertiary"
+    tools:text="@tools:sample/lorem" />
