@@ -27,16 +27,16 @@ typealias GitCallVhList = GitCall<List<GenericItem>>
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    lateinit var bindings: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindings = bindContentView(ActivityMainBinding::inflate)
-        bindings.bind()
+        binding = bindContentView(ActivityMainBinding::inflate)
+        binding.init()
         bindLoader()
     }
 
-    private fun ActivityMainBinding.bind() {
+    private fun ActivityMainBinding.init() {
         setSupportActionBar(viewToolbar.toolbar)
         val toggle = ActionBarDrawerToggle(
             this@MainActivity, drawerLayout, viewToolbar.toolbar,
@@ -69,16 +69,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
 
         }
-        bindings.viewBottomNavRecycler.recycler.apply {
+        binding.viewRecycler.recycler.apply {
             recycledViewPool.setMaxRecycledViews(RepoVhBinding.layoutRes, 20)
             addItemDecoration(BottomNavDecoration(this@MainActivity))
         }
-        bindings.viewBottomNavRecycler.setLoader(config)
+        binding.setLoader(config)
     }
 
     override fun onBackPressed() {
-        if (bindings.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            bindings.drawerLayout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -108,7 +108,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             else -> snackbar("Coming soon!")
         }
-        bindings.drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }

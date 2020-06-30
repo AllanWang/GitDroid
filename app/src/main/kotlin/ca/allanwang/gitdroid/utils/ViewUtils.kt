@@ -2,7 +2,6 @@ package ca.allanwang.gitdroid.utils
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.MenuRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.children
@@ -12,8 +11,8 @@ import ca.allanwang.gitdroid.R
 import ca.allanwang.gitdroid.activity.GitCallVhList
 import ca.allanwang.gitdroid.activity.base.BaseActivity
 import ca.allanwang.gitdroid.databinding.ActivityBaseToolbarBinding
+import ca.allanwang.gitdroid.databinding.ActivityMainBinding
 import ca.allanwang.gitdroid.databinding.ViewBottomNavBinding
-import ca.allanwang.gitdroid.databinding.ViewBottomNavRecyclerBinding
 import ca.allanwang.gitdroid.databinding.ViewToolbarBinding
 import ca.allanwang.gitdroid.logger.L
 import ca.allanwang.gitdroid.views.item.ViewBindingInflate
@@ -84,7 +83,11 @@ interface ViewBottomNavRecyclerLoader {
     fun request(id: Int, forceRefresh: Boolean)
 }
 
-fun ViewBottomNavRecyclerBinding.setLoader(config: ViewBottomNavRecyclerConfig): ViewBottomNavRecyclerLoader {
+fun ActivityMainBinding.setLoader(config: ViewBottomNavRecyclerConfig): ViewBottomNavRecyclerLoader {
+    val bottomNavigation = viewBottomNav.bottomNavigation
+    val recycler = viewRecycler.recycler
+    val refresh = viewRecycler.refresh
+
     bottomNavigation.menu.clear()
     bottomNavigation.inflateMenu(config.menuRes)
     val loaders = config.loaders

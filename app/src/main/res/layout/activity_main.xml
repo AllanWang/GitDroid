@@ -18,8 +18,12 @@
             layout="@layout/view_toolbar" />
 
         <include
-            android:id="@+id/view_bottom_nav_recycler"
-            layout="@layout/view_bottom_nav_recycler" />
+            android:id="@+id/view_recycler"
+            layout="@layout/view_refresh_recycler" />
+
+        <include
+            android:id="@+id/view_bottom_nav"
+            layout="@layout/view_bottom_nav" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

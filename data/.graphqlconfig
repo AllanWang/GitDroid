@@ -1,6 +1,7 @@
 {
   "name": "GitHub API V4 GraphQL Schema",
-  "schemaPath": "data/src/main/graphql/github/schema.json",
+  "schemaPath": "src/main/graphql/github/schema.json",
+  "includes": ["src/main/graphql/github/*.graphql"],
   "extensions": {
     "endpoints": {
       "GitHub API V4 GraphQL Endpoint": {
