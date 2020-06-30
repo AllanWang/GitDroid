@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GitDroid"
+        android:theme="@style/Theme.GitDroid.DayNight"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".StartActivity"
@@ -44,7 +44,7 @@
         <activity android:name=".activity.UserActivity" />
         <activity
             android:name=".activity.BlobActivity"
-            android:theme="@style/Theme.GitDroid" />
+            android:theme="@style/Theme.GitDroid.DayNight" />
         <activity android:name=".activity.RepoActivity" />
         <activity android:name=".activity.IssueCommentActivity" />
     </application>

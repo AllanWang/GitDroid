@@ -1,6 +1,11 @@
 android {
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion kau.Versions.compose
     }
 }
 
@@ -10,6 +15,12 @@ dependencies {
     implementation project(":ktx")
     api kau.Dependencies.swipeRefreshLayout
     implementation kau.Dependencies.coreKtx
+
+    implementation kau.Dependencies.compose('core')
+    implementation kau.Dependencies.compose('tooling')
+    implementation kau.Dependencies.compose('layout')
+    implementation kau.Dependencies.compose('material')
+
     implementation kau.Dependencies.glide
     kapt kau.Dependencies.glideKapt
     implementation kau.Dependencies.fastAdapter
